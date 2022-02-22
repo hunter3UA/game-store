@@ -16,4 +16,8 @@
     <ProjectReference Include="..\GameStore.BLL\GameStore.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>

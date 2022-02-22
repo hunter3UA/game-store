@@ -1,3 +1,5 @@
+using GameStore.DAL;
+using GameStore.DAL.UoW;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +25,8 @@ namespace GameStore.API
                         Version = "v1"
                     });
             });
+            services.AddSingleton<StoreDbContext>();
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
