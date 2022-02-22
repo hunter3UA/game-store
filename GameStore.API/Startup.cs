@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameStore.API
 {
@@ -15,7 +11,8 @@ namespace GameStore.API
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore().AddApiExplorer();
+            services.AddControllers();
+         
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1",
@@ -30,8 +27,6 @@ namespace GameStore.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -41,15 +36,10 @@ namespace GameStore.API
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger GS API");
                 });
             }
-
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapControllers();
             });
 
 

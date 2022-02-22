@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -12,13 +13,16 @@ namespace GameStore.DAL.Models
         public string Name { get; set; }
         [Required]
         public string Body { get; set; }
-        [Required]
-        public int Level { get; set; } = -1;
-        [Required]
-        public bool IsAnsweread { get; set; }=false;
-        public Guid AnswerTo { get; set; }
+
+
+        [Column("fk_ParentId")]
+        public Guid? ParentCommentId { get; set; }
+
+        public List<Comment> Answers { get; set; }=new List<Comment>();
+
         [Required,Column("fk_GameId")]
         public Guid GameId { get; set; }
+
         [Required,ForeignKey("GameId")]
         public Game Game { get; set; }
 

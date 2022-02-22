@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GameStore.DAL.Migrations
 {
-    public partial class Creating : Migration
+    public partial class Сreating : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,11 +26,18 @@ namespace GameStore.DAL.Migrations
                 {
                     GenreId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    fk_ParentId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.GenreId);
+                    table.ForeignKey(
+                        name: "FK_Genres_Genres_fk_ParentId",
+                        column: x => x.fk_ParentId,
+                        principalTable: "Genres",
+                        principalColumn: "GenreId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,14 +59,19 @@ namespace GameStore.DAL.Migrations
                     CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Level = table.Column<int>(type: "int", nullable: false),
-                    IsAnsweread = table.Column<bool>(type: "bit", nullable: false),
-                    AnswerTo = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    fk_GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    fk_ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    fk_GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CommentId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.CommentId);
+                    table.ForeignKey(
+                        name: "FK_Comments_Comments_CommentId1",
+                        column: x => x.CommentId1,
+                        principalTable: "Comments",
+                        principalColumn: "CommentId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Comments_Games_fk_GameId",
                         column: x => x.fk_GameId,
@@ -93,25 +105,6 @@ namespace GameStore.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SubGenres",
-                columns: table => new
-                {
-                    SubGenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    fk_GenreId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubGenres", x => x.SubGenreId);
-                    table.ForeignKey(
-                        name: "FK_SubGenres_Genres_fk_GenreId",
-                        column: x => x.fk_GenreId,
-                        principalTable: "Genres",
-                        principalColumn: "GenreId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "GamePlatforms",
                 columns: table => new
                 {
@@ -137,17 +130,16 @@ namespace GameStore.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Genres",
-                columns: new[] { "GenreId", "Name" },
+                columns: new[] { "GenreId", "Name", "fk_ParentId" },
                 values: new object[,]
                 {
-                    { 1, "Strategy" },
-                    { 2, "Sports" },
-                    { 3, "Races" },
-                    { 4, "Action" },
-                    { 5, "RPG" },
-                    { 6, "Adventure" },
-                    { 7, "Puzzle & Skill" },
-                    { 8, "Misc" }
+                    { 1, "Strategy", null },
+                    { 4, "RPG", null },
+                    { 5, "Sports", null },
+                    { 6, "Races", null },
+                    { 11, "Action", null },
+                    { 15, "Adventure", null },
+                    { 16, "Puzzle & Skill", null }
                 });
 
             migrationBuilder.InsertData(
@@ -155,27 +147,32 @@ namespace GameStore.DAL.Migrations
                 columns: new[] { "PlatformTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("e18dc0f8-8abc-46d7-a01b-12f273c4be63"), "Mobile" },
-                    { new Guid("8dab9097-6e14-414f-8f13-a21f85ce0508"), "Browser" },
-                    { new Guid("6419d2b5-0618-4994-b806-f513e816ba69"), "Desktop" },
-                    { new Guid("726a9430-cd7f-4a04-b0c2-9a9fce1d2170"), "Console" }
+                    { new Guid("804997c8-5b99-4ef5-a0a8-2cf96c2682ca"), "Mobile" },
+                    { new Guid("19e91020-a19c-4861-b75e-5d5c2cb35be6"), "Browser" },
+                    { new Guid("553c846d-e92d-44fd-9030-b13b29667889"), "Desktop" },
+                    { new Guid("cc31f85c-01af-4014-8ae0-65a4bb3468ac"), "Console" }
                 });
 
             migrationBuilder.InsertData(
-                table: "SubGenres",
-                columns: new[] { "SubGenreId", "fk_GenreId", "Name" },
+                table: "Genres",
+                columns: new[] { "GenreId", "Name", "fk_ParentId" },
                 values: new object[,]
                 {
-                    { new Guid("39559fed-4aeb-4ddc-a5a1-6b29d746da15"), 1, "RTS" },
-                    { new Guid("c6286a1e-7e90-4c0f-96f7-b40cab1f284b"), 1, "TBS" },
-                    { new Guid("6afa17d0-8813-4368-b31b-54c1fffed5e4"), 3, "Rally" },
-                    { new Guid("f869bbb9-8b03-4661-b838-d1bbedd0e6be"), 3, "Arcade" },
-                    { new Guid("c4f0c6d2-edfb-4a49-b0af-f1a3a8a7ccaa"), 3, "Formula" },
-                    { new Guid("76cf924c-feda-4284-b927-d661986cf8b2"), 3, "Off-road" },
-                    { new Guid("790b7ca4-2d54-4e02-a073-8cf9753a1d04"), 4, "FPS" },
-                    { new Guid("4faad84a-170e-4cbe-b78d-07d912d017eb"), 4, "TPS" },
-                    { new Guid("11b9888d-cfcf-45f0-ac55-65b5729e69cd"), 4, "Misc" }
+                    { 2, "RTS", 1 },
+                    { 3, "TBS", 1 },
+                    { 7, "Rally", 6 },
+                    { 8, "Arcade", 6 },
+                    { 9, "Formula", 6 },
+                    { 10, "Off-road", 6 },
+                    { 12, "FPS", 11 },
+                    { 13, "TPS", 11 },
+                    { 14, "Misc", 11 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_CommentId1",
+                table: "Comments",
+                column: "CommentId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_fk_GameId",
@@ -199,6 +196,11 @@ namespace GameStore.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Genres_fk_ParentId",
+                table: "Genres",
+                column: "fk_ParentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Genres_Name",
                 table: "Genres",
                 column: "Name",
@@ -209,11 +211,6 @@ namespace GameStore.DAL.Migrations
                 table: "PlatformTypes",
                 column: "Type",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_SubGenres_fk_GenreId",
-                table: "SubGenres",
-                column: "fk_GenreId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -228,16 +225,13 @@ namespace GameStore.DAL.Migrations
                 name: "GamePlatforms");
 
             migrationBuilder.DropTable(
-                name: "SubGenres");
+                name: "Genres");
 
             migrationBuilder.DropTable(
                 name: "Games");
 
             migrationBuilder.DropTable(
                 name: "PlatformTypes");
-
-            migrationBuilder.DropTable(
-                name: "Genres");
         }
     }
 }

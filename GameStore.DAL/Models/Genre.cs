@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Models
 {
@@ -13,8 +14,12 @@ namespace GameStore.DAL.Models
         [Required]
         public string Name { get; set; }
         [Required]
-        public List<Game> Games { get; set; }=new List<Game>();
-        public List<SubGenre> SubGenres { get; set; } = new List<SubGenre>();
+        public List<Game> Games { get; set; }= new List<Game>();
+
+        [Column("fk_ParentId")]
+        public int? ParentGenreId { get; set; }
+        [ForeignKey("ParentGenreId")]
+        public List<Genre> SubGenres { get; set; } = new List<Genre>();
 
     }
 }
