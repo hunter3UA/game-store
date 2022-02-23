@@ -19,5 +19,8 @@ namespace GameStore.DAL.Models
         public List<PlatformType> PlatformTypes { get; set; } = new List<PlatformType>();
         [Required]
         public List<Genre> Genres { get; set; } = new List<Genre>();
+        [Required]
+        public bool IsDeleted { get; set; } = false;
+
     }
 }

@@ -3,6 +3,7 @@ using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -23,6 +24,10 @@ namespace GameStore.DAL.Repositories
         public async Task<List<PlatformType>> GetListAsync()
         {
             return await _dbContext.PlatformTypes.ToListAsync();
+        }
+        public async Task<List<PlatformType>> GetListAsync(Expression<Func<PlatformType,bool>> predicate)
+        {
+            return await  _dbContext.PlatformTypes.Where(predicate).ToListAsync();
         }
 
     }

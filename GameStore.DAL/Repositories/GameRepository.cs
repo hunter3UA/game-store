@@ -24,14 +24,23 @@ namespace GameStore.DAL.Repositories
 
         public async Task<List<Game>> GetListAsync()
         {
-            return await _dbContext.Games.ToListAsync();
+            return await _dbContext.Games.Include(g=>g.Genres).Include(g=>g.PlatformTypes).ToListAsync();
         }
 
         public async Task<Game> GetAsync(Expression<Func<Game, bool>> predicate)
         {
-            return await _dbContext.Games.FirstOrDefaultAsync(predicate);
+            return await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).FirstOrDefaultAsync(predicate);
         }
    
-        
+        public async Task<bool> RemoveAsync(Expression<Func<Game, bool>> predicate)
+        {
+            Game gameToRemove= await _dbContext.Games.FirstOrDefaultAsync(predicate);
+            if (gameToRemove != null)
+            {
+                gameToRemove.IsDeleted = true;
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -1,3 +1,5 @@
+using GameStore.BLL.Services;
+using GameStore.BLL.Services.Abstract;
 using GameStore.DAL;
 using GameStore.DAL.UoW;
 using Microsoft.AspNetCore.Builder;
@@ -13,8 +15,7 @@ namespace GameStore.API
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-         
+            services.AddControllers();        
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1",
@@ -24,9 +25,11 @@ namespace GameStore.API
                         Description = "Swagger",
                         Version = "v1"
                     });
-            });
+            });       
             services.AddSingleton<StoreDbContext>();
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IGameService,GameService>();
+            services.AddSingleton<IGenreService,GenreService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GameStore.DAL.Migrations
 {
-    public partial class Сreating : Migration
+    public partial class Creating : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,8 @@ namespace GameStore.DAL.Migrations
                 {
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -147,10 +148,10 @@ namespace GameStore.DAL.Migrations
                 columns: new[] { "PlatformTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("804997c8-5b99-4ef5-a0a8-2cf96c2682ca"), "Mobile" },
-                    { new Guid("19e91020-a19c-4861-b75e-5d5c2cb35be6"), "Browser" },
-                    { new Guid("553c846d-e92d-44fd-9030-b13b29667889"), "Desktop" },
-                    { new Guid("cc31f85c-01af-4014-8ae0-65a4bb3468ac"), "Console" }
+                    { new Guid("63b451fc-ec0c-4900-ab63-6c2148895da0"), "Mobile" },
+                    { new Guid("e61d0043-d8a5-4f67-9c9d-188fef333cd4"), "Browser" },
+                    { new Guid("789b89f2-b170-4b40-8e86-d08c8fa09923"), "Desktop" },
+                    { new Guid("1e6e6b1a-386d-418b-a1e0-1476edb3592a"), "Console" }
                 });
 
             migrationBuilder.InsertData(

@@ -11,5 +11,6 @@ namespace GameStore.DAL.Repositories.Abstract
         Task<Game> AddAsync(Game gameToAdd);
         Task<Game> GetAsync(Expression<Func<Game, bool>> predicate);
         Task<List<Game>> GetListAsync();
+        Task<bool> RemoveAsync(Expression<Func<Game, bool>> predicate);
     }
 }

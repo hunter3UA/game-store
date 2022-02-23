@@ -10,5 +10,7 @@ namespace GameStore.DAL.Repositories.Abstract
     {
         Task<Genre> GetAsync(Expression<Func<Genre, bool>> predicate);
         Task<List<Genre>> GetListAsync(Expression<Func<Genre, bool>> predicate);
+        Task<List<Genre>> GetListAsync();
+     
     }
 }

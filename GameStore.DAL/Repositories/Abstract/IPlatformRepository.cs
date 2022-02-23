@@ -11,6 +11,7 @@ namespace GameStore.DAL.Repositories.Abstract
     {
         Task<PlatformType> GetAsync(Expression<Func<PlatformType, bool>> predicate);
         Task<List<PlatformType>> GetListAsync();
+        Task<List<PlatformType>> GetListAsync(Expression<Func<PlatformType, bool>> predicate);
 
     }
 }

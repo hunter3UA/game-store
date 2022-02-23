@@ -8,4 +8,8 @@
     <ProjectReference Include="..\GameStore.DAL\GameStore.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+  </ItemGroup>
+
 </Project>

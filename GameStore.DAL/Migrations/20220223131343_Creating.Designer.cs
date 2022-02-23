@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20220222154652_Сreating")]
-    partial class Сreating
+    [Migration("20220223131343_Creating")]
+    partial class Creating
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,6 +94,9 @@ namespace GameStore.DAL.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -243,22 +246,22 @@ namespace GameStore.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            PlatformTypeId = new Guid("804997c8-5b99-4ef5-a0a8-2cf96c2682ca"),
+                            PlatformTypeId = new Guid("63b451fc-ec0c-4900-ab63-6c2148895da0"),
                             Type = "Mobile"
                         },
                         new
                         {
-                            PlatformTypeId = new Guid("19e91020-a19c-4861-b75e-5d5c2cb35be6"),
+                            PlatformTypeId = new Guid("e61d0043-d8a5-4f67-9c9d-188fef333cd4"),
                             Type = "Browser"
                         },
                         new
                         {
-                            PlatformTypeId = new Guid("553c846d-e92d-44fd-9030-b13b29667889"),
+                            PlatformTypeId = new Guid("789b89f2-b170-4b40-8e86-d08c8fa09923"),
                             Type = "Desktop"
                         },
                         new
                         {
-                            PlatformTypeId = new Guid("cc31f85c-01af-4014-8ae0-65a4bb3468ac"),
+                            PlatformTypeId = new Guid("1e6e6b1a-386d-418b-a1e0-1476edb3592a"),
                             Type = "Console"
                         });
                 });
