@@ -25,11 +25,11 @@ namespace GameStore.DAL.Repositories
         }
         public async Task<Comment> GetAsync(Expression<Func<Comment, bool>> predicate)
         {
-            return await _dbContext.Comments.FirstOrDefaultAsync(predicate);
+            return await _dbContext.Comments.Include(c=>c.Answers).FirstOrDefaultAsync(predicate);
         }
         public async Task<List<Comment>> GetListAsync(Expression<Func<Comment, bool>> predicate)
         {
-            return await _dbContext.Comments.Where(predicate).ToListAsync();
+            return await _dbContext.Comments.Include(c=>c.Answers).Include(c=>c.Game).Where(predicate).ToListAsync();
         }
 
         public async Task<bool> RemoveAsync(Expression<Func<Comment, bool>> predicate)

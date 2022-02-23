@@ -15,5 +15,7 @@ namespace GameStore.BLL.Services.Abstract
         Task<GameDTO> GetAsync(Expression<Func<Game, bool>> predicate);
         Task<bool> RemoveAsync(Expression<Func<Game, bool>> predicate);
         Task<GameDTO> UpdateAsync(UpdateGameDTO updateGameDTO);
+
+      
     }
 }

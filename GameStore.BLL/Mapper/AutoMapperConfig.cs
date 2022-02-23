@@ -18,6 +18,8 @@ namespace GameStore.BLL.Mapper
                     cfg.CreateMap<AddGameDTO, Game>();
                     cfg.CreateMap<Game, AddGameDTO>();
                     cfg.CreateMap<PlatformType, PlatformDTO>();
+                    cfg.CreateMap<AddCommentDTO,Comment>();
+                    cfg.CreateMap<Comment, CommentDTO>();
                     cfg.CreateMap<Genre, GenreDTO>();
                 });
             return config;

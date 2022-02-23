@@ -4,23 +4,29 @@ using GameStore.BLL.Mapper;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Models;
 using GameStore.DAL.UoW;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace GameStore.BLL.Services
 {
     public class GameService : IGameService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IHostingEnvironment _env;
         private IMapper _mapper;
-        public GameService(IUnitOfWork unitOfWork)
+        public GameService(IUnitOfWork unitOfWork, IHostingEnvironment env)
         {
             _unitOfWork = unitOfWork;
             _mapper = AutoMapperConfig.Configure().CreateMapper();
+            _env = env;
         }
 
         public async Task<GameDTO> AddAsync(AddGameDTO gameToAddDTO)
@@ -83,5 +89,8 @@ namespace GameStore.BLL.Services
                 return new GameDTO();
             }
         }
+    
+        
+        
     }
 }

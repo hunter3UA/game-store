@@ -7,12 +7,20 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.OpenApi.Models;
 
 namespace GameStore.API
 {
     public class Startup
     {
+
+        private IHostEnvironment env;
+        public Startup(IHostEnvironment env)
+        {
+            this.env = env;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();        
@@ -30,6 +38,8 @@ namespace GameStore.API
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IGameService,GameService>();
             services.AddSingleton<IGenreService,GenreService>();
+            services.AddSingleton<ICommentService,CommentService>();
+            services.AddSingleton<IHostEnvironment>(env);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

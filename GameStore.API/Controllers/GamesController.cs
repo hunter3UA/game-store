@@ -4,6 +4,7 @@ using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace GameStore.API.Controllers
@@ -58,5 +59,7 @@ namespace GameStore.API.Controllers
         {
             return await _gameService.RemoveAsync(g=>g.GameId == key);
         }
+
+       
     }
 }

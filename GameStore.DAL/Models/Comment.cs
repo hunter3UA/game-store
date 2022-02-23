@@ -13,11 +13,9 @@ namespace GameStore.DAL.Models
         public string Name { get; set; }
         [Required]
         public string Body { get; set; }
-
-
         [Column("fk_ParentId")]
         public Guid? ParentCommentId { get; set; }
-
+        [ForeignKey("ParentCommentId")]
         public List<Comment> Answers { get; set; }=new List<Comment>();
 
         [Required,Column("fk_GameId")]
