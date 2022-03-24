@@ -8,9 +8,9 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface ICommentService
     {
-        Task<CommentDTO> AddAsync(AddCommentDTO addCommentDTO);
+        Task<CommentDTO> AddCommentAsync(AddCommentDTO addCommentDTO);
+
         Task<CommentDTO> GetAsync(Expression<Func<Comment, bool>> predicate);
-        
-    
+
     }
 }

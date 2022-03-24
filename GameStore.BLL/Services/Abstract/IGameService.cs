@@ -2,6 +2,7 @@
 using GameStore.DAL.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace GameStore.BLL.Services.Abstract
         Task<bool> RemoveAsync(Expression<Func<Game, bool>> predicate);
         Task<GameDTO> UpdateAsync(UpdateGameDTO updateGameDTO);
 
-      
+        Task<byte[]> DownloadFile(int gameKey);
+
+
     }
 }

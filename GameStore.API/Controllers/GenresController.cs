@@ -23,11 +23,5 @@ namespace GameStore.API.Controllers
         {
             return await _genreService.GetListAsync();
         }
-
-
-
-
-
-
     }
 }

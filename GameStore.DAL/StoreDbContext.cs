@@ -59,10 +59,10 @@ namespace GameStore.DAL
                 new Genre { GenreId = 10, Name = "Off-road", ParentGenreId = 6 },
                 new Genre { GenreId = 11, Name = "Action" },
                 new Genre { GenreId = 12, Name = "FPS", ParentGenreId = 11 },
-                new Genre { GenreId = 13, Name = "TPS", ParentGenreId = 11 },
-                new Genre { GenreId = 14, Name = "Misc", ParentGenreId = 11 },
-                new Genre { GenreId = 15, Name = "Adventure" },
-                new Genre { GenreId = 16, Name = "Puzzle & Skill" }
+                new Genre { GenreId = 13, Name = "TPS", ParentGenreId = 11 },            
+                new Genre { GenreId = 14, Name = "Adventure" },
+                new Genre { GenreId = 15, Name = "Puzzle & Skill" },
+                new Genre { GenreId = 16, Name = "Misc"}
             );
         }
         public void PlatformTypeConfigure(EntityTypeBuilder<PlatformType> builder)

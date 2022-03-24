@@ -1,6 +1,8 @@
 using GameStore.BLL.Services;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL;
+using GameStore.DAL.Repositories;
+using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.UoW;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,17 +10,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.Internal;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace GameStore.API
 {
     public class Startup
     {
-
-        private IHostEnvironment env;
+        
+        private IHostEnvironment _env;
+      
         public Startup(IHostEnvironment env)
         {
-            this.env = env;
+            _env = env;
+           
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -34,16 +39,24 @@ namespace GameStore.API
                         Version = "v1"
                     });
             });       
-            services.AddSingleton<StoreDbContext>();
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IGameService,GameService>();
-            services.AddSingleton<IGenreService,GenreService>();
-            services.AddSingleton<ICommentService,CommentService>();
-            services.AddSingleton<IHostEnvironment>(env);
+            services.AddScoped<StoreDbContext>(); 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IGenreRepository, GenreRepository>();
+            services.AddScoped<IGameRepository,GameRepository>();
+            services.AddScoped<IPlatformRepository,PlatformRepository>();
+            services.AddScoped<ICommentRepository,CommentRepository>();           
+            services.AddScoped<IGameService,GameService>();
+            services.AddScoped<IGenreService,GenreService>();
+            services.AddScoped<ICommentService,CommentService>();
+            services.AddSingleton<IHostEnvironment>(_env);
+          
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,ILoggerFactory loggerFactory,ILogger<Startup> logger)
         {
+
+            loggerFactory.AddFile($"{env.ContentRootPath}\\Logs\\Logs.txt");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -58,6 +71,7 @@ namespace GameStore.API
             {
                 endpoints.MapControllers();
             });
+           
 
 
         }

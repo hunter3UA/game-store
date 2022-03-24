@@ -16,12 +16,12 @@ namespace GameStore.DAL.Models
         [Column("fk_ParentId")]
         public Guid? ParentCommentId { get; set; }
         [ForeignKey("ParentCommentId")]
-        public List<Comment> Answers { get; set; }=new List<Comment>();
+        public List<Comment> Answers { get; set; } = new List<Comment>();
 
-        [Required,Column("fk_GameId")]
+        [Required, Column("fk_GameId")]
         public Guid GameId { get; set; }
 
-        [Required,ForeignKey("GameId")]
+        [Required, ForeignKey("GameId")]
         public Game Game { get; set; }
 
     }

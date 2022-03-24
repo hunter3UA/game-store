@@ -61,15 +61,14 @@ namespace GameStore.DAL.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Body = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     fk_ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    fk_GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CommentId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    fk_GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.CommentId);
                     table.ForeignKey(
-                        name: "FK_Comments_Comments_CommentId1",
-                        column: x => x.CommentId1,
+                        name: "FK_Comments_Comments_fk_ParentId",
+                        column: x => x.fk_ParentId,
                         principalTable: "Comments",
                         principalColumn: "CommentId",
                         onDelete: ReferentialAction.Restrict);
@@ -139,8 +138,9 @@ namespace GameStore.DAL.Migrations
                     { 5, "Sports", null },
                     { 6, "Races", null },
                     { 11, "Action", null },
-                    { 15, "Adventure", null },
-                    { 16, "Puzzle & Skill", null }
+                    { 14, "Adventure", null },
+                    { 15, "Puzzle & Skill", null },
+                    { 16, "Misc", null }
                 });
 
             migrationBuilder.InsertData(
@@ -148,10 +148,10 @@ namespace GameStore.DAL.Migrations
                 columns: new[] { "PlatformTypeId", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("63b451fc-ec0c-4900-ab63-6c2148895da0"), "Mobile" },
-                    { new Guid("e61d0043-d8a5-4f67-9c9d-188fef333cd4"), "Browser" },
-                    { new Guid("789b89f2-b170-4b40-8e86-d08c8fa09923"), "Desktop" },
-                    { new Guid("1e6e6b1a-386d-418b-a1e0-1476edb3592a"), "Console" }
+                    { new Guid("6296ed25-ddb8-43fa-8e52-c81e73eb4d3f"), "Mobile" },
+                    { new Guid("d3badeee-0a8c-4069-801a-b1c1020bc00b"), "Browser" },
+                    { new Guid("10e48462-d5c0-4686-8fdc-94f39beed2cb"), "Desktop" },
+                    { new Guid("27754cdf-3662-4437-a9e5-daa31a700b98"), "Console" }
                 });
 
             migrationBuilder.InsertData(
@@ -166,19 +166,18 @@ namespace GameStore.DAL.Migrations
                     { 9, "Formula", 6 },
                     { 10, "Off-road", 6 },
                     { 12, "FPS", 11 },
-                    { 13, "TPS", 11 },
-                    { 14, "Misc", 11 }
+                    { 13, "TPS", 11 }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comments_CommentId1",
-                table: "Comments",
-                column: "CommentId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_fk_GameId",
                 table: "Comments",
                 column: "fk_GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_fk_ParentId",
+                table: "Comments",
+                column: "fk_ParentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameGenres_GenresGenreId",

@@ -206,18 +206,17 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             GenreId = 14,
-                            Name = "Misc",
-                            ParentGenreId = 11
-                        },
-                        new
-                        {
-                            GenreId = 15,
                             Name = "Adventure"
                         },
                         new
                         {
-                            GenreId = 16,
+                            GenreId = 15,
                             Name = "Puzzle & Skill"
+                        },
+                        new
+                        {
+                            GenreId = 16,
+                            Name = "Misc"
                         });
                 });
 
@@ -241,22 +240,22 @@ namespace GameStore.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            PlatformTypeId = new Guid("b5fa0d51-b004-47c8-804d-5f17e6b16c20"),
+                            PlatformTypeId = new Guid("6296ed25-ddb8-43fa-8e52-c81e73eb4d3f"),
                             Type = "Mobile"
                         },
                         new
                         {
-                            PlatformTypeId = new Guid("06ce1027-b648-4000-a314-0b9efa0147ab"),
+                            PlatformTypeId = new Guid("d3badeee-0a8c-4069-801a-b1c1020bc00b"),
                             Type = "Browser"
                         },
                         new
                         {
-                            PlatformTypeId = new Guid("50f1f4f3-9c86-4b35-8187-b87721505a94"),
+                            PlatformTypeId = new Guid("10e48462-d5c0-4686-8fdc-94f39beed2cb"),
                             Type = "Desktop"
                         },
                         new
                         {
-                            PlatformTypeId = new Guid("58c7ec73-7279-450c-bef7-9feca0e6e67d"),
+                            PlatformTypeId = new Guid("27754cdf-3662-4437-a9e5-daa31a700b98"),
                             Type = "Console"
                         });
                 });
