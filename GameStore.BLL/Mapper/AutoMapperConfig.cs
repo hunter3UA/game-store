@@ -1,28 +1,26 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO;
-using GameStore.DAL.Models;
+using GameStore.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace GameStore.BLL.Mapper
 {
-    public class AutoMapperConfig
+    public class AutoMapperConfig:Profile
     {
-        public static MapperConfiguration Configure()
+
+        public AutoMapperConfig()
         {
-            MapperConfiguration config = new MapperConfiguration(
-                cfg =>
-                {
-                    cfg.CreateMap<Game, GameDTO>();
-                    cfg.CreateMap<AddGameDTO, Game>();
-                    cfg.CreateMap<Game, AddGameDTO>();
-                    cfg.CreateMap<PlatformType, PlatformDTO>();
-                    cfg.CreateMap<AddCommentDTO,Comment>();
-                    cfg.CreateMap<Comment, CommentDTO>();
-                    cfg.CreateMap<Genre, GenreDTO>();
-                });
-            return config;
+            CreateMap<Game, GameDTO>();
+            CreateMap<AddGameDTO, Game>();
+            CreateMap<Game, AddGameDTO>();
+            CreateMap<PlatformType, PlatformDTO>();
+            CreateMap<AddCommentDTO, Comment>();
+            CreateMap<Comment, CommentDTO>();
+            CreateMap<Genre, GenreDTO>();
         }
+
+        
     }
 }

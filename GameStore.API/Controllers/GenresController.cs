@@ -19,9 +19,10 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/Genres/GetAll")]
-        public async Task<List<GenreDTO>> GetAll()
+        public async Task<List<GenreDTO>> GetAllGenresAsync()
         {
-            return await _genreService.GetListAsync();
+            var allGenres = await _genreService.GetListOfGenresAsync();
+            return allGenres;
         }
     }
 }

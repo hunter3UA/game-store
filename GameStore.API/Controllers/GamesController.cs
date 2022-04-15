@@ -1,4 +1,5 @@
-﻿using GameStore.BLL.DTO;
+﻿using GameStore.API.Static;
+using GameStore.BLL.DTO;
 using GameStore.BLL.Services;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace GameStore.API.Controllers
     public class GamesController : ControllerBase
     {
 
-        private IGameService _gameService;
+        private readonly IGameService _gameService;
 
         public GamesController(IGameService gameService)
         {
@@ -22,48 +23,54 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/Games/New")]
-        public async Task<GameDTO> Post([FromBody] AddGameDTO addGameDTO)
+        [Route("/games/new")]
+        public async Task<GameDTO> AddGameAsync([FromBody] AddGameDTO addGameDTO)
         {
-            return await _gameService.AddAsync(addGameDTO);
+            var addedGame = await _gameService.AddGameAsync(addGameDTO);
+            return addedGame;
         }
 
      
         [HttpGet]
-        [Route("/Games/Get")]
-        public async Task<List<GameDTO>> Get()
+        [Route("/games")]
+        public async Task<List<GameDTO>> GetListOfGamesAsync()
         {
-            return await _gameService.GetLisAsync();
+            var listOfGames = await _gameService.GetListOfGamesAsync();
+            return listOfGames;
         }
       
         [HttpGet]
-        [Route("/Game/{key}")]
-        public async Task<GameDTO> GetByKey(Guid key)
+        [Route("/game/{key}")]
+        public async Task<GameDTO> GetGameAsync([FromRoute]int key)
         {          
-            return await _gameService.GetAsync(g => g.GameId == key);
+            var gameByKey = await _gameService.GetGameAsync(g => g.GameId == key);
+            return gameByKey;
         }
 
        
         [HttpPut]
-        [Route("/Games/Update")]
-        public async Task<GameDTO> Update([FromBody] UpdateGameDTO gameToUpdate)
+        [Route("/games/update")]
+        public async Task<GameDTO> UpdateGameAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
-            return await _gameService.UpdateAsync(gameToUpdate);
+            var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
+            return updatedGame;
         }
         
        
         [HttpPut]
-        [Route("/Games/Remove/{key}")]
-        public async Task<bool> Remove(Guid key)
+        [Route("/games/remove/{key}")]
+        public async Task<bool> RemoveGameAsync([FromRoute] int key)
         {
-            return await _gameService.RemoveAsync(g=>g.GameId == key);
+            bool isRemovedGame = await _gameService.RemoveGameAsync(key);
+            return isRemovedGame;
         }
 
         [HttpGet]
-        [Route("/Games/Download/{gameKey}")]
-        public async Task<IActionResult> Download(int gameKey)
+        [Route("/game/{gameKey}/download")]
+        public async Task<IActionResult> DownloadGameAsync([FromRoute]int gameKey)
         {
-            return File(await _gameService.DownloadFile(gameKey),"text/plain","Game.txt");
+            var data = await _gameService.DownloadFileAsync(gameKey);
+            return File(data,Constants.TEXT_PLAIN_CONTENT_TYPE,Constants.GAME_FILE_NAME);
         }
 
        

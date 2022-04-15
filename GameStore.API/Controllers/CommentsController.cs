@@ -20,17 +20,19 @@ namespace GameStore.API.Controllers
 
        
         [HttpPost]
-        [Route("/Comments/AddComment")]
-        public async Task<CommentDTO> AddComment([FromBody]AddCommentDTO addCommentDTO)
+        [Route("/comments/addComment")]
+        public async Task<CommentDTO> AddCommentAsync([FromBody]AddCommentDTO addCommentDTO)
         {
-            return await _commentService.AddCommentAsync(addCommentDTO);
+            var addedComment = await _commentService.AddCommentAsync(addCommentDTO);
+            return addedComment;
         }
 
         [HttpGet]
-        [Route("/Comments/{gameKey}")]
-        public async Task<CommentDTO> Get(Guid gameKey)
+        [Route("/game/{gameKey}/comments")]
+        public async Task<CommentDTO> GetCommentAsync([FromRoute]int gameKey)
         {
-            return await _commentService.GetAsync(c=>c.GameId==gameKey);
+            var commentByGameKey = await _commentService.GetCommentAsync(c=>c.GameId==gameKey);
+            return commentByGameKey;
         }
         
 

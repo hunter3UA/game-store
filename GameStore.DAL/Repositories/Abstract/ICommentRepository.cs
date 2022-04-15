@@ -1,16 +1,18 @@
-﻿using GameStore.DAL.Models;
+﻿using GameStore.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Abstract
 {
     public interface ICommentRepository
     {
-        Task<Comment> AddAsync(Comment commentToAdd);
-        Task<Comment> GetAsync(Expression<Func<Comment, bool>> predicate);
-        Task<List<Comment>> GetListAsync(Expression<Func<Comment, bool>> predicate);
-        Task<bool> RemoveAsync(Expression<Func<Comment, bool>> predicate);
+        Task<Comment> AddCommentAsync(Comment commentToAdd);
+        Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> predicate);
+        Task<List<Comment>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate);
+        Task<bool> RemoveCommentAsync(Expression<Func<Comment, bool>> predicate);
+
     }
 }

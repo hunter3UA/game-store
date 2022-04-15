@@ -1,25 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.DAL.Models
+namespace GameStore.DAL.Entities
 {
     [Index("Name", IsUnique = true)]
     public class Game
     {
+       
         [Key]
-        public Guid GameId { get; set; }
-        [Required]
+        public int GameId { get; set; }
+        [Required, MaxLength(150)]
         public string Name { get; set; }
-        [Required]
+        [Required,MaxLength(5000)]
         public string Description { get; set; }
-        public List<Comment> Comments { get; set; } = new List<Comment>();
+        public IEnumerable<Comment> Comments { get; set; } 
         [Required]
-        public List<PlatformType> PlatformTypes { get; set; } = new List<PlatformType>();
+        public IEnumerable<PlatformType> PlatformTypes { get; set; } 
         [Required]
-        public List<Genre> Genres { get; set; } = new List<Genre>();
-        [Required]
+        public IEnumerable<Genre> Genres { get; set; }
+        [Required,DefaultValue(false)]
         public bool IsDeleted { get; set; } = false;
 
     }

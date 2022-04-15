@@ -1,5 +1,5 @@
 ﻿using GameStore.BLL.DTO;
-using GameStore.DAL.Models;
+using GameStore.DAL.Entities;
 using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -10,7 +10,7 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<CommentDTO> AddCommentAsync(AddCommentDTO addCommentDTO);
 
-        Task<CommentDTO> GetAsync(Expression<Func<Comment, bool>> predicate);
+        Task<CommentDTO> GetCommentAsync(Expression<Func<Comment, bool>> predicate);
 
     }
 }

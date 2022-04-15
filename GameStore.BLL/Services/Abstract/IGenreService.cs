@@ -8,8 +8,6 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface IGenreService
     {
-        Task<List<GenreDTO>> GetListAsync();
-
-
+        Task<List<GenreDTO>> GetListOfGenresAsync();
     }
 }

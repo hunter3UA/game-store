@@ -1,5 +1,5 @@
 ﻿using GameStore.BLL.DTO;
-using GameStore.DAL.Models;
+using GameStore.DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,13 +11,13 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface IGameService
     {
-        Task<GameDTO> AddAsync(AddGameDTO gameToAddDTO);
-        Task<List<GameDTO>> GetLisAsync();
-        Task<GameDTO> GetAsync(Expression<Func<Game, bool>> predicate);
-        Task<bool> RemoveAsync(Expression<Func<Game, bool>> predicate);
-        Task<GameDTO> UpdateAsync(UpdateGameDTO updateGameDTO);
+        Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO);
+        Task<List<GameDTO>> GetListOfGamesAsync();
+        Task<GameDTO> GetGameAsync(Expression<Func<Game, bool>> predicate);
+        Task<bool> RemoveGameAsync(int gameKey);
+        Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO);
 
-        Task<byte[]> DownloadFile(int gameKey);
+        Task<byte[]> DownloadFileAsync(int gameKey);
 
 
     }

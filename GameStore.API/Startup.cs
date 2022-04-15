@@ -1,17 +1,21 @@
-using GameStore.BLL.Services;
+using AutoMapper;
+using GameStore.API.Middleware;
+using GameStore.API.Static;
+using GameStore.BLL.Mapper;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL;
-using GameStore.DAL.Repositories;
-using GameStore.DAL.Repositories.Abstract;
-using GameStore.DAL.UoW;
+using GameStore.BLL.Services.Implementation;
+using GameStore.DAL.Context;
+using GameStore.DAL.UoW.Abstract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 
 namespace GameStore.API
 {
@@ -38,42 +42,42 @@ namespace GameStore.API
                         Description = "Swagger",
                         Version = "v1"
                     });
-            });       
-            services.AddScoped<StoreDbContext>(); 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IGenreRepository, GenreRepository>();
-            services.AddScoped<IGameRepository,GameRepository>();
-            services.AddScoped<IPlatformRepository,PlatformRepository>();
-            services.AddScoped<ICommentRepository,CommentRepository>();           
-            services.AddScoped<IGameService,GameService>();
-            services.AddScoped<IGenreService,GenreService>();
-            services.AddScoped<ICommentService,CommentService>();
+            });
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new AutoMapperConfig());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            services.AddSingleton<StoreDbContext>();
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();       
+            services.AddSingleton<IGameService,GameService>();
+            services.AddSingleton<IGenreService,GenreService>();
+            services.AddSingleton<ICommentService,CommentService>();
             services.AddSingleton<IHostEnvironment>(_env);
           
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,ILoggerFactory loggerFactory,ILogger<Startup> logger)
         {
-
-            loggerFactory.AddFile($"{env.ContentRootPath}\\Logs\\Logs.txt");
-            
+            loggerFactory.AddFile(Path.Combine(env.ContentRootPath,Constants.LOG_FILE_PATH));         
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger GS API");
+                    options.SwaggerEndpoint(Constants.SWAGGER_URL, Constants.SWAGGER_NAME);
                 });
             }
-            app.UseRouting();
+            app.UseRouting(); 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
            
-
-
         }
     }
 }

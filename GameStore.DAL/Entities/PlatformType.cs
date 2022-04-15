@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.DAL.Models
+namespace GameStore.DAL.Entities
 {
     [Index("Type", IsUnique = true)]
     public class PlatformType
     {
         [Key]
-        public Guid PlatformTypeId { get; set; }
-        [Required]
+        public int PlatformTypeId { get; set; }
+
+        [Required, MaxLength(50)]
         public string Type { get; set; }
         [Required]
-        public List<Game> Games { get; set; } = new List<Game>();
+        public IEnumerable<Game> Games { get; set; }
     }
 }

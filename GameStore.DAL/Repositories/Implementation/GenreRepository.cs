@@ -1,4 +1,5 @@
-﻿using GameStore.DAL.Models;
+﻿using GameStore.DAL.Context;
+using GameStore.DAL.Entities;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameStore.DAL.Repositories
+namespace GameStore.DAL.Repositories.Implementation
 {
     public class GenreRepository:IGenreRepository
     {
@@ -19,23 +20,25 @@ namespace GameStore.DAL.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Genre> AddAsync(Genre newGenre)
+        public async Task<Genre> AddGenreAsync(Genre newGenre)
         {
-            await _dbContext.Genres.AddAsync(newGenre);
-            return newGenre;
+            var addedGenre = await _dbContext.Genres.AddAsync(newGenre);
+            return addedGenre.Entity;
+            
         }
-        public async Task<List<Genre>> GetListAsync(Expression<Func<Genre, bool>> predicate)
+        public async Task<List<Genre>> GetListOfGenresAsync(Expression<Func<Genre, bool>> predicate)
         {
             return await _dbContext.Genres.Where(predicate).ToListAsync();
         }
-       
-        public async Task<List<Genre>> GetListAsync()
+
+        public async Task<List<Genre>> GetListOfGenresAsync()
         {
             return await _dbContext.Genres.ToListAsync();
         }
-        public async Task<Genre> GetAsync(Expression<Func<Genre, bool>> predicate)
+        public async Task<Genre> GetGenreAsync(Expression<Func<Genre, bool>> predicate)
         {
             return await _dbContext.Genres.FirstOrDefaultAsync(predicate);
         }
+
     }
 }

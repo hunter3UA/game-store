@@ -1,12 +1,15 @@
-﻿using GameStore.DAL.Models;
+﻿using GameStore.DAL.Context;
+using GameStore.DAL.Entities;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace GameStore.DAL.Repositories
+namespace GameStore.DAL.Repositories.Implementation
 {
     public class GameRepository:IGameRepository
     {
@@ -16,25 +19,25 @@ namespace GameStore.DAL.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<Game> AddAsync(Game gameToAdd)
+        public async Task<Game> AddGameAsync(Game gameToAdd)
         {
-            await _dbContext.Games.AddAsync(gameToAdd);
-            return gameToAdd;
+            var addedGame = await _dbContext.Games.AddAsync(gameToAdd);
+            return addedGame.Entity;
         }
 
-        public async Task<List<Game>> GetListAsync()
+        public async Task<List<Game>> GetListOfGamesAsync()
         {
-            return await _dbContext.Games.Include(g=>g.Genres).Include(g=>g.PlatformTypes).ToListAsync();
+            return await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).ToListAsync();
         }
 
-        public async Task<Game> GetAsync(Expression<Func<Game, bool>> predicate)
+        public async Task<Game> GetGameAsync(Expression<Func<Game, bool>> predicate)
         {
             return await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).FirstOrDefaultAsync(predicate);
         }
-   
-        public async Task<bool> RemoveAsync(Expression<Func<Game, bool>> predicate)
+
+        public async Task<bool> RemoveGameAsync(int key)
         {
-            Game gameToRemove= await _dbContext.Games.FirstOrDefaultAsync(predicate);
+            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g=>g.GameId==key);
             if (gameToRemove != null)
             {
                 gameToRemove.IsDeleted = true;
@@ -42,5 +45,6 @@ namespace GameStore.DAL.Repositories
             }
             return false;
         }
+
     }
 }
