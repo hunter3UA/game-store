@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.DAL.Entities
@@ -10,10 +11,19 @@ namespace GameStore.DAL.Entities
     {
         [Key]
         public int PlatformTypeId { get; set; }
-
         [Required, MaxLength(50)]
         public string Type { get; set; }
         [Required]
-        public IEnumerable<Game> Games { get; set; }
+        public List<Game> Games { get; set; }
+
+        [Required, DefaultValue(false)]
+        public bool IsDeleted { get; set; }
+        public PlatformType()
+        {
+            Games = new List<Game>();
+        }
+
+
+
     }
 }

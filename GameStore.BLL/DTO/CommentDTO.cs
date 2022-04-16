@@ -6,7 +6,7 @@ namespace GameStore.BLL.DTO
 {
     public class CommentDTO
     {
-        public Guid CommentId { get; set; }
+        public int CommentId { get; set; }
    
         public string Name { get; set; }
   

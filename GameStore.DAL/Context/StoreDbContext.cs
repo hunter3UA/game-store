@@ -1,10 +1,8 @@
 ﻿using GameStore.DAL.Entities;
+using GameStore.DAL.Static;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GameStore.DAL.Context
 {
@@ -16,18 +14,56 @@ namespace GameStore.DAL.Context
 
         public DbSet<PlatformType> PlatformTypes { get; set; }
 
+        public DbSet<GenresInGames> GenresInGames { get; set; }
+        public DbSet<PlatformsInGames> PlatformsInGames { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             IConfiguration dbConfig = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false, true).Build();
+                .AddJsonFile(Constants.JSON_CONFIG_FILE, false, true).Build();
             optionsBuilder.UseSqlServer(
-                dbConfig.GetConnectionString("GameStoreDb"));
+                dbConfig.GetConnectionString(Constants.DB_NAME));
         }
-        public void Initialize(ModelBuilder modelBuilder)
+        
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var genres = new[]
-            {
+            modelBuilder.Entity<Game>(GamesConfigure);
+            modelBuilder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
+            modelBuilder.Entity<Genre>().HasQueryFilter(g => !g.IsDeleted);
+            modelBuilder.Entity<PlatformType>().HasQueryFilter(p => !p.IsDeleted);
+            Initialize(modelBuilder);
+        }
+        private void GamesConfigure(EntityTypeBuilder<Game> builder)
+        {
+            builder.HasQueryFilter(g => !g.IsDeleted);
+            builder
+              .HasMany(g => g.PlatformTypes)
+              .WithMany(p => p.Games)
+              .UsingEntity<PlatformsInGames>(
+                  pg => pg.HasOne(prop => prop.PlatformType).WithMany().HasForeignKey(prop => prop.PlatformTypeId),
+                  pg => pg.HasOne(prop => prop.Game).WithMany().HasForeignKey(prop => prop.GameId),
+                  pg =>
+                  {
+                      pg.HasKey(pg => new { pg.PlatformTypeId, pg.GameId });
+                  }
+              );
+            builder
+                .HasMany(gm => gm.Genres)
+                .WithMany(gn => gn.Games)
+                .UsingEntity<GenresInGames>(
+                    gg => gg.HasOne(prop => prop.Genre).WithMany().HasForeignKey(prop => prop.GenreId),
+                    gg => gg.HasOne(prop => prop.Game).WithMany().HasForeignKey(prop => prop.GameId),
+                    gg =>
+                    {
+                        gg.HasKey(gg => new { gg.GenreId, gg.GameId });
+                    }
+              );
+
+        }
+        private void Initialize(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Genre>().HasData(
                 new Genre { GenreId = 1, Name = "Strategy" },
                 new Genre { GenreId = 2, Name = "RTS", ParentGenreId = 1 },
                 new Genre { GenreId = 3, Name = "TBS", ParentGenreId = 1 },
@@ -44,44 +80,34 @@ namespace GameStore.DAL.Context
                 new Genre { GenreId = 14, Name = "Adventure" },
                 new Genre { GenreId = 15, Name = "Puzzle & Skill" },
                 new Genre { GenreId = 16, Name = "Misc" }
-            };
-            var platforms = new[]
-            {
-                    new PlatformType { PlatformTypeId = 1, Type = "Mobile" },
-                    new PlatformType { PlatformTypeId = 2, Type = "Browser" },
-                    new PlatformType { PlatformTypeId = 3, Type = "Desktop" },
-                    new PlatformType { PlatformTypeId = 4, Type = "Console" }
-
-            };  
-          
-            modelBuilder.Entity<Genre>().HasData(
-                genres
-                );
+            );
             modelBuilder.Entity<PlatformType>().HasData(
-                 platforms
+                new PlatformType { PlatformTypeId = 1, Type = "Mobile" },
+                new PlatformType { PlatformTypeId = 2, Type = "Browser" },
+                new PlatformType { PlatformTypeId = 3, Type = "Desktop" },
+                new PlatformType { PlatformTypeId = 4, Type = "Console" }
+            );
+            modelBuilder.Entity<Game>().HasData(
+                new Game { GameId = 1, Name = "Stalker2", Description = "New part of Stalker" },
+                new Game { GameId = 2, Name = "Dying ligth", Description = "Best part" },
+                new Game { GameId = 3, Name = "Left 4 Dead", Description = "Action " }
                 );
+            modelBuilder.Entity<GenresInGames>().HasData(
+                new GenresInGames { GameId = 1, GenreId = 1 },
+                new GenresInGames { GameId = 2, GenreId = 3 },
+                new GenresInGames { GameId = 3, GenreId = 5 }
+                );
+            modelBuilder.Entity<PlatformsInGames>().HasData(
+                new PlatformsInGames { GameId = 1, PlatformTypeId = 1 },
+                new PlatformsInGames { GameId = 1, PlatformTypeId = 2 },
+                new PlatformsInGames { GameId = 2, PlatformTypeId = 2 },
+                new PlatformsInGames { GameId = 3, PlatformTypeId = 4 }
+                );
+            modelBuilder.Entity<Comment>().HasData(
+                new Comment { CommentId = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
+                new Comment { CommentId = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 }
+                );
+
         }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Game>(GameConfigure);
-            modelBuilder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
-            Initialize(modelBuilder);
-        }
-
-
-        public void GameConfigure(EntityTypeBuilder<Game> builder)
-        {
-            builder
-                .HasMany(g => g.PlatformTypes)
-                .WithMany(p => p.Games)
-                .UsingEntity(gp => gp.ToTable("GamePlatforms"));
-            builder
-                .HasMany(gn => gn.Genres)
-                .WithMany(gm => gm.Games)
-                .UsingEntity(gg => gg.ToTable("GameGenres"));
-            builder.HasQueryFilter(g => !g.IsDeleted);
-        }
-
     }
 }

@@ -9,9 +9,11 @@ namespace GameStore.DAL.Repositories.Abstract
 {
     public interface IGenreRepository
     {
+        Task<Genre> AddGenreAsync(Genre genreToAdd);
         Task<Genre> GetGenreAsync(Expression<Func<Genre, bool>> predicate);
         Task<List<Genre>> GetListOfGenresAsync(Expression<Func<Genre, bool>> predicate);
         Task<List<Genre>> GetListOfGenresAsync();
+        Task<bool> RemoveGenreAsync(int key);
 
     }
 }

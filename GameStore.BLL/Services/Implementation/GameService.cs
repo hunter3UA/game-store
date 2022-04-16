@@ -52,6 +52,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<GameDTO>> GetListOfGamesAsync()
         {
+         
             List<Game> games = await _unitOfWork.GameRepository.GetListOfGamesAsync();
             return _mapper.Map<List<GameDTO>>(games);
 
@@ -66,6 +67,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             bool isRemovedGame = false;
             isRemovedGame = await _unitOfWork.GameRepository.RemoveGameAsync(key);
+            await _unitOfWork.SaveAsync();  
             if (isRemovedGame)
                 _logger.LogInformation("The game has been deleted");
             else

@@ -16,13 +16,20 @@ namespace GameStore.DAL.Entities
         public string Name { get; set; }
         [Required,MaxLength(5000)]
         public string Description { get; set; }
-        public IEnumerable<Comment> Comments { get; set; } 
+        public List<Comment> Comments { get; set; } 
         [Required]
-        public IEnumerable<PlatformType> PlatformTypes { get; set; } 
+        public List<PlatformType> PlatformTypes { get; set; } 
         [Required]
-        public IEnumerable<Genre> Genres { get; set; }
+        public List<Genre> Genres { get; set; }
         [Required,DefaultValue(false)]
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
+
+        public Game()
+        {
+            Comments = new List<Comment>();
+            PlatformTypes = new List<PlatformType>();
+            Genres = new List<Genre>();
+        }
 
     }
 }

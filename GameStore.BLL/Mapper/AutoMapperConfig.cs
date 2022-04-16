@@ -19,6 +19,7 @@ namespace GameStore.BLL.Mapper
             CreateMap<AddCommentDTO, Comment>();
             CreateMap<Comment, CommentDTO>();
             CreateMap<Genre, GenreDTO>();
+            CreateMap<UpdateGameDTO, Game>();
         }
 
         

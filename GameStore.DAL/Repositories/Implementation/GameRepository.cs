@@ -41,6 +41,7 @@ namespace GameStore.DAL.Repositories.Implementation
             if (gameToRemove != null)
             {
                 gameToRemove.IsDeleted = true;
+                _dbContext.Entry(gameToRemove).State = EntityState.Modified;
                 return true;
             }
             return false;

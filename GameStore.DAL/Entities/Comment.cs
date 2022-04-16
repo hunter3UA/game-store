@@ -16,13 +16,18 @@ namespace GameStore.DAL.Entities
         public string Body { get; set; }
         public int? ParentCommentId { get; set; }
         [ForeignKey("ParentCommentId")]
-        public IEnumerable<Comment> Answers { get; set; }
+        public List<Comment> Answers { get; set; }
         [Required]
         public int? GameId { get; set; }
         [Required, ForeignKey("GameId")]
         public Game Game { get; set; }
         [Required,DefaultValue(false)]
         public bool IsDeleted { get; set; }
+
+        public Comment()
+        {
+            Answers = new List<Comment>();
+        }
 
     }
 }

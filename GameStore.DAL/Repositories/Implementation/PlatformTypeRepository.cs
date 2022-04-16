@@ -19,6 +19,12 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             _dbContext = dbContext;
         }
+        public async Task<PlatformType> AddPlatformAsync(PlatformType platformToAdd)
+        {
+            var addedPlatform =  await _dbContext.PlatformTypes.AddAsync(platformToAdd);
+            return addedPlatform.Entity;
+
+        }
         public async Task<PlatformType> GetPlatformTypeAsync(Expression<Func<PlatformType, bool>> predicate)
         {
             return await _dbContext.PlatformTypes.FirstOrDefaultAsync(predicate);
@@ -31,6 +37,8 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             return await _dbContext.PlatformTypes.Where(predicate).ToListAsync();
         }
+
+        
 
     }
 }

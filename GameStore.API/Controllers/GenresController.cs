@@ -19,6 +19,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/Genres/GetAll")]
+        [ResponseCache(CacheProfileName = "Caching")]
         public async Task<List<GenreDTO>> GetAllGenresAsync()
         {
             var allGenres = await _genreService.GetListOfGenresAsync();

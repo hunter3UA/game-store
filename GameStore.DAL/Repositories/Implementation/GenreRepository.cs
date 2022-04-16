@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
-    public class GenreRepository:IGenreRepository
+    public class GenreRepository : IGenreRepository
     {
         private readonly StoreDbContext _dbContext;
 
@@ -24,7 +24,7 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             var addedGenre = await _dbContext.Genres.AddAsync(newGenre);
             return addedGenre.Entity;
-            
+
         }
         public async Task<List<Genre>> GetListOfGenresAsync(Expression<Func<Genre, bool>> predicate)
         {
@@ -40,5 +40,16 @@ namespace GameStore.DAL.Repositories.Implementation
             return await _dbContext.Genres.FirstOrDefaultAsync(predicate);
         }
 
+        public async Task<bool> RemoveGenreAsync(int key)
+        {
+            var genreToRemove = await _dbContext.Genres.FirstOrDefaultAsync(g => g.GenreId == key);
+            if (genreToRemove != null)
+            {
+                genreToRemove.IsDeleted = false;
+                _dbContext.Entry(genreToRemove).State = EntityState.Modified;
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace GameStore.BLL.DTO
 {
     public class PlatformDTO
     {
-        public Guid PlatformTypeId { get; set; }
+        public int PlatformTypeId { get; set; }
         public string Type { get; set; }
 
     }

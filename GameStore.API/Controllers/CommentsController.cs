@@ -29,6 +29,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/game/{gameKey}/comments")]
+        [ResponseCache(CacheProfileName = "Caching")]
         public async Task<CommentDTO> GetCommentAsync([FromRoute]int gameKey)
         {
             var commentByGameKey = await _commentService.GetCommentAsync(c=>c.GameId==gameKey);

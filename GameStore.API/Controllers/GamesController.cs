@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace GameStore.API.Controllers
 {
@@ -24,30 +25,34 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("/games/new")]
+        [ResponseCache(CacheProfileName = "Caching")]
         public async Task<GameDTO> AddGameAsync([FromBody] AddGameDTO addGameDTO)
         {
+
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
             return addedGame;
         }
 
-     
+
         [HttpGet]
         [Route("/games")]
+        [ResponseCache(CacheProfileName = "Caching")]
         public async Task<List<GameDTO>> GetListOfGamesAsync()
         {
             var listOfGames = await _gameService.GetListOfGamesAsync();
             return listOfGames;
         }
-      
+
         [HttpGet]
         [Route("/game/{key}")]
-        public async Task<GameDTO> GetGameAsync([FromRoute]int key)
-        {          
+        [ResponseCache(CacheProfileName = "Caching")]
+        public async Task<GameDTO> GetGameAsync([FromRoute] int key)
+        {
             var gameByKey = await _gameService.GetGameAsync(g => g.GameId == key);
             return gameByKey;
         }
 
-       
+
         [HttpPut]
         [Route("/games/update")]
         public async Task<GameDTO> UpdateGameAsync([FromBody] UpdateGameDTO gameToUpdate)
@@ -55,8 +60,8 @@ namespace GameStore.API.Controllers
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
             return updatedGame;
         }
-        
-       
+
+
         [HttpPut]
         [Route("/games/remove/{key}")]
         public async Task<bool> RemoveGameAsync([FromRoute] int key)
@@ -67,12 +72,13 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/game/{gameKey}/download")]
-        public async Task<IActionResult> DownloadGameAsync([FromRoute]int gameKey)
+        [ResponseCache(CacheProfileName = "Caching")]
+        public async Task<IActionResult> DownloadGameAsync([FromRoute] int gameKey)
         {
             var data = await _gameService.DownloadFileAsync(gameKey);
-            return File(data,Constants.TEXT_PLAIN_CONTENT_TYPE,Constants.GAME_FILE_NAME);
+            return File(data, Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
         }
 
-       
+
     }
 }
