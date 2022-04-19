@@ -4,10 +4,10 @@ using System.Text;
 
 namespace GameStore.BLL.DTO
 {
-    public class PlatformDTO
+    public class PlatformTypeDTO
     {
-        public int PlatformTypeId { get; set; }
+        public int Id { get; set; }
         public string Type { get; set; }
-
+       
     }
 }

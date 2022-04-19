@@ -22,28 +22,39 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<Comment> AddCommentAsync(Comment commentToAdd)
         {
             var addedComment = await _dbContext.Comments.AddAsync(commentToAdd);
+
             return addedComment.Entity;
         }
         public async Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> predicate)
         {
-            return await _dbContext.Comments.Include(c => c.Answers).FirstOrDefaultAsync(predicate);
+            var commentToSearch =  await _dbContext.Comments.Include(c => c.Answers).FirstOrDefaultAsync(predicate);
+
+            return commentToSearch;
         }
         public async Task<List<Comment>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate)
         {
-            return await _dbContext.Comments.Include(c => c.Answers).Include(c => c.Game).Where(predicate).ToListAsync();
+            var listOfComments = await _dbContext.Comments.Include(c => c.Answers).Include(c => c.Game).Where(predicate).ToListAsync();
+
+            return listOfComments;
         }
 
-        public async Task<bool> RemoveCommentAsync(Expression<Func<Comment, bool>> predicate)
+        public async Task<bool> RemoveCommentAsync(int key)
         {
-            Comment commentToRemove = await _dbContext.Comments.FirstOrDefaultAsync(predicate);
+            Comment commentToRemove = await _dbContext.Comments.FirstOrDefaultAsync(c=>c.Id==key);
             if (commentToRemove != null)
             {
-                _dbContext.Comments.Remove(commentToRemove);
+                commentToRemove.IsDeleted = true;
+                _dbContext.Entry(commentToRemove).State = EntityState.Modified;
+
                 return true;
             }
-            else { return false; }
+
+            return false; 
         }
 
-
+        public Task<Comment> UpdateCommentAsync(Comment commentToUpdate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

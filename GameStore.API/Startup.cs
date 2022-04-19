@@ -13,37 +13,28 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API
 {
     public class Startup
     {
-
         private IHostEnvironment _env;
 
         public Startup(IHostEnvironment env)
         {
             _env = env;
-
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(options =>
             {
-                options.CacheProfiles.Add("Caching",
+                options.CacheProfiles.Add(Constants.CACHING_PROFILE_NAME,
                 new CacheProfile()
                 {
-                    Duration = Constants.REPOSONSE_CACHE_DURATION
+                    Duration = Constants.RESPONSE_CACHE_DURATION
                 });
-
-
             });
             services.AddSwaggerGen(options =>
             {
@@ -61,28 +52,25 @@ namespace GameStore.API
             });
 
             IMapper mapper = mapperConfig.CreateMapper();
-
             services.AddSingleton<Serilog.ILogger>(Log.Logger);
             services.AddSingleton(mapper);
-            services.AddSingleton<StoreDbContext>();
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IGameService, GameService>();
-            services.AddSingleton<IGenreService, GenreService>();
-            services.AddSingleton<ICommentService, CommentService>();
+           
+            services.AddTransient<StoreDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddSingleton<IHostEnvironment>(_env);
 
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-
-
-
-
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
-                "{RemoteIpAddress} {RequestScheme} {RequestHost} {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+                " [{RemoteIpAddress}] {RequestScheme} {RequestHost} {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
                 options.EnrichDiagnosticContext = (diagnosticContext,
                  httpContext) =>
                  {
@@ -91,8 +79,6 @@ namespace GameStore.API
                      diagnosticContext.Set("RemoteIpAddress", httpContext.Connection.RemoteIpAddress);
                  };
             });
-
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -105,7 +91,6 @@ namespace GameStore.API
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

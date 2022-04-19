@@ -19,26 +19,53 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             _dbContext = dbContext;
         }
+
         public async Task<PlatformType> AddPlatformAsync(PlatformType platformToAdd)
         {
             var addedPlatform =  await _dbContext.PlatformTypes.AddAsync(platformToAdd);
+
             return addedPlatform.Entity;
 
         }
+
         public async Task<PlatformType> GetPlatformTypeAsync(Expression<Func<PlatformType, bool>> predicate)
         {
-            return await _dbContext.PlatformTypes.FirstOrDefaultAsync(predicate);
+            var platformToSearch = await _dbContext.PlatformTypes.FirstOrDefaultAsync(predicate);
+
+            return platformToSearch;
         }
+
         public async Task<List<PlatformType>> GetListOfPlatformTypesAsync()
         {
-            return await _dbContext.PlatformTypes.ToListAsync();
+            var listOfPlatforms = await _dbContext.PlatformTypes.ToListAsync();
+
+            return listOfPlatforms;
         }
+
         public async Task<List<PlatformType>> GetListOfPlatformTypesAsync(Expression<Func<PlatformType, bool>> predicate)
         {
-            return await _dbContext.PlatformTypes.Where(predicate).ToListAsync();
+            var listOfPlatforms = await _dbContext.PlatformTypes.Where(predicate).ToListAsync(); 
+
+            return listOfPlatforms;
         }
 
-        
+        public async Task<bool> RemovePlatformAsync(int key)
+        {
+            PlatformType platformToDelete = await _dbContext.PlatformTypes.FirstOrDefaultAsync(p=>p.Id == key);
+            if(platformToDelete != null)
+            {
+                platformToDelete.IsDeleted = true;
+                _dbContext.Entry(platformToDelete).State = EntityState.Modified;
 
+                return true;
+            }
+
+            return false;
+        }
+
+        public Task<PlatformType> UpdatePlatformAsync(PlatformType platformToUpdate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

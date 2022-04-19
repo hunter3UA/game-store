@@ -8,7 +8,7 @@ using GameStore.DAL.Repositories.Implementation;
 
 namespace GameStore.DAL.UoW.Abstract
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork,IDisposable
     {
         private readonly StoreDbContext _dbContext;
         private ICommentRepository _commentRepository;
@@ -31,6 +31,7 @@ namespace GameStore.DAL.UoW.Abstract
 
             }
         }
+
         public IGameRepository GameRepository
         {
             get
@@ -40,6 +41,7 @@ namespace GameStore.DAL.UoW.Abstract
                 return _gameRepository;
             }
         }
+
         public IGenreRepository GenreRepository
         {
             get
@@ -49,6 +51,7 @@ namespace GameStore.DAL.UoW.Abstract
                 return _genreRepository;
             }
         }
+
         public IPlatformTypeRepository PlatformTypeRepository
         {
             get
@@ -59,7 +62,10 @@ namespace GameStore.DAL.UoW.Abstract
             }
         }
 
- 
+        public void Dispose()
+        {       
+            _dbContext.Dispose();
+        }
 
         public async Task SaveAsync()
         {

@@ -1,4 +1,5 @@
-﻿using GameStore.BLL.DTO;
+﻿using GameStore.API.Static;
+using GameStore.BLL.DTO;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,33 +12,34 @@ namespace GameStore.API.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
-       
+
         private readonly ICommentService _commentService;
         public CommentsController(ICommentService commentService)
         {
             _commentService = commentService;
         }
 
-       
         [HttpPost]
         [Route("/comments/addComment")]
-        public async Task<CommentDTO> AddCommentAsync([FromBody]AddCommentDTO addCommentDTO)
+        public async Task<ActionResult<CommentDTO>> AddCommentAsync([FromBody] AddCommentDTO addCommentDTO)
         {
             var addedComment = await _commentService.AddCommentAsync(addCommentDTO);
-            return addedComment;
+            if (addedComment == null)
+                return BadRequest();
+
+            return Ok(addedComment);
         }
 
         [HttpGet]
         [Route("/game/{gameKey}/comments")]
-        [ResponseCache(CacheProfileName = "Caching")]
-        public async Task<CommentDTO> GetCommentAsync([FromRoute]int gameKey)
+        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        public async Task<ActionResult<CommentDTO>> GetCommentAsync([FromRoute] int gameKey)
         {
-            var commentByGameKey = await _commentService.GetCommentAsync(c=>c.GameId==gameKey);
-            return commentByGameKey;
-        }
-        
+            var commentByGameKey = await _commentService.GetCommentAsync(c => c.GameId == gameKey);
+            if (commentByGameKey == null)
+                return NotFound(commentByGameKey);
 
-     
-      
+            return Ok(commentByGameKey);
+        }
     }
 }

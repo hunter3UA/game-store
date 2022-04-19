@@ -40,5 +40,7 @@ namespace GameStore.BLL.Services.Implementation
             Comment commentToSearch = await _unitOfWork.CommentRepository.GetCommentAsync(predicate);
             return _mapper.Map<CommentDTO>(commentToSearch);
         }
+
+        
     }
 }

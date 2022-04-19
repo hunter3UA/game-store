@@ -16,7 +16,6 @@ namespace GameStore.API.Middleware
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-
         private readonly IDictionary<Type, HttpStatusCode> _handledExceptions;
         private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
@@ -25,9 +24,7 @@ namespace GameStore.API.Middleware
             _next = next;
             _handledExceptions = new Dictionary<Type, HttpStatusCode>();
             _logger = logger;
-
         }
-
 
         public async Task InvokeAsync(HttpContext context, IWebHostEnvironment env)
         {
@@ -38,7 +35,7 @@ namespace GameStore.API.Middleware
             catch (Exception ex)
             {
                 await HandleException(context, ex, env.IsDevelopment());
-                _logger.LogError($"Error: Processing request{context.Request.Path}, ");
+                _logger.LogError($"Error: {ex.Message}");
             }
         }
 
@@ -48,25 +45,29 @@ namespace GameStore.API.Middleware
             var responseBody = GetResponseBody(ex, isDevelopment, httpStatusCode);
             context.Response.ContentType = Constants.JSON_CONTENT_TYPE;
             context.Response.StatusCode = httpStatusCode;
+
             return context.Response.WriteAsync(responseBody);
         }
+
         private HttpStatusCode GetCode(Exception ex)
         {
             var exceptionToHandle = (ex as AggregateException)?.InnerExceptions.First() ?? ex;
             var exceptionType = exceptionToHandle.GetType();
-            return _handledExceptions.TryGetValue(exceptionType, out HttpStatusCode httpCode) ? httpCode : HttpStatusCode.InternalServerError;
 
+            return _handledExceptions.TryGetValue(exceptionType, out HttpStatusCode httpCode) ? httpCode : HttpStatusCode.InternalServerError;
         }
+
         private static string GetResponseBody(Exception ex, bool isDevelopment, int httpStatusCode)
         {
             string errorMessage;
             if (isDevelopment)
                 errorMessage = ex.ToString();
-            else if (httpStatusCode >= 500)
+            else if (httpStatusCode >= (int)HttpStatusCode.InternalServerError)
                 errorMessage = "Something wrong Happened";
             else
                 errorMessage = ex.Message;
             errorMessage = JsonConvert.SerializeObject(new { error = errorMessage });
+
             return errorMessage;
         }
     }

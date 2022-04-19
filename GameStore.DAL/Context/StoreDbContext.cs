@@ -3,18 +3,22 @@ using GameStore.DAL.Static;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace GameStore.DAL.Context
 {
     public class StoreDbContext : DbContext
     {
         public DbSet<Game> Games { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
+
         public DbSet<Genre> Genres { get; set; }
 
         public DbSet<PlatformType> PlatformTypes { get; set; }
 
         public DbSet<GenresInGames> GenresInGames { get; set; }
+
         public DbSet<PlatformsInGames> PlatformsInGames { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -24,13 +28,13 @@ namespace GameStore.DAL.Context
             optionsBuilder.UseSqlServer(
                 dbConfig.GetConnectionString(Constants.DB_NAME));
         }
-        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Game>(GamesConfigure);
             modelBuilder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
             modelBuilder.Entity<Genre>().HasQueryFilter(g => !g.IsDeleted);
+            modelBuilder.Entity<PlatformType>().HasQueryFilter(g => !g.IsDeleted);
             modelBuilder.Entity<PlatformType>().HasQueryFilter(p => !p.IsDeleted);
             Initialize(modelBuilder);
         }
@@ -61,36 +65,37 @@ namespace GameStore.DAL.Context
               );
 
         }
+
         private void Initialize(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Genre>().HasData(
-                new Genre { GenreId = 1, Name = "Strategy" },
-                new Genre { GenreId = 2, Name = "RTS", ParentGenreId = 1 },
-                new Genre { GenreId = 3, Name = "TBS", ParentGenreId = 1 },
-                new Genre { GenreId = 4, Name = "RPG" },
-                new Genre { GenreId = 5, Name = "Sports" },
-                new Genre { GenreId = 6, Name = "Races" },
-                new Genre { GenreId = 7, Name = "Rally", ParentGenreId = 6 },
-                new Genre { GenreId = 8, Name = "Arcade", ParentGenreId = 6 },
-                new Genre { GenreId = 9, Name = "Formula", ParentGenreId = 6 },
-                new Genre { GenreId = 10, Name = "Off-road", ParentGenreId = 6 },
-                new Genre { GenreId = 11, Name = "Action" },
-                new Genre { GenreId = 12, Name = "FPS", ParentGenreId = 11 },
-                new Genre { GenreId = 13, Name = "TPS", ParentGenreId = 11 },
-                new Genre { GenreId = 14, Name = "Adventure" },
-                new Genre { GenreId = 15, Name = "Puzzle & Skill" },
-                new Genre { GenreId = 16, Name = "Misc" }
+                new Genre { Id = 1, Name = "Strategy" },
+                new Genre { Id = 2, Name = "RTS", ParentGenreId = 1 },
+                new Genre { Id = 3, Name = "TBS", ParentGenreId = 1 },
+                new Genre { Id = 4, Name = "RPG" },
+                new Genre { Id = 5, Name = "Sports" },
+                new Genre { Id = 6, Name = "Races" },
+                new Genre { Id = 7, Name = "Rally", ParentGenreId = 6 },
+                new Genre { Id = 8, Name = "Arcade", ParentGenreId = 6 },
+                new Genre { Id = 9, Name = "Formula", ParentGenreId = 6 },
+                new Genre { Id = 10, Name = "Off-road", ParentGenreId = 6 },
+                new Genre { Id = 11, Name = "Action" },
+                new Genre { Id = 12, Name = "FPS", ParentGenreId = 11 },
+                new Genre { Id = 13, Name = "TPS", ParentGenreId = 11 },
+                new Genre { Id = 14, Name = "Adventure" },
+                new Genre { Id = 15, Name = "Puzzle & Skill" },
+                new Genre { Id = 16, Name = "Misc" }
             );
             modelBuilder.Entity<PlatformType>().HasData(
-                new PlatformType { PlatformTypeId = 1, Type = "Mobile" },
-                new PlatformType { PlatformTypeId = 2, Type = "Browser" },
-                new PlatformType { PlatformTypeId = 3, Type = "Desktop" },
-                new PlatformType { PlatformTypeId = 4, Type = "Console" }
+                new PlatformType { Id = 1, Type = "Mobile" },
+                new PlatformType { Id = 2, Type = "Browser" },
+                new PlatformType { Id = 3, Type = "Desktop" },
+                new PlatformType { Id = 4, Type = "Console" }
             );
             modelBuilder.Entity<Game>().HasData(
-                new Game { GameId = 1, Name = "Stalker2", Description = "New part of Stalker" },
-                new Game { GameId = 2, Name = "Dying ligth", Description = "Best part" },
-                new Game { GameId = 3, Name = "Left 4 Dead", Description = "Action " }
+                new Game { Id = 1, Name = "Stalker2", Description = "New part of Stalker" },
+                new Game { Id = 2, Name = "Dying ligth", Description = "Best part" },
+                new Game { Id = 3, Name = "Left 4 Dead", Description = "Action " }
                 );
             modelBuilder.Entity<GenresInGames>().HasData(
                 new GenresInGames { GameId = 1, GenreId = 1 },
@@ -104,10 +109,10 @@ namespace GameStore.DAL.Context
                 new PlatformsInGames { GameId = 3, PlatformTypeId = 4 }
                 );
             modelBuilder.Entity<Comment>().HasData(
-                new Comment { CommentId = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
-                new Comment { CommentId = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 }
+                new Comment { Id = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
+                new Comment { Id = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 }
                 );
-
         }
+
     }
 }

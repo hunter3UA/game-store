@@ -10,9 +10,13 @@ namespace GameStore.DAL.Repositories.Abstract
     public interface IGameRepository
     {
         Task<Game> AddGameAsync(Game gameToAdd);
-        Task<Game> GetGameAsync(Expression<Func<Game, bool>> predicate);
-        Task<List<Game>> GetListOfGamesAsync();
-        Task<bool> RemoveGameAsync(int key);
 
+        Task<Game> GetGameAsync(Expression<Func<Game, bool>> predicate);
+
+        Task<Game> UpdateGameAsync(Game gameToUpdate);
+
+        Task<List<Game>> GetListOfGamesAsync();
+
+        Task<bool> RemoveGameAsync(int key);
     }
 }

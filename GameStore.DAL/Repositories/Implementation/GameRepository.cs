@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
-    public class GameRepository:IGameRepository
+    public class GameRepository : IGameRepository
     {
         private readonly StoreDbContext _dbContext;
         public GameRepository(StoreDbContext dbContext)
@@ -22,30 +22,52 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<Game> AddGameAsync(Game gameToAdd)
         {
             var addedGame = await _dbContext.Games.AddAsync(gameToAdd);
+
             return addedGame.Entity;
         }
 
         public async Task<List<Game>> GetListOfGamesAsync()
         {
-            return await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).ToListAsync();
+            var listOfGames = await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).ToListAsync();
+
+            return listOfGames;
+        }
+
+        public async Task<Game> UpdateGame(Game gameToUpdate)
+        {
+            var game = await _dbContext.Games.FindAsync(gameToUpdate.Id);
+            if (game != null)
+            {
+                _dbContext.Entry(game).CurrentValues.SetValues(gameToUpdate);
+                _dbContext.Entry(game).State = EntityState.Modified;
+            }
+            return gameToUpdate;
         }
 
         public async Task<Game> GetGameAsync(Expression<Func<Game, bool>> predicate)
         {
-            return await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).FirstOrDefaultAsync(predicate);
+            var gameToSearch = await _dbContext.Games.Include(g => g.Genres).Include(g => g.PlatformTypes).FirstOrDefaultAsync(predicate);
+
+            return gameToSearch;
         }
 
         public async Task<bool> RemoveGameAsync(int key)
         {
-            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g=>g.GameId==key);
+            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == key);
             if (gameToRemove != null)
             {
                 gameToRemove.IsDeleted = true;
                 _dbContext.Entry(gameToRemove).State = EntityState.Modified;
+
                 return true;
             }
+
             return false;
         }
 
+        public Task<Game> UpdateGameAsync(Game gameToUpdate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

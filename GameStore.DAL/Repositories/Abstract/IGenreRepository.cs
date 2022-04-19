@@ -13,7 +13,7 @@ namespace GameStore.DAL.Repositories.Abstract
         Task<Genre> GetGenreAsync(Expression<Func<Genre, bool>> predicate);
         Task<List<Genre>> GetListOfGenresAsync(Expression<Func<Genre, bool>> predicate);
         Task<List<Genre>> GetListOfGenresAsync();
+        Task<PlatformType> UpdateGenreAsync();
         Task<bool> RemoveGenreAsync(int key);
-
     }
 }

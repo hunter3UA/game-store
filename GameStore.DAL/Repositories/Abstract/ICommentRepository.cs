@@ -12,7 +12,7 @@ namespace GameStore.DAL.Repositories.Abstract
         Task<Comment> AddCommentAsync(Comment commentToAdd);
         Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> predicate);
         Task<List<Comment>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate);
-        Task<bool> RemoveCommentAsync(Expression<Func<Comment, bool>> predicate);
-
+        Task<bool> RemoveCommentAsync(int key);
+        Task<Comment> UpdateCommentAsync(Comment commentToUpdate);
     }
 }

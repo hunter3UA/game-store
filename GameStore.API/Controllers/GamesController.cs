@@ -26,56 +26,71 @@ namespace GameStore.API.Controllers
         [HttpPost]
         [Route("/games/new")]
         [ResponseCache(CacheProfileName = "Caching")]
-        public async Task<GameDTO> AddGameAsync([FromBody] AddGameDTO addGameDTO)
+        public async Task<ActionResult<GameDTO>> AddGameAsync([FromBody] AddGameDTO addGameDTO)
         {
 
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
-            return addedGame;
+            if (addedGame == null)
+                return BadRequest();
+            return Ok(addedGame);
         }
 
 
         [HttpGet]
         [Route("/games")]
-        [ResponseCache(CacheProfileName = "Caching")]
-        public async Task<List<GameDTO>> GetListOfGamesAsync()
+        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        public async Task<ActionResult<List<GameDTO>>> GetListOfGamesAsync()
         {
             var listOfGames = await _gameService.GetListOfGamesAsync();
-            return listOfGames;
+            if (listOfGames == null)
+                return NotFound();
+           
+            return Ok(listOfGames);
         }
 
         [HttpGet]
         [Route("/game/{key}")]
-        [ResponseCache(CacheProfileName = "Caching")]
-        public async Task<GameDTO> GetGameAsync([FromRoute] int key)
+        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        public async Task<ActionResult<GameDTO>> GetGameAsync([FromRoute] int key)
         {
-            var gameByKey = await _gameService.GetGameAsync(g => g.GameId == key);
-            return gameByKey;
+            var gameByKey = await _gameService.GetGameAsync(g => g.Id == key);
+            if (gameByKey==null)
+                return NotFound();
+
+            return Ok(gameByKey);
         }
 
 
         [HttpPut]
         [Route("/games/update")]
-        public async Task<GameDTO> UpdateGameAsync([FromBody] UpdateGameDTO gameToUpdate)
+        public async Task<ActionResult<GameDTO>> UpdateGameAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
-            return updatedGame;
+            if (updatedGame == null)
+                return BadRequest();
+
+            return Ok(updatedGame);
         }
 
 
         [HttpPut]
         [Route("/games/remove/{key}")]
-        public async Task<bool> RemoveGameAsync([FromRoute] int key)
+        public async Task<ActionResult<bool>> RemoveGameAsync([FromRoute] int key)
         {
             bool isRemovedGame = await _gameService.RemoveGameAsync(key);
-            return isRemovedGame;
+            if(!isRemovedGame)
+                return NotFound(isRemovedGame);
+
+            return Ok($"{isRemovedGame}. Game with Id {key} has been deleted");
         }
 
         [HttpGet]
         [Route("/game/{gameKey}/download")]
-        [ResponseCache(CacheProfileName = "Caching")]
+        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> DownloadGameAsync([FromRoute] int gameKey)
         {
             var data = await _gameService.DownloadFileAsync(gameKey);
+
             return File(data, Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
         }
 

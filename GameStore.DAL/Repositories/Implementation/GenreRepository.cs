@@ -23,33 +23,48 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<Genre> AddGenreAsync(Genre newGenre)
         {
             var addedGenre = await _dbContext.Genres.AddAsync(newGenre);
-            return addedGenre.Entity;
 
+            return addedGenre.Entity;
         }
+
         public async Task<List<Genre>> GetListOfGenresAsync(Expression<Func<Genre, bool>> predicate)
         {
-            return await _dbContext.Genres.Where(predicate).ToListAsync();
+            var listOfGenres =  await _dbContext.Genres.Where(predicate).ToListAsync();
+
+            return listOfGenres;
         }
 
         public async Task<List<Genre>> GetListOfGenresAsync()
         {
-            return await _dbContext.Genres.ToListAsync();
+            var listOfGenres =  await _dbContext.Genres.ToListAsync();
+
+            return listOfGenres;
         }
+
         public async Task<Genre> GetGenreAsync(Expression<Func<Genre, bool>> predicate)
         {
-            return await _dbContext.Genres.FirstOrDefaultAsync(predicate);
+            var genreToSearch =  await _dbContext.Genres.Include(g=>g.SubGenres).FirstOrDefaultAsync(predicate);
+
+            return genreToSearch;
         }
 
         public async Task<bool> RemoveGenreAsync(int key)
         {
-            var genreToRemove = await _dbContext.Genres.FirstOrDefaultAsync(g => g.GenreId == key);
+            var genreToRemove = await _dbContext.Genres.FirstOrDefaultAsync(g => g.Id == key);
             if (genreToRemove != null)
             {
-                genreToRemove.IsDeleted = false;
+                genreToRemove.IsDeleted = true;
                 _dbContext.Entry(genreToRemove).State = EntityState.Modified;
+
                 return true;
             }
+
             return false;
+        }
+
+        public Task<PlatformType> UpdateGenreAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }
