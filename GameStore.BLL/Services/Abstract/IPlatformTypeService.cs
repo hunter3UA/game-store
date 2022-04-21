@@ -11,8 +11,11 @@ namespace GameStore.BLL.Services.Abstract
     public interface IPlatformTypeService
     {
         Task<PlatformTypeDTO> AddPlatformTypeAsync(AddPlatformTypeDTO addPlatformDTO);
+
         Task<List<PlatformTypeDTO>> GetListOfPlatformsAsync();
+
         Task<PlatformTypeDTO> GetPlatformAsync(Expression<Func<PlatformType, bool>> predicate);
-        Task<bool> RemovePlatformAsync(int key);
+
+        Task<bool> RemovePlatformAsync(int id);
     }
 }

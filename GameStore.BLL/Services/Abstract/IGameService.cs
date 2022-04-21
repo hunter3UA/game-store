@@ -12,13 +12,16 @@ namespace GameStore.BLL.Services.Abstract
     public interface IGameService
     {
         Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO);
+        
         Task<List<GameDTO>> GetListOfGamesAsync();
+
         Task<GameDTO> GetGameAsync(Expression<Func<Game, bool>> predicate);
-        Task<bool> RemoveGameAsync(int gameKey);
+
+        Task<bool> RemoveGameAsync(string key);
+
         Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO);
 
-        Task<byte[]> DownloadFileAsync(int gameKey);
-
-
+        Task<byte[]> DownloadFileAsync(string gameKey);
+   
     }
 }

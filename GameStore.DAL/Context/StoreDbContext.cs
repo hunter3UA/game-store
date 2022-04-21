@@ -93,9 +93,9 @@ namespace GameStore.DAL.Context
                 new PlatformType { Id = 4, Type = "Console" }
             );
             modelBuilder.Entity<Game>().HasData(
-                new Game { Id = 1, Name = "Stalker2", Description = "New part of Stalker" },
-                new Game { Id = 2, Name = "Dying ligth", Description = "Best part" },
-                new Game { Id = 3, Name = "Left 4 Dead", Description = "Action " }
+                new Game { Id = 1, Name = "Stalker2", Key = "stalker-2", Description = "New part of Stalker" },
+                new Game { Id = 2, Name = "Dying light", Key="dying-light", Description = "Best part" },
+                new Game { Id = 3, Name = "Left 4 Dead", Key="left-4-dead", Description = "Action " }
                 );
             modelBuilder.Entity<GenresInGames>().HasData(
                 new GenresInGames { GameId = 1, GenreId = 1 },

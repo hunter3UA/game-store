@@ -11,6 +11,7 @@ namespace GameStore.DAL.Entities
         [Key]
         public int Id { get; set; }
 
+
         [Required, DefaultValue(false)]
         public bool IsDeleted { get; set; } 
     }

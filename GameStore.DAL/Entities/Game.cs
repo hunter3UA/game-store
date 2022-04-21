@@ -6,11 +6,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.DAL.Entities
 {
-    [Index("Name", IsUnique = true)]
+    [Index("Name","Key", IsUnique = true)] 
     public class Game:BaseEntity
     {
-       
-        
+        [Required, MaxLength(500)]
+        public string Key { get; set; }
 
         [Required, MaxLength(150)]
         public string Name { get; set; }
@@ -18,21 +18,15 @@ namespace GameStore.DAL.Entities
         [Required,MaxLength(5000)]
         public string Description { get; set; }
 
-        public List<Comment> Comments { get; set; } 
+        public IEnumerable<Comment> Comments { get; set; } 
 
         [Required]
-        public List<PlatformType> PlatformTypes { get; set; } 
+        public IEnumerable<PlatformType> PlatformTypes { get; set; } 
 
         [Required]
-        public List<Genre> Genres { get; set; }
+        public IEnumerable<Genre> Genres { get; set; }
 
-
-        public Game()
-        {
-            Comments = new List<Comment>();
-            PlatformTypes = new List<PlatformType>();
-            Genres = new List<Genre>();
-        }
+     
 
     }
 }

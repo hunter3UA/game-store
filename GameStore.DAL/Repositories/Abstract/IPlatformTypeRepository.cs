@@ -12,7 +12,6 @@ namespace GameStore.DAL.Repositories.Abstract
         Task<PlatformType> GetPlatformTypeAsync(Expression<Func<PlatformType, bool>> predicate);
         Task<List<PlatformType>> GetListOfPlatformTypesAsync();
         Task<List<PlatformType>> GetListOfPlatformTypesAsync(Expression<Func<PlatformType, bool>> predicate);
-        Task<bool> RemovePlatformAsync(int key);
-        Task<PlatformType> UpdatePlatformAsync(PlatformType platformToUpdate);
+        Task<bool> RemovePlatformAsync(int id);
     }
 }

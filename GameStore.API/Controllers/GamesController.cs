@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.HttpOverrides;
+using Newtonsoft.Json.Linq;
 
 namespace GameStore.API.Controllers
 {
@@ -15,7 +16,6 @@ namespace GameStore.API.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-
         private readonly IGameService _gameService;
 
         public GamesController(IGameService gameService)
@@ -35,7 +35,6 @@ namespace GameStore.API.Controllers
             return Ok(addedGame);
         }
 
-
         [HttpGet]
         [Route("/games")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
@@ -44,22 +43,21 @@ namespace GameStore.API.Controllers
             var listOfGames = await _gameService.GetListOfGamesAsync();
             if (listOfGames == null)
                 return NotFound();
-           
+
             return Ok(listOfGames);
         }
 
         [HttpGet]
         [Route("/game/{key}")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<ActionResult<GameDTO>> GetGameAsync([FromRoute] int key)
+        public async Task<ActionResult<GameDTO>> GetGameAsync([FromRoute] string key)
         {
-            var gameByKey = await _gameService.GetGameAsync(g => g.Id == key);
-            if (gameByKey==null)
+            var gameByKey = await _gameService.GetGameAsync(g => g.Key == key);
+            if (gameByKey == null)
                 return NotFound();
 
             return Ok(gameByKey);
         }
-
 
         [HttpPut]
         [Route("/games/update")]
@@ -72,28 +70,26 @@ namespace GameStore.API.Controllers
             return Ok(updatedGame);
         }
 
-
-        [HttpPut]
+        [HttpDelete]
         [Route("/games/remove/{key}")]
-        public async Task<ActionResult<bool>> RemoveGameAsync([FromRoute] int key)
+        public async Task<ActionResult<bool>> RemoveGameAsync([FromRoute] string key)
         {
             bool isRemovedGame = await _gameService.RemoveGameAsync(key);
-            if(!isRemovedGame)
+            if (!isRemovedGame)
                 return NotFound(isRemovedGame);
 
             return Ok($"{isRemovedGame}. Game with Id {key} has been deleted");
+
         }
 
         [HttpGet]
         [Route("/game/{gameKey}/download")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<IActionResult> DownloadGameAsync([FromRoute] int gameKey)
+        public async Task<IActionResult> DownloadGameAsync([FromRoute] string gameKey)
         {
             var data = await _gameService.DownloadFileAsync(gameKey);
 
             return File(data, Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
         }
-
-
     }
 }

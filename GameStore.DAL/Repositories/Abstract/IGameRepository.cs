@@ -17,6 +17,6 @@ namespace GameStore.DAL.Repositories.Abstract
 
         Task<List<Game>> GetListOfGamesAsync();
 
-        Task<bool> RemoveGameAsync(int key);
+        Task<bool> RemoveGameAsync(string key);
     }
 }

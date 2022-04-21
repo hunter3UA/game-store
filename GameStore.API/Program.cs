@@ -23,10 +23,6 @@ namespace GameStore.API
 
                 CreateHostBuilder(args).Build().Run();
             }
-            catch
-            {
-
-            }
             finally
             {
                 Log.CloseAndFlush();
@@ -38,7 +34,6 @@ namespace GameStore.API
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-
                 });
     }
 }

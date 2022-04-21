@@ -14,14 +14,12 @@ namespace GameStore.API.Controllers
     [ApiController]
     public class PlatformTypesController : ControllerBase
     {
-
         private readonly IPlatformTypeService _platformService;
 
         public PlatformTypesController(IPlatformTypeService platformService)
         {
             _platformService = platformService;
         }
-
 
         [HttpPost]
         [Route("/platformTypes/add")]
@@ -45,11 +43,11 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/platformTypes/{key}")]
+        [Route("/platformTypes/{id}")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<ActionResult<PlatformTypeDTO>> GetPlatformAsync([FromRoute] int key)
+        public async Task<ActionResult<PlatformTypeDTO>> GetPlatformAsync([FromRoute] int id)
         {
-            var platformToSearch = await _platformService.GetPlatformAsync(p => p.Id == key);
+            var platformToSearch = await _platformService.GetPlatformAsync(p => p.Id == id);
             if (platformToSearch == null)
                 return NotFound();
 
@@ -57,14 +55,14 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        [Route("/platformTypes/remove/{key}")]
-        public async Task<ActionResult<bool>> RemovePlatformAsync([FromRoute] int key)
+        [Route("/platformTypes/remove/{id}")]
+        public async Task<ActionResult<bool>> RemovePlatformAsync([FromRoute] int id)
         {
-            bool isRemovedPlatform = await _platformService.RemovePlatformAsync(key);
+            bool isRemovedPlatform = await _platformService.RemovePlatformAsync(id);
             if (!isRemovedPlatform)
                 return NotFound(false);
 
-            return Ok($"{isRemovedPlatform}. Platform with Id {key} has been deleted ");
+            return Ok($"{isRemovedPlatform}. Platform with Id {id} has been deleted ");
         }
     }
 }

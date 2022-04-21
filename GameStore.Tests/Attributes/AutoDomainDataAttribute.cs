@@ -18,6 +18,7 @@ namespace GameStore.Tests.Attributes
         private static IFixture CreateFixture()
         {
             var fixture = new Fixture();
+            fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());        
             fixture.Customize(
              new CompositeCustomization(

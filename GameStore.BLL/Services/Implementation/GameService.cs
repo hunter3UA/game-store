@@ -31,17 +31,21 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO)
         {
+            
             Game gameToAdd = _mapper.Map<Game>(gameToAddDTO);
             gameToAdd.Genres = await _unitOfWork.GenreRepository.GetListOfGenresAsync(g => gameToAddDTO.GenresID.Contains(g.Id));
             gameToAdd.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetListOfPlatformTypesAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
+
             if (gameToAdd.Genres.Count() <= 0 || gameToAdd.PlatformTypes.Count() <= 0)
                 throw new Exception("Genres and PlatformTypes can not be empty");
+
             Game addedGame = await _unitOfWork.GameRepository.AddGameAsync(gameToAdd);
             await _unitOfWork.SaveAsync();
+
             if (addedGame != null)
                 _logger.LogInformation($"Game has been added with Id: {addedGame.Id}");
-
-            return _mapper.Map<GameDTO>(gameToAdd);
+           
+            return  _mapper.Map<GameDTO>(addedGame);
         }
 
         public async Task<List<GameDTO>> GetListOfGamesAsync()
@@ -58,12 +62,12 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<GameDTO>(game);
         }
 
-        public async Task<bool> RemoveGameAsync(int key)
+        public async Task<bool> RemoveGameAsync(string key)
         {
             bool isRemovedGame = await _unitOfWork.GameRepository.RemoveGameAsync(key);
             await _unitOfWork.SaveAsync();
             if (isRemovedGame)
-                _logger.LogInformation($"Game with Id {key} has been deleted");
+                _logger.LogInformation($"Game with Key {key} has been deleted");
 
             return isRemovedGame;
         }
@@ -83,14 +87,13 @@ namespace GameStore.BLL.Services.Implementation
 
         }
 
-        public async Task<byte[]> DownloadFileAsync(int gameKey)
+        public async Task<byte[]> DownloadFileAsync(string gameKey)
         {
             string filePath = Path.Combine(_env.ContentRootPath, "wwwroot");
             var bytes = await File.ReadAllBytesAsync(filePath + "\\file.txt");
 
             return bytes;
         }
-
-
+       
     }
 }

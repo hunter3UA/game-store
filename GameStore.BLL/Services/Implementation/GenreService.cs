@@ -47,15 +47,16 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
             List<Genre> listOfGenres = await _unitOfWork.GenreRepository.GetListOfGenresAsync();
+
             return _mapper.Map<List<GenreDTO>>(listOfGenres);
         }
 
-        public async Task<bool> RemoveGenreAsync(int key)
+        public async Task<bool> RemoveGenreAsync(int id)
         {
-            bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveGenreAsync(key);
+            bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveGenreAsync(id);
             await _unitOfWork.SaveAsync();
             if (isDeletedGenre)
-                _logger.LogInformation($"Genre with Id: {key} has been deleted");
+                _logger.LogInformation($"Genre with Id: {id} has been deleted");
             else
                 _logger.LogInformation($"Genre has not been deleted");
 

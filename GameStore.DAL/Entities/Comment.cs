@@ -18,7 +18,7 @@ namespace GameStore.DAL.Entities
         public int? ParentCommentId { get; set; }
 
         [ForeignKey("ParentCommentId")]
-        public List<Comment> Answers { get; set; }
+        public IEnumerable<Comment> Answers { get; set; }
 
         [Required]
         public int? GameId { get; set; }
@@ -27,10 +27,6 @@ namespace GameStore.DAL.Entities
         public Game Game { get; set; }
 
 
-        public Comment()
-        {
-            Answers = new List<Comment>();
-        }
 
     }
 }

@@ -12,6 +12,7 @@ namespace GameStore.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Key = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -135,12 +136,12 @@ namespace GameStore.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Games",
-                columns: new[] { "Id", "Description", "IsDeleted", "Name" },
+                columns: new[] { "Id", "Description", "IsDeleted", "Key", "Name" },
                 values: new object[,]
                 {
-                    { 1, "New part of Stalker", false, "Stalker2" },
-                    { 2, "Best part", false, "Dying ligth" },
-                    { 3, "Action ", false, "Left 4 Dead" }
+                    { 1, "New part of Stalker", false, "stalker-2", "Stalker2" },
+                    { 2, "Best part", false, "dying-light", "Dying light" },
+                    { 3, "Action ", false, "left-4-dead", "Left 4 Dead" }
                 });
 
             migrationBuilder.InsertData(
@@ -230,9 +231,9 @@ namespace GameStore.DAL.Migrations
                 column: "ParentCommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_Name",
+                name: "IX_Games_Name_Key",
                 table: "Games",
-                column: "Name",
+                columns: new[] { "Name", "Key" },
                 unique: true);
 
             migrationBuilder.CreateIndex(

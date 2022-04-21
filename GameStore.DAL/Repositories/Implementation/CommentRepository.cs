@@ -25,12 +25,14 @@ namespace GameStore.DAL.Repositories.Implementation
 
             return addedComment.Entity;
         }
+
         public async Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> predicate)
         {
             var commentToSearch =  await _dbContext.Comments.Include(c => c.Answers).FirstOrDefaultAsync(predicate);
 
             return commentToSearch;
         }
+
         public async Task<List<Comment>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate)
         {
             var listOfComments = await _dbContext.Comments.Include(c => c.Answers).Include(c => c.Game).Where(predicate).ToListAsync();
@@ -38,9 +40,9 @@ namespace GameStore.DAL.Repositories.Implementation
             return listOfComments;
         }
 
-        public async Task<bool> RemoveCommentAsync(int key)
+        public async Task<bool> RemoveCommentAsync(int id)
         {
-            Comment commentToRemove = await _dbContext.Comments.FirstOrDefaultAsync(c=>c.Id==key);
+            Comment commentToRemove = await _dbContext.Comments.FirstOrDefaultAsync(c=>c.Id==id);
             if (commentToRemove != null)
             {
                 commentToRemove.IsDeleted = true;

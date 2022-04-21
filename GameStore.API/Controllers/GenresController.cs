@@ -31,7 +31,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/genres/getAll")]
+        [Route("/genres/getall")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<ActionResult<List<GenreDTO>>> GetAllGenresAsync()
         {
@@ -42,13 +42,12 @@ namespace GameStore.API.Controllers
             return Ok(allGenres);
         }
 
-
         [HttpGet]
-        [Route("/genres/{key}")]
+        [Route("/genres")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<ActionResult<List<GenreDTO>>> GetGenreAsync([FromRoute] int key)
+        public async Task<ActionResult<List<GenreDTO>>> GetGenreAsync([FromQuery] int id)
         {
-            var genreByKey = await _genreService.GetGenreAsync(g => g.Id == key);
+            var genreByKey = await _genreService.GetGenreAsync(g => g.Id == id);
             if (genreByKey == null)
                 return NotFound();
 
@@ -56,15 +55,14 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        [Route("/genres/remove/{key}")]
-        public async Task<ActionResult<bool>> RemoveGenreAsync([FromRoute] int key)
+        [Route("/genres/remove")]
+        public async Task<ActionResult<bool>> RemoveGenreAsync([FromQuery] int id)
         {
-            var isRemovedGenre = await _genreService.RemoveGenreAsync(key);
+            var isRemovedGenre = await _genreService.RemoveGenreAsync(id);
             if (!isRemovedGenre)
                 return NotFound(isRemovedGenre);
 
-            return Ok($"{isRemovedGenre}.Genre with Id {key} has been deleted");
+            return Ok($"{isRemovedGenre}.Genre with Id {id} has been deleted");
         }
-
     }
 }

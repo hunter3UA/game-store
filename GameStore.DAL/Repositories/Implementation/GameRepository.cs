@@ -33,7 +33,7 @@ namespace GameStore.DAL.Repositories.Implementation
             return listOfGames;
         }
 
-        public async Task<Game> UpdateGame(Game gameToUpdate)
+        public async Task<Game> UpdateGameAsync(Game gameToUpdate)
         {
             var game = await _dbContext.Games.FindAsync(gameToUpdate.Id);
             if (game != null)
@@ -41,6 +41,7 @@ namespace GameStore.DAL.Repositories.Implementation
                 _dbContext.Entry(game).CurrentValues.SetValues(gameToUpdate);
                 _dbContext.Entry(game).State = EntityState.Modified;
             }
+
             return gameToUpdate;
         }
 
@@ -51,9 +52,9 @@ namespace GameStore.DAL.Repositories.Implementation
             return gameToSearch;
         }
 
-        public async Task<bool> RemoveGameAsync(int key)
+        public async Task<bool> RemoveGameAsync(string key)
         {
-            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g => g.Id == key);
+            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g => g.Key==key);
             if (gameToRemove != null)
             {
                 gameToRemove.IsDeleted = true;
@@ -65,9 +66,6 @@ namespace GameStore.DAL.Repositories.Implementation
             return false;
         }
 
-        public Task<Game> UpdateGameAsync(Game gameToUpdate)
-        {
-            throw new NotImplementedException();
-        }
+     
     }
 }

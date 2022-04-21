@@ -50,12 +50,12 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<PlatformTypeDTO>(platformType);
         }
 
-        public async Task<bool> RemovePlatformAsync(int key)
+        public async Task<bool> RemovePlatformAsync(int id)
         {
-            bool isRemovedPlatform= await _unitOfWork.PlatformTypeRepository.RemovePlatformAsync(key);
+            bool isRemovedPlatform= await _unitOfWork.PlatformTypeRepository.RemovePlatformAsync(id);
             await _unitOfWork.SaveAsync();
             if (isRemovedPlatform)
-                _logger.LogInformation($"Platform with Id {key} has been deleted");
+                _logger.LogInformation($"Platform with Id {id} has been deleted");
             
             return isRemovedPlatform;
         }

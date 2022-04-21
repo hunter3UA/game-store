@@ -11,7 +11,7 @@ namespace GameStore.BLL.DTO
         public string Name { get; set; }
   
         public string Body { get; set; }
-        public List<CommentDTO> Answers { get; set; }
-      
+
+        public List<CommentDTO> Answers { get; set; }   
     }
 }

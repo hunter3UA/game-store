@@ -12,12 +12,7 @@ namespace GameStore.DAL.Entities
         [Required, MaxLength(50)]
         public string Type { get; set; }
 
-            
-        public List<Game> Games { get; set; }
-
-        public PlatformType()
-        {
-            Games = new List<Game>();
-        }
+        public IEnumerable<Game> Games { get; set; }
+  
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20220419180559_CreatingDb")]
+    [Migration("20220420163119_CreatingDb")]
     partial class CreatingDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -91,6 +91,11 @@ namespace GameStore.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -98,7 +103,7 @@ namespace GameStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("Name", "Key")
                         .IsUnique();
 
                     b.ToTable("Games");
@@ -109,6 +114,7 @@ namespace GameStore.DAL.Migrations
                             Id = 1,
                             Description = "New part of Stalker",
                             IsDeleted = false,
+                            Key = "stalker-2",
                             Name = "Stalker2"
                         },
                         new
@@ -116,13 +122,15 @@ namespace GameStore.DAL.Migrations
                             Id = 2,
                             Description = "Best part",
                             IsDeleted = false,
-                            Name = "Dying ligth"
+                            Key = "dying-light",
+                            Name = "Dying light"
                         },
                         new
                         {
                             Id = 3,
                             Description = "Action ",
                             IsDeleted = false,
+                            Key = "left-4-dead",
                             Name = "Left 4 Dead"
                         });
                 });

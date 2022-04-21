@@ -8,9 +8,10 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface ICommentService
     {
-        Task<CommentDTO> AddCommentAsync(AddCommentDTO addCommentDTO);
+        Task<CommentDTO> AddCommentAsync(string key,AddCommentDTO addCommentDTO);
 
         Task<CommentDTO> GetCommentAsync(Expression<Func<Comment, bool>> predicate);
 
+        Task<bool> RemoveCommentAsync(int id);
     }
 }

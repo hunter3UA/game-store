@@ -19,7 +19,7 @@ namespace GameStore.API
 {
     public class Startup
     {
-        private IHostEnvironment _env;
+        private readonly IHostEnvironment _env;
 
         public Startup(IHostEnvironment env)
         {
@@ -46,15 +46,15 @@ namespace GameStore.API
                         Version = "v1"
                     });
             });
+
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new AutoMapperConfig());
             });
-
             IMapper mapper = mapperConfig.CreateMapper();
+
             services.AddSingleton<Serilog.ILogger>(Log.Logger);
-            services.AddSingleton(mapper);
-           
+            services.AddSingleton(mapper);    
             services.AddTransient<StoreDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGameService, GameService>();
@@ -88,7 +88,6 @@ namespace GameStore.API
                     options.SwaggerEndpoint(Constants.SWAGGER_URL, Constants.SWAGGER_NAME);
                 });
             }
-
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseRouting();
             app.UseEndpoints(endpoints =>

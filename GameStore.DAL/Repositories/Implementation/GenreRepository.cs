@@ -48,9 +48,9 @@ namespace GameStore.DAL.Repositories.Implementation
             return genreToSearch;
         }
 
-        public async Task<bool> RemoveGenreAsync(int key)
+        public async Task<bool> RemoveGenreAsync(int id)
         {
-            var genreToRemove = await _dbContext.Genres.FirstOrDefaultAsync(g => g.Id == key);
+            var genreToRemove = await _dbContext.Genres.FirstOrDefaultAsync(g => g.Id == id);
             if (genreToRemove != null)
             {
                 genreToRemove.IsDeleted = true;
@@ -62,9 +62,16 @@ namespace GameStore.DAL.Repositories.Implementation
             return false;
         }
 
-        public Task<PlatformType> UpdateGenreAsync()
+        public async Task<Genre> UpdateGenreAsync(Genre genreToUpdate)
         {
-            throw new NotImplementedException();
+            var genre = await _dbContext.Genres.FindAsync(genreToUpdate.Id);
+            if(genre != null)
+            {
+                _dbContext.Entry(genre).CurrentValues.SetValues(genreToUpdate);
+                _dbContext.Entry(genre).State = EntityState.Modified;   
+            }
+
+            return genre;
         }
     }
 }

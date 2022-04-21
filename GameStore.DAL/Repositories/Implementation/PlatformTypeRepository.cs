@@ -49,9 +49,9 @@ namespace GameStore.DAL.Repositories.Implementation
             return listOfPlatforms;
         }
 
-        public async Task<bool> RemovePlatformAsync(int key)
+        public async Task<bool> RemovePlatformAsync(int id)
         {
-            PlatformType platformToDelete = await _dbContext.PlatformTypes.FirstOrDefaultAsync(p=>p.Id == key);
+            PlatformType platformToDelete = await _dbContext.PlatformTypes.FirstOrDefaultAsync(p=>p.Id == id);
             if(platformToDelete != null)
             {
                 platformToDelete.IsDeleted = true;
@@ -63,9 +63,5 @@ namespace GameStore.DAL.Repositories.Implementation
             return false;
         }
 
-        public Task<PlatformType> UpdatePlatformAsync(PlatformType platformToUpdate)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

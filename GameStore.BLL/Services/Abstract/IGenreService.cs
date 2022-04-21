@@ -16,6 +16,6 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<GenreDTO> GetGenreAsync(Expression<Func<Genre,bool>> predicate);
 
-        Task<bool> RemoveGenreAsync(int key);
+        Task<bool> RemoveGenreAsync(int id);
     }
 }
