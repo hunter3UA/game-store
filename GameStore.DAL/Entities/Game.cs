@@ -25,8 +25,5 @@ namespace GameStore.DAL.Entities
 
         [Required]
         public IEnumerable<Genre> Genres { get; set; }
-
-     
-
     }
 }

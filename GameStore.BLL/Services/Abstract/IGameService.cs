@@ -21,7 +21,7 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO);
 
-        Task<byte[]> DownloadFileAsync(string gameKey);
+        Task<byte[]> DownloadGameFileAsync(string gameKey);
    
     }
 }

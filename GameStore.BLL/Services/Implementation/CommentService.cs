@@ -38,6 +38,7 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<CommentDTO> GetCommentAsync(Expression<Func<Comment, bool>> predicate)
         {
             Comment commentToSearch = await _unitOfWork.CommentRepository.GetCommentAsync(predicate);
+
             return _mapper.Map<CommentDTO>(commentToSearch);
         }
 

@@ -10,9 +10,13 @@ namespace GameStore.DAL.Repositories.Abstract
     public interface ICommentRepository
     {
         Task<Comment> AddCommentAsync(Comment commentToAdd);
+
         Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> predicate);
+
         Task<List<Comment>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate);
-        Task<bool> RemoveCommentAsync(int Id);
+
+        Task<bool> RemoveCommentAsync(int id);
+
         Task<Comment> UpdateCommentAsync(Comment commentToUpdate);
     }
 }

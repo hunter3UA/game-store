@@ -85,9 +85,11 @@ namespace GameStore.API.Controllers
         [HttpGet]
         [Route("/game/{gameKey}/download")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<IActionResult> DownloadGameAsync([FromRoute] string gameKey)
+        public async Task<ActionResult> DownloadGameAsync([FromRoute] string gameKey)
         {
-            var data = await _gameService.DownloadFileAsync(gameKey);
+            var data = await _gameService.DownloadGameFileAsync(gameKey);
+            if (data == null)
+                return NotFound($"Game with {gameKey} not exist");
 
             return File(data, Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
         }

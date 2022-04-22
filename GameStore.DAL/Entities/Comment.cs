@@ -8,7 +8,6 @@ namespace GameStore.DAL.Entities
 {
     public class Comment:BaseEntity
     {
-
         [Required,MaxLength(150)]
         public string Name { get; set; }
 
@@ -25,8 +24,5 @@ namespace GameStore.DAL.Entities
 
         [Required, ForeignKey("GameId")]
         public Game Game { get; set; }
-
-
-
     }
 }

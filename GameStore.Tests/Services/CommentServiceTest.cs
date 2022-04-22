@@ -18,10 +18,9 @@ namespace GameStore.Tests.Services
 {
     public class CommentServiceTest
     {
-
         [Theory, AutoDomainData]
-        public async Task AddCommentAsync_IfCommentAdded_ShoudReturnCommentDTO(AddCommentDTO addCommentDTO, Game game,
-          [Frozen]Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, CommentService commentService)
+        public async Task AddCommentAsync_GivenValiedComment_ReturnComment(AddCommentDTO addCommentDTO, Game game,
+          [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, CommentService commentService)
         {
             Comment comment = mapper.Map<Comment>(addCommentDTO);
             var id = 10;
@@ -31,38 +30,61 @@ namespace GameStore.Tests.Services
                     comment.Id = id;
                     return comment;
                 });
+
             var result = await commentService.AddCommentAsync(game.Key, addCommentDTO);
+
             result.Should().BeOfType<CommentDTO>().Which
                 .Id.Should().Be(id);
         }
 
-        [Theory,AutoDomainData]
-        public async Task AddCommentAsync_IfAddCommentDTOIsNull_ShouldReturnException(Game game,
-            [Frozen]Mock<IUnitOfWork> mockUnitOfWork,IMapper mapper, CommentService commentService) 
+        [Theory, AutoDomainData]
+        public async Task AddCommentAsync_GivenNull_ThrowException(Game game,
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, CommentService commentService)
         {
             AddCommentDTO commentToAddDTO = null;
             mockUnitOfWork.Setup(m => m.CommentRepository.AddCommentAsync(It.IsAny<Comment>())).
                 ReturnsAsync(() => new Comment());
+
             Exception shouldBeNotNull = await Record.ExceptionAsync(() => commentService.AddCommentAsync(game.Key, commentToAddDTO));
+
             Assert.NotNull(shouldBeNotNull);
         }
 
         [Theory, AutoDomainData]
-        public async Task GetCommentAsync_IfCommentExsit_ShouldReturnCommentAsync(
+        public async Task GetCommentAsync_ReqestedCommentExsit_ReturnComment(
             Comment comment, Game game, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentServie)
         {
             mockUnitOfWork.Setup(m => m.CommentRepository.GetCommentAsync(
                 It.IsAny<Expression<Func<Comment, bool>>>()
                 )).ReturnsAsync(comment);
-            var result = await commentServie.GetCommentAsync(c=>c.Game.Key==game.Key);
+
+            var result = await commentServie.GetCommentAsync(c => c.Game.Key == game.Key);
+
             result.Should().BeOfType<CommentDTO>().And.NotBeNull();
         }
 
-        //[Theory,AutoDomainData]
-        //public async Task GetCommentAsync_IfCommentNotExist_ShouldReturnNull(
-        //    [Frozen]Mock<IUnitOfWork> mockUnitOfWOrk, CommentService commentService)
-        //{
-           
-        //}
+        [Theory, AutoDomainData]
+        public async Task RemoveCommentAsync_CommentIsNotRemoved_ReturnFalse(
+           [Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentService
+           )
+        {
+            mockUnitOfWork.Setup(m => m.CommentRepository.RemoveCommentAsync(It.IsAny<int>())).ReturnsAsync(false);
+
+            var result = await commentService.RemoveCommentAsync(4);
+
+            Assert.False(result);
+        }
+
+        [Theory, AutoDomainData]
+        public async Task RemoveCommentAsync_CommentRemoved_ReturnTrue(
+           Comment commentToBeRemoved, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentService)
+        {
+            mockUnitOfWork.Setup(m => m.CommentRepository.RemoveCommentAsync(It.IsAny<int>())).ReturnsAsync(true);
+
+            var result = await commentService.RemoveCommentAsync(commentToBeRemoved.Id);
+
+            Assert.True(result);
+        }
+
     }
 }

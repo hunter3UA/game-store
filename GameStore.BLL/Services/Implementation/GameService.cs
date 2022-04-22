@@ -31,21 +31,17 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO)
         {
-            
             Game gameToAdd = _mapper.Map<Game>(gameToAddDTO);
             gameToAdd.Genres = await _unitOfWork.GenreRepository.GetListOfGenresAsync(g => gameToAddDTO.GenresID.Contains(g.Id));
             gameToAdd.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetListOfPlatformTypesAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
-
             if (gameToAdd.Genres.Count() <= 0 || gameToAdd.PlatformTypes.Count() <= 0)
                 throw new Exception("Genres and PlatformTypes can not be empty");
-
             Game addedGame = await _unitOfWork.GameRepository.AddGameAsync(gameToAdd);
             await _unitOfWork.SaveAsync();
-
             if (addedGame != null)
                 _logger.LogInformation($"Game has been added with Id: {addedGame.Id}");
-           
-            return  _mapper.Map<GameDTO>(addedGame);
+
+            return _mapper.Map<GameDTO>(addedGame);
         }
 
         public async Task<List<GameDTO>> GetListOfGamesAsync()
@@ -79,21 +75,22 @@ namespace GameStore.BLL.Services.Implementation
             gameToUpdate.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetListOfPlatformTypesAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
             if (gameToUpdate.PlatformTypes.Count() <= 0 || gameToUpdate.Genres.Count() <= 0)
                 throw new Exception("Genres and PlatformTypes can not be empty");
-            Game updatedGame = await  _unitOfWork.GameRepository.UpdateGameAsync(gameToUpdate);
+            Game updatedGame = await _unitOfWork.GameRepository.UpdateGameAsync(gameToUpdate);
             await _unitOfWork.SaveAsync();
             _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
 
             return _mapper.Map<GameDTO>(gameToUpdate);
-
         }
 
-        public async Task<byte[]> DownloadFileAsync(string gameKey)
+        public async Task<byte[]> DownloadGameFileAsync(string gameKey)
         {
+            var requestedGame = await _unitOfWork.GameRepository.GetGameAsync(g => g.Key == gameKey);
+            if (requestedGame == null)
+                return null;
             string filePath = Path.Combine(_env.ContentRootPath, "wwwroot");
             var bytes = await File.ReadAllBytesAsync(filePath + "\\file.txt");
 
             return bytes;
         }
-       
     }
 }

@@ -29,8 +29,4 @@
     <ProjectReference Include="..\GameStore.API\GameStore.API.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

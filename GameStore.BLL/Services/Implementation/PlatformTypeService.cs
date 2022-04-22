@@ -59,6 +59,5 @@ namespace GameStore.BLL.Services.Implementation
             
             return isRemovedPlatform;
         }
-
     }
 }

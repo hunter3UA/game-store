@@ -14,6 +14,7 @@ namespace GameStore.DAL.Repositories.Implementation
     public class GameRepository : IGameRepository
     {
         private readonly StoreDbContext _dbContext;
+
         public GameRepository(StoreDbContext dbContext)
         {
             _dbContext = dbContext;
