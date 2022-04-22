@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameStore.DAL.Static
+﻿namespace GameStore.DAL.Static
 {
     public class Constants
     {

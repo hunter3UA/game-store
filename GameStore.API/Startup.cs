@@ -30,7 +30,8 @@ namespace GameStore.API
         {
             services.AddControllers(options =>
             {
-                options.CacheProfiles.Add(Constants.CACHING_PROFILE_NAME,
+                options.CacheProfiles.Add(
+                Constants.CACHING_PROFILE_NAME,
                 new CacheProfile()
                 {
                     Duration = Constants.RESPONSE_CACHE_DURATION
@@ -38,7 +39,8 @@ namespace GameStore.API
             });
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1",
+                options.SwaggerDoc(
+                    "v1",
                     new OpenApiInfo
                     {
                         Title = "Swagger GS API",
@@ -54,7 +56,7 @@ namespace GameStore.API
             IMapper mapper = mapperConfig.CreateMapper();
 
             services.AddSingleton<Serilog.ILogger>(Log.Logger);
-            services.AddSingleton(mapper);    
+            services.AddSingleton(mapper);
             services.AddTransient<StoreDbContext>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IGameService, GameService>();
@@ -62,7 +64,6 @@ namespace GameStore.API
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddSingleton<IHostEnvironment>(_env);
-
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -79,6 +80,7 @@ namespace GameStore.API
                      diagnosticContext.Set("RemoteIpAddress", httpContext.Connection.RemoteIpAddress);
                  };
             });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -88,13 +90,13 @@ namespace GameStore.API
                     options.SwaggerEndpoint(Constants.SWAGGER_URL, Constants.SWAGGER_NAME);
                 });
             }
+
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-
         }
     }
 }

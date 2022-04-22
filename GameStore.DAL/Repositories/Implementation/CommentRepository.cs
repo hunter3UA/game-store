@@ -1,17 +1,16 @@
-﻿using GameStore.DAL.Context;
-using GameStore.DAL.Entities;
-using GameStore.DAL.Repositories.Abstract;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
+using GameStore.DAL.Context;
+using GameStore.DAL.Entities;
+using GameStore.DAL.Repositories.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
-    public class CommentRepository:ICommentRepository
+    public class CommentRepository : ICommentRepository
     {
         private readonly StoreDbContext _dbContext;
 
@@ -19,6 +18,7 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             _dbContext = dbContext;
         }
+
         public async Task<Comment> AddCommentAsync(Comment commentToAdd)
         {
             var addedComment = await _dbContext.Comments.AddAsync(commentToAdd);
@@ -28,7 +28,7 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<Comment> GetCommentAsync(Expression<Func<Comment, bool>> predicate)
         {
-            var commentToSearch =  await _dbContext.Comments.Include(c => c.Answers).FirstOrDefaultAsync(predicate);
+            var commentToSearch = await _dbContext.Comments.Include(c => c.Answers).FirstOrDefaultAsync(predicate);
 
             return commentToSearch;
         }
@@ -42,7 +42,7 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<bool> RemoveCommentAsync(int id)
         {
-            Comment commentToRemove = await _dbContext.Comments.FirstOrDefaultAsync(c=>c.Id==id);
+            Comment commentToRemove = await _dbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
             if (commentToRemove != null)
             {
                 commentToRemove.IsDeleted = true;
@@ -51,12 +51,7 @@ namespace GameStore.DAL.Repositories.Implementation
                 return true;
             }
 
-            return false; 
-        }
-
-        public Task<Comment> UpdateCommentAsync(Comment commentToUpdate)
-        {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

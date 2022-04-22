@@ -1,13 +1,11 @@
-﻿using GameStore.DAL.Context;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using GameStore.DAL.Context;
 using GameStore.DAL.Entities;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
@@ -37,6 +35,7 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<Game> UpdateGameAsync(Game gameToUpdate)
         {
             var game = await _dbContext.Games.FindAsync(gameToUpdate.Id);
+
             if (game != null)
             {
                 _dbContext.Entry(game).CurrentValues.SetValues(gameToUpdate);
@@ -55,7 +54,8 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<bool> RemoveGameAsync(string key)
         {
-            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g => g.Key==key);
+            Game gameToRemove = await _dbContext.Games.FirstOrDefaultAsync(g => g.Key == key);
+
             if (gameToRemove != null)
             {
                 gameToRemove.IsDeleted = true;
@@ -66,7 +66,5 @@ namespace GameStore.DAL.Repositories.Implementation
 
             return false;
         }
-
-     
     }
 }

@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities
 {
-    public class Comment:BaseEntity
+    public class Comment : BaseEntity
     {
-        [Required,MaxLength(150)]
+        [Required, MaxLength(150)]
         public string Name { get; set; }
 
-        [Required,MaxLength(10000)]
+        [Required, MaxLength(10000)]
         public string Body { get; set; }
 
         public int? ParentCommentId { get; set; }

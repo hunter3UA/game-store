@@ -3,7 +3,6 @@ using GameStore.DAL.Static;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace GameStore.DAL.Context
 {
@@ -38,6 +37,7 @@ namespace GameStore.DAL.Context
             modelBuilder.Entity<PlatformType>().HasQueryFilter(p => !p.IsDeleted);
             Initialize(modelBuilder);
         }
+
         private void GamesConfigure(EntityTypeBuilder<Game> builder)
         {
             builder.HasQueryFilter(g => !g.IsDeleted);
@@ -50,8 +50,7 @@ namespace GameStore.DAL.Context
                   pg =>
                   {
                       pg.HasKey(pg => new { pg.PlatformTypeId, pg.GameId });
-                  }
-              );
+                  });
             builder
                 .HasMany(gm => gm.Genres)
                 .WithMany(gn => gn.Games)
@@ -61,9 +60,7 @@ namespace GameStore.DAL.Context
                     gg =>
                     {
                         gg.HasKey(gg => new { gg.GenreId, gg.GameId });
-                    }
-              );
-
+                    });
         }
 
         private void Initialize(ModelBuilder modelBuilder)
@@ -84,35 +81,28 @@ namespace GameStore.DAL.Context
                 new Genre { Id = 13, Name = "TPS", ParentGenreId = 11 },
                 new Genre { Id = 14, Name = "Adventure" },
                 new Genre { Id = 15, Name = "Puzzle & Skill" },
-                new Genre { Id = 16, Name = "Misc" }
-            );
+                new Genre { Id = 16, Name = "Misc" });
             modelBuilder.Entity<PlatformType>().HasData(
                 new PlatformType { Id = 1, Type = "Mobile" },
                 new PlatformType { Id = 2, Type = "Browser" },
                 new PlatformType { Id = 3, Type = "Desktop" },
-                new PlatformType { Id = 4, Type = "Console" }
-            );
+                new PlatformType { Id = 4, Type = "Console" });
             modelBuilder.Entity<Game>().HasData(
                 new Game { Id = 1, Name = "Stalker2", Key = "stalker-2", Description = "New part of Stalker" },
-                new Game { Id = 2, Name = "Dying light", Key="dying-light", Description = "Best part" },
-                new Game { Id = 3, Name = "Left 4 Dead", Key="left-4-dead", Description = "Action " }
-                );
+                new Game { Id = 2, Name = "Dying light", Key = "dying-light", Description = "Best part" },
+                new Game { Id = 3, Name = "Left 4 Dead", Key = "left-4-dead", Description = "Action " });
             modelBuilder.Entity<GenresInGames>().HasData(
                 new GenresInGames { GameId = 1, GenreId = 1 },
                 new GenresInGames { GameId = 2, GenreId = 3 },
-                new GenresInGames { GameId = 3, GenreId = 5 }
-                );
+                new GenresInGames { GameId = 3, GenreId = 5 });
             modelBuilder.Entity<PlatformsInGames>().HasData(
                 new PlatformsInGames { GameId = 1, PlatformTypeId = 1 },
                 new PlatformsInGames { GameId = 1, PlatformTypeId = 2 },
                 new PlatformsInGames { GameId = 2, PlatformTypeId = 2 },
-                new PlatformsInGames { GameId = 3, PlatformTypeId = 4 }
-                );
+                new PlatformsInGames { GameId = 3, PlatformTypeId = 4 });
             modelBuilder.Entity<Comment>().HasData(
                 new Comment { Id = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
-                new Comment { Id = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 }
-                );
+                new Comment { Id = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 });
         }
-
     }
 }

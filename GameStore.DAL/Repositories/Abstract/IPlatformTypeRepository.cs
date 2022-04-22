@@ -1,8 +1,8 @@
-﻿using GameStore.DAL.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using GameStore.DAL.Entities;
 
 namespace GameStore.DAL.Repositories.Abstract
 {

@@ -1,14 +1,12 @@
-﻿using GameStore.DAL.Context;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
+using GameStore.DAL.Context;
 
 namespace GameStore.DAL.UoW.Abstract
 {
-    public class UnitOfWork : IUnitOfWork,IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly StoreDbContext _dbContext;
         private ICommentRepository _commentRepository;
@@ -26,9 +24,11 @@ namespace GameStore.DAL.UoW.Abstract
             get
             {
                 if (_commentRepository == null)
+                {
                     _commentRepository = new CommentRepository(_dbContext);
-                return _commentRepository;
+                }
 
+                return _commentRepository;
             }
         }
 
@@ -37,7 +37,10 @@ namespace GameStore.DAL.UoW.Abstract
             get
             {
                 if (_gameRepository == null)
+                {
                     _gameRepository = new GameRepository(_dbContext);
+                }
+
                 return _gameRepository;
             }
         }
@@ -47,7 +50,10 @@ namespace GameStore.DAL.UoW.Abstract
             get
             {
                 if (_genreRepository == null)
+                {
                     _genreRepository = new GenreRepository(_dbContext);
+                }
+
                 return _genreRepository;
             }
         }
@@ -57,13 +63,16 @@ namespace GameStore.DAL.UoW.Abstract
             get
             {
                 if (_platformTypeRepository == null)
+                {
                     _platformTypeRepository = new PlatformTypeRepository(_dbContext);
+                }
+
                 return _platformTypeRepository;
             }
         }
 
         public void Dispose()
-        {       
+        {
             _dbContext.Dispose();
         }
 

@@ -1,15 +1,14 @@
-﻿using GameStore.API.Static;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using GameStore.API.Static;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace GameStore.API.Middleware
 {
@@ -39,6 +38,27 @@ namespace GameStore.API.Middleware
             }
         }
 
+        private static string GetResponseBody(Exception ex, bool isDevelopment, int httpStatusCode)
+        {
+            string errorMessage;
+            if (isDevelopment)
+            {
+                errorMessage = ex.ToString();
+            }
+            else if (httpStatusCode >= (int)HttpStatusCode.InternalServerError)
+            {
+                errorMessage = "Something wrong Happened";
+            }
+            else
+            {
+                errorMessage = ex.Message;
+            }
+
+            errorMessage = JsonConvert.SerializeObject(new { error = errorMessage });
+
+            return errorMessage;
+        }
+
         private Task HandleException(HttpContext context, Exception ex, bool isDevelopment)
         {
             var httpStatusCode = (int)GetCode(ex);
@@ -55,20 +75,6 @@ namespace GameStore.API.Middleware
             var exceptionType = exceptionToHandle.GetType();
 
             return _handledExceptions.TryGetValue(exceptionType, out HttpStatusCode httpCode) ? httpCode : HttpStatusCode.InternalServerError;
-        }
-
-        private static string GetResponseBody(Exception ex, bool isDevelopment, int httpStatusCode)
-        {
-            string errorMessage;
-            if (isDevelopment)
-                errorMessage = ex.ToString();
-            else if (httpStatusCode >= (int)HttpStatusCode.InternalServerError)
-                errorMessage = "Something wrong Happened";
-            else
-                errorMessage = ex.Message;
-            errorMessage = JsonConvert.SerializeObject(new { error = errorMessage });
-
-            return errorMessage;
         }
     }
 }

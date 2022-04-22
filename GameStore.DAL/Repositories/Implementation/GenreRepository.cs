@@ -1,13 +1,12 @@
-﻿using GameStore.DAL.Context;
-using GameStore.DAL.Entities;
-using GameStore.DAL.Repositories.Abstract;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
+using GameStore.DAL.Context;
+using GameStore.DAL.Entities;
+using GameStore.DAL.Repositories.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
@@ -29,21 +28,21 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<List<Genre>> GetListOfGenresAsync(Expression<Func<Genre, bool>> predicate)
         {
-            var listOfGenres =  await _dbContext.Genres.Where(predicate).ToListAsync();
+            var listOfGenres = await _dbContext.Genres.Where(predicate).ToListAsync();
 
             return listOfGenres;
         }
 
         public async Task<List<Genre>> GetListOfGenresAsync()
         {
-            var listOfGenres =  await _dbContext.Genres.ToListAsync();
+            var listOfGenres = await _dbContext.Genres.ToListAsync();
 
             return listOfGenres;
         }
 
         public async Task<Genre> GetGenreAsync(Expression<Func<Genre, bool>> predicate)
         {
-            var genreToSearch =  await _dbContext.Genres.Include(g=>g.SubGenres).FirstOrDefaultAsync(predicate);
+            var genreToSearch = await _dbContext.Genres.Include(g => g.SubGenres).FirstOrDefaultAsync(predicate);
 
             return genreToSearch;
         }
@@ -65,10 +64,10 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<Genre> UpdateGenreAsync(Genre genreToUpdate)
         {
             var genre = await _dbContext.Genres.FindAsync(genreToUpdate.Id);
-            if(genre != null)
+            if (genre != null)
             {
                 _dbContext.Entry(genre).CurrentValues.SetValues(genreToUpdate);
-                _dbContext.Entry(genre).State = EntityState.Modified;   
+                _dbContext.Entry(genre).State = EntityState.Modified;
             }
 
             return genre;

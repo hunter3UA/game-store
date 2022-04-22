@@ -1,13 +1,10 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO;
 using GameStore.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace GameStore.BLL.Mapper
 {
-    public class AutoMapperConfig:Profile
+    public class AutoMapperConfig : Profile
     {
         public AutoMapperConfig()
         {
@@ -21,9 +18,6 @@ namespace GameStore.BLL.Mapper
             CreateMap<UpdateGameDTO, Game>();
             CreateMap<AddPlatformTypeDTO, PlatformType>();
             CreateMap<AddGenreDTO, Genre>();
-       
         }
-
-        
     }
 }

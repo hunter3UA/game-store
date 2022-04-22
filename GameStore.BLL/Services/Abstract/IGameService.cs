@@ -1,11 +1,9 @@
-﻿using GameStore.BLL.DTO;
-using GameStore.DAL.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
+using GameStore.BLL.DTO;
+using GameStore.DAL.Entities;
 
 namespace GameStore.BLL.Services.Abstract
 {
@@ -19,9 +17,6 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<bool> RemoveGameAsync(string key);
 
-        Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO);
-
-        Task<byte[]> DownloadGameFileAsync(string gameKey);
-   
+        Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO); 
     }
 }

@@ -1,25 +1,15 @@
-﻿using AutoFixture;
-using AutoFixture.AutoMoq;
-using AutoFixture.Community.AutoMapper;
+﻿using System;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.BLL.DTO;
-using GameStore.BLL.Mapper;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
-using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace GameStore.Tests.Services
@@ -28,7 +18,10 @@ namespace GameStore.Tests.Services
     {
         [Theory, AutoDomainData]
         public async Task AddGameAsync_GivenValidGameToBeAdded_ReturnGame(
-             AddGameDTO gameToAddDto, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, GameService gameService)
+             AddGameDTO gameToAddDto, 
+             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
+             IMapper mapper, 
+             GameService gameService)
         {
             Game gameToAdd = mapper.Map<Game>(gameToAddDto);
             var id = 15;
@@ -41,13 +34,14 @@ namespace GameStore.Tests.Services
 
             var result = await gameService.AddGameAsync(gameToAddDto);
 
-            result.Should().NotBeNull().And.BeOfType<GameDTO>().Which.
-                Id.Should().Be(id);
+            result.Should().NotBeNull().And.BeOfType<GameDTO>().Which.Id.Should().Be(id);
+        
         }
 
         [Theory, AutoDomainData]
         public async Task AddGameAsync_GivenNull_ThrowException(
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, GameService gameService)
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
+            GameService gameService)
         {
             AddGameDTO gameToAddDTO = null;
             mockUnitOfWork.Setup(m => m.GameRepository.AddGameAsync(It.IsAny<Game>())).ReturnsAsync(new Game());
@@ -59,7 +53,8 @@ namespace GameStore.Tests.Services
 
         [Theory, AutoDomainData]
         public async Task GetListOfGamesAsync_ListExist_ReturnListOfGames(
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, GameService gameService)
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
+            GameService gameService)
         {
             mockUnitOfWork.Setup(m => m.GameRepository.GetListOfGamesAsync());
 
@@ -70,21 +65,25 @@ namespace GameStore.Tests.Services
 
         [Theory, AutoDomainData]
         public async Task GetGameAsync_GivenValidKey_ReturnGame(
-            string Key, Game game, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, GameService gameService)
+            string key, 
+            Game game, 
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
+            GameService gameService)
         {
-            game.Key = Key;
+            game.Key = key;
             mockUnitOfWork.Setup(m => m.GameRepository.GetGameAsync(
-                It.IsAny<Expression<Func<Game, bool>>>()
-                )).ReturnsAsync(game);
+                It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(game);
+                
+            var actualGame = await gameService.GetGameAsync(g => g.Key == key);
 
-            var actualGame = await gameService.GetGameAsync(g => g.Key == Key);
-
-            Assert.Equal(Key, actualGame.Key);
+            Assert.Equal(key, actualGame.Key);
         }
 
         [Theory, AutoDomainData]
         public async Task RemoveGameAsync_GivenValidKey_ReturnTrue(
-            Game game, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, IMapper mapper, GameService gameService)
+            Game game, 
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
+            GameService gameService)
         {
             mockUnitOfWork.Setup(m => m.GameRepository.RemoveGameAsync(It.IsAny<string>())).ReturnsAsync(true);
 
@@ -95,7 +94,10 @@ namespace GameStore.Tests.Services
 
         [Theory, AutoDomainData]
         public async Task UpdateGameAsync_GivenValidGameToBeUpdated_ReturnGame(
-            UpdateGameDTO updateGameDTO, Game existedGame, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, GameService gameService)
+            UpdateGameDTO updateGameDTO, 
+            Game existedGame, 
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
+            GameService gameService)
         {
             mockUnitOfWork.Setup(m => m.GameRepository.UpdateGameAsync(It.IsAny<Game>())).ReturnsAsync(existedGame);
 

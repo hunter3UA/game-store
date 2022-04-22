@@ -1,14 +1,13 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using AutoMapper;
 using GameStore.BLL.DTO;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
 {
@@ -30,8 +29,11 @@ namespace GameStore.BLL.Services.Implementation
             PlatformType platformToAdd = _mapper.Map<PlatformType>(addPlatformDTO);
             PlatformType addedPlatform = await _unitOfWork.PlatformTypeRepository.AddPlatformAsync(platformToAdd);
             await _unitOfWork.SaveAsync();
+
             if (addedPlatform != null)
+            {
                 _logger.LogInformation($"Platform with Id {addedPlatform.Id} has been added");
+            }
 
             return _mapper.Map<PlatformTypeDTO>(addedPlatform);
         }
@@ -52,11 +54,14 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<bool> RemovePlatformAsync(int id)
         {
-            bool isRemovedPlatform= await _unitOfWork.PlatformTypeRepository.RemovePlatformAsync(id);
+            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemovePlatformAsync(id);
             await _unitOfWork.SaveAsync();
+
             if (isRemovedPlatform)
+            {
                 _logger.LogInformation($"Platform with Id {id} has been deleted");
-            
+            }
+
             return isRemovedPlatform;
         }
     }
