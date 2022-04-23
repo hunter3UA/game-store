@@ -1,4 +1,6 @@
-﻿namespace GameStore.API.Static
+﻿using System.IO;
+
+namespace GameStore.API.Static
 {
     public class Constants
     {

@@ -16,15 +16,13 @@ namespace GameStore.BLL.Services.Implementation
     public class GameService : IGameService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IHostEnvironment _env;
         private readonly ILogger<GameService> _logger;
         private readonly IMapper _mapper;
 
-        public GameService(IUnitOfWork unitOfWork, IHostEnvironment env, ILogger<GameService> logger, IMapper mapper)
+        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _env = env;
             _logger = logger;
         }
 

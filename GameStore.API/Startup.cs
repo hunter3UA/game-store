@@ -19,13 +19,6 @@ namespace GameStore.API
 {
     public class Startup
     {
-        private readonly IHostEnvironment _env;
-
-        public Startup(IHostEnvironment env)
-        {
-            _env = env;
-        }
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(options =>
@@ -63,7 +56,6 @@ namespace GameStore.API
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
-            services.AddSingleton<IHostEnvironment>(_env);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)

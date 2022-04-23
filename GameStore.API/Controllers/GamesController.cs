@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
@@ -94,10 +95,11 @@ namespace GameStore.API.Controllers
         [HttpGet]
         [Route("/game/{gameKey}/download")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<ActionResult> DownloadGameAsync([FromRoute] string gameKey)
+        public IActionResult DownloadGameFile([FromRoute] string gameKey)
         {
-            return null;
-            //  return PhysicalFile(,Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
+            string path = Directory.GetCurrentDirectory();
+
+            return PhysicalFile($"{path}\\wwwroot\\Game.txt",Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
         }
     }
 }
