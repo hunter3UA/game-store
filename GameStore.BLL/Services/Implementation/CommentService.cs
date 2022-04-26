@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -26,30 +28,34 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<CommentDTO> AddCommentAsync(string key, AddCommentDTO addCommentDTO)
         {
             Comment commentToAdd = _mapper.Map<Comment>(addCommentDTO);
-            commentToAdd.Game = await _unitOfWork.GameRepository.GetGameAsync(g => g.Key == key);
-            commentToAdd = await _unitOfWork.CommentRepository.AddCommentAsync(commentToAdd);
-            await _unitOfWork.SaveAsync();
-            _logger.LogInformation($"New comment has been added with Id {commentToAdd.GameId}");
 
-            return _mapper.Map<CommentDTO>(commentToAdd);
+            commentToAdd.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == key);
+            Comment addedComment = await _unitOfWork.CommentRepository.AddAsync(commentToAdd);
+            await _unitOfWork.SaveAsync();
+
+            _logger.LogInformation($"New comment has been added with Id {addedComment.GameId}");
+
+            return _mapper.Map<CommentDTO>(addedComment);
         }
 
-        public async Task<CommentDTO> GetCommentAsync(Expression<Func<Comment, bool>> predicate)
+        public async Task<List<CommentDTO>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate)
         {
-            Comment commentToSearch = await _unitOfWork.CommentRepository.GetCommentAsync(predicate);
+            var commentsByGameKey = await _unitOfWork.CommentRepository.GetRangeAsync(predicate,c=>c.Answers);
+            commentsByGameKey = commentsByGameKey.Where(c => c.ParentCommentId == null).ToList();
 
-            return _mapper.Map<CommentDTO>(commentToSearch);
+            return _mapper.Map<List<CommentDTO>>(commentsByGameKey);
         }
 
         public async Task<bool> RemoveCommentAsync(int id)
         {
-            bool isRemovedComment = await _unitOfWork.CommentRepository.RemoveCommentAsync(id);
+            bool isRemovedComment = await _unitOfWork.CommentRepository.RemoveAsync(c => c.Id == id);
             await _unitOfWork.SaveAsync();
+
             if (isRemovedComment)
             {
                 _logger.LogInformation($"Comment with Id {id} has been deleted");
             }
-     
+
             return isRemovedComment;
         }
     }

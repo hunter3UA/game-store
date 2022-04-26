@@ -25,7 +25,7 @@ namespace GameStore.Tests.Services
         {
             Game gameToAdd = mapper.Map<Game>(gameToAddDto);
             var id = 15;
-            mockUnitOfWork.Setup(m => m.GameRepository.AddGameAsync(It.IsAny<Game>())).ReturnsAsync(
+            mockUnitOfWork.Setup(m => m.GameRepository.AddAsync(It.IsAny<Game>())).ReturnsAsync(
                 () =>
                 {
                     gameToAdd.Id = id;
@@ -44,11 +44,11 @@ namespace GameStore.Tests.Services
             GameService gameService)
         {
             AddGameDTO gameToAddDTO = null;
-            mockUnitOfWork.Setup(m => m.GameRepository.AddGameAsync(It.IsAny<Game>())).ReturnsAsync(new Game());
+            mockUnitOfWork.Setup(m => m.GameRepository.AddAsync(It.IsAny<Game>())).ReturnsAsync(new Game());
 
             Exception shouldBeNotNull = await Record.ExceptionAsync(() => gameService.AddGameAsync(gameToAddDTO));
 
-            Assert.NotNull(shouldBeNotNull);
+            shouldBeNotNull.Should().NotBeNull();
         }
 
         [Theory, AutoDomainData]
@@ -56,24 +56,25 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
             GameService gameService)
         {
-            mockUnitOfWork.Setup(m => m.GameRepository.GetListOfGamesAsync());
+            mockUnitOfWork.Setup(m => m.GameRepository.GetListAsync());
 
             var listOfGames = await gameService.GetListOfGamesAsync();
 
-            Assert.NotNull(listOfGames);
+            listOfGames.Should().NotBeNull();
         }
 
         [Theory, AutoDomainData]
         public async Task GetGameAsync_GivenValidKey_ReturnGame(
-            string key, 
-            Game game, 
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
-            GameService gameService)
+             string key,
+             Game game,
+             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+             GameService gameService)
         {
             game.Key = key;
-            mockUnitOfWork.Setup(m => m.GameRepository.GetGameAsync(
-                It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(game);
-                
+            mockUnitOfWork.Setup(m => m.GameRepository.GetAsync(
+                It.IsAny<Expression<Func<Game, bool>>>(), 
+                It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(game);
+
             var actualGame = await gameService.GetGameAsync(g => g.Key == key);
 
             Assert.Equal(key, actualGame.Key);
@@ -85,11 +86,11 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
             GameService gameService)
         {
-            mockUnitOfWork.Setup(m => m.GameRepository.RemoveGameAsync(It.IsAny<string>())).ReturnsAsync(true);
+            mockUnitOfWork.Setup(m => m.GameRepository.RemoveAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(true);
 
             var isDeletedGame = await gameService.RemoveGameAsync(game.Key);
 
-            Assert.True(isDeletedGame);
+            isDeletedGame.Should().BeTrue();
         }
 
         [Theory, AutoDomainData]
@@ -99,11 +100,11 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
             GameService gameService)
         {
-            mockUnitOfWork.Setup(m => m.GameRepository.UpdateGameAsync(It.IsAny<Game>())).ReturnsAsync(existedGame);
+            mockUnitOfWork.Setup(m => m.GameRepository.UpdateAsync(It.IsAny<Game>())).ReturnsAsync(existedGame);
 
             var result = await gameService.UpdateGameAsync(updateGameDTO);
 
-            Assert.Equal(updateGameDTO.Name, result.Name);
+            result.Name.Should().BeEquivalentTo(updateGameDTO.Name);
         }
     }
 }

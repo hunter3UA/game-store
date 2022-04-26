@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GameStore.BLL.DTO;
@@ -10,7 +11,7 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<CommentDTO> AddCommentAsync(string key, AddCommentDTO addCommentDTO);
 
-        Task<CommentDTO> GetCommentAsync(Expression<Func<Comment, bool>> predicate);
+        Task<List<CommentDTO>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate);
 
         Task<bool> RemoveCommentAsync(int id);
     }

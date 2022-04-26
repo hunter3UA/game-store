@@ -1,17 +1,18 @@
 ﻿using System.Threading.Tasks;
+using GameStore.DAL.Entities;
 using GameStore.DAL.Repositories.Abstract;
 
 namespace GameStore.DAL.UoW.Abstract
 {
     public interface IUnitOfWork
     {
-        ICommentRepository CommentRepository { get; }
+        IGenericRepository<Game> GameRepository { get; }
 
-        IPlatformTypeRepository PlatformTypeRepository { get; }
+        IGenericRepository<Genre> GenreRepository { get; }
 
-        IGenreRepository GenreRepository { get; }
+        IGenericRepository<PlatformType> PlatformTypeRepository { get; }
 
-        IGameRepository GameRepository { get; }
+        IGenericRepository<Comment> CommentRepository { get; }
 
         Task SaveAsync();
     }

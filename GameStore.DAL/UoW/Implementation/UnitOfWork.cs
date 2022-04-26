@@ -1,75 +1,36 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GameStore.DAL.Repositories.Abstract;
-using GameStore.DAL.Repositories.Implementation;
 using GameStore.DAL.Context;
+using GameStore.DAL.Entities;
 
 namespace GameStore.DAL.UoW.Abstract
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private readonly StoreDbContext _dbContext;
-        private ICommentRepository _commentRepository;
-        private IGameRepository _gameRepository;
-        private IGenreRepository _genreRepository;
-        private IPlatformTypeRepository _platformTypeRepository;
 
-        public UnitOfWork(StoreDbContext dbContext)
+        public UnitOfWork(
+            StoreDbContext dbContext,
+            IGenericRepository<Game> gameRepository,
+            IGenericRepository<Genre> genreRepository,
+            IGenericRepository<PlatformType> platformTypeRepository,
+            IGenericRepository<Comment> commentRepository)
         {
             _dbContext = dbContext;
+            GameRepository = gameRepository;
+            GenreRepository = genreRepository;
+            PlatformTypeRepository = platformTypeRepository;
+            CommentRepository = commentRepository;
         }
 
-        public ICommentRepository CommentRepository
-        {
-            get
-            {
-                if (_commentRepository == null)
-                {
-                    _commentRepository = new CommentRepository(_dbContext);
-                }
+        public IGenericRepository<Game> GameRepository { get; }
 
-                return _commentRepository;
-            }
-        }
+        public IGenericRepository<Genre> GenreRepository { get; }
 
-        public IGameRepository GameRepository
-        {
-            get
-            {
-                if (_gameRepository == null)
-                {
-                    _gameRepository = new GameRepository(_dbContext);
-                }
+        public IGenericRepository<PlatformType> PlatformTypeRepository { get; }
 
-                return _gameRepository;
-            }
-        }
-
-        public IGenreRepository GenreRepository
-        {
-            get
-            {
-                if (_genreRepository == null)
-                {
-                    _genreRepository = new GenreRepository(_dbContext);
-                }
-
-                return _genreRepository;
-            }
-        }
-
-        public IPlatformTypeRepository PlatformTypeRepository
-        {
-            get
-            {
-                if (_platformTypeRepository == null)
-                {
-                    _platformTypeRepository = new PlatformTypeRepository(_dbContext);
-                }
-
-                return _platformTypeRepository;
-            }
-        }
+        public IGenericRepository<Comment> CommentRepository { get; }
 
         public void Dispose()
         {

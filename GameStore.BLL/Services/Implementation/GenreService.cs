@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -27,8 +28,10 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<GenreDTO> AddGenreAsync(AddGenreDTO addGenreDTO)
         {
             Genre genreToAdd = _mapper.Map<Genre>(addGenreDTO);
-            Genre addedGenre = await _unitOfWork.GenreRepository.AddGenreAsync(genreToAdd);
+
+            Genre addedGenre = await _unitOfWork.GenreRepository.AddAsync(genreToAdd);
             await _unitOfWork.SaveAsync();
+
             if (addedGenre != null)
             {
                 _logger.LogInformation($"Genre with Id {addedGenre.Id} has been added");
@@ -39,21 +42,22 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GenreDTO> GetGenreAsync(Expression<Func<Genre, bool>> predicate)
         {
-            var genreToSearch = await _unitOfWork.GenreRepository.GetGenreAsync(predicate);
+            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(predicate, g=>g.SubGenres);
 
-            return _mapper.Map<GenreDTO>(genreToSearch);
+            return _mapper.Map<GenreDTO>(searchedGenre);
         }
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
-            List<Genre> listOfGenres = await _unitOfWork.GenreRepository.GetListOfGenresAsync();
+            List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g=>g.SubGenres);
+            allGenres = allGenres.Where(g => g.ParentGenreId == null).ToList();
 
-            return _mapper.Map<List<GenreDTO>>(listOfGenres);
+            return _mapper.Map<List<GenreDTO>>(allGenres);
         }
 
         public async Task<bool> RemoveGenreAsync(int id)
         {
-            bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveGenreAsync(id);
+            bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
             await _unitOfWork.SaveAsync();
 
             if (isDeletedGenre)

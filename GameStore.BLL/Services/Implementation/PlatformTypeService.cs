@@ -27,7 +27,8 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<PlatformTypeDTO> AddPlatformTypeAsync(AddPlatformTypeDTO addPlatformDTO)
         {
             PlatformType platformToAdd = _mapper.Map<PlatformType>(addPlatformDTO);
-            PlatformType addedPlatform = await _unitOfWork.PlatformTypeRepository.AddPlatformAsync(platformToAdd);
+
+            PlatformType addedPlatform = await _unitOfWork.PlatformTypeRepository.AddAsync(platformToAdd);
             await _unitOfWork.SaveAsync();
 
             if (addedPlatform != null)
@@ -40,21 +41,21 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<PlatformTypeDTO>> GetListOfPlatformsAsync()
         {
-            var listOfPlatforms = await _unitOfWork.PlatformTypeRepository.GetListOfPlatformTypesAsync();
+            var allPlatforms = await _unitOfWork.PlatformTypeRepository.GetListAsync();
 
-            return _mapper.Map<List<PlatformTypeDTO>>(listOfPlatforms);
+            return _mapper.Map<List<PlatformTypeDTO>>(allPlatforms);
         }
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(Expression<Func<PlatformType, bool>> predicate)
         {
-            var platformType = await _unitOfWork.PlatformTypeRepository.GetPlatformTypeAsync(predicate);
+            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(predicate);
 
-            return _mapper.Map<PlatformTypeDTO>(platformType);
+            return _mapper.Map<PlatformTypeDTO>(searchedPlatform);
         }
 
         public async Task<bool> RemovePlatformAsync(int id)
         {
-            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemovePlatformAsync(id);
+            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p=>p.Id==id);
             await _unitOfWork.SaveAsync();
 
             if (isRemovedPlatform)

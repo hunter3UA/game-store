@@ -19,10 +19,8 @@ namespace GameStore.DAL.Entities
 
         public IEnumerable<Comment> Comments { get; set; }
 
-        [Required]
         public IEnumerable<PlatformType> PlatformTypes { get; set; }
 
-        [Required]
         public IEnumerable<Genre> Genres { get; set; }
     }
 }

@@ -34,16 +34,16 @@ namespace GameStore.API.Controllers
         [HttpGet]
         [Route("/game/{gameKey}/comments")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<IActionResult> GetCommentAsync([FromRoute] string gameKey)
+        public async Task<IActionResult> GetCommentsAsync([FromRoute] string gameKey)
         {
-            var commentByGameKey = await _commentService.GetCommentAsync(c => c.Game.Key == gameKey);
+            var commentsByGameKey = await _commentService.GetListOfCommentsAsync(c => c.Game.Key == gameKey);
 
-            if (commentByGameKey == null)
+            if (commentsByGameKey == null)
             {
-                return NotFound(commentByGameKey);
+                return NotFound(commentsByGameKey);
             }
 
-            return Ok(commentByGameKey);
+            return Ok(commentsByGameKey);
         }
 
         [HttpDelete]

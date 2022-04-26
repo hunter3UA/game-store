@@ -26,7 +26,7 @@ namespace GameStore.Tests.Services
         {
             Genre genreToAdd = mapper.Map<Genre>(addGenreDTO);
             var id = 5;
-            mockUnitOfWork.Setup(m => m.GenreRepository.AddGenreAsync(It.IsAny<Genre>()))
+            mockUnitOfWork.Setup(m => m.GenreRepository.AddAsync(It.IsAny<Genre>()))
                 .ReturnsAsync(() =>
                 {
                     genreToAdd.Id = id;
@@ -44,11 +44,11 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GenreService genreService)
         {
-            mockUnitOfWork.Setup(m => m.GenreRepository.AddGenreAsync(It.IsAny<Genre>())).ReturnsAsync(() => { return null; });
+            mockUnitOfWork.Setup(m => m.GenreRepository.AddAsync(It.IsAny<Genre>())).ReturnsAsync(() => { return null; });
                 
             var result = await genreService.AddGenreAsync(null);
 
-            Assert.Null(result);
+            result.Should().BeNull();
         }
 
         [Theory, AutoDomainData]
@@ -57,7 +57,7 @@ namespace GameStore.Tests.Services
            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
            GenreService genreService)
         {
-            mockUnitOfWork.Setup(m => m.GenreRepository.GetGenreAsync(It.IsAny<Expression<Func<Genre, bool>>>())).ReturnsAsync(genre);
+            mockUnitOfWork.Setup(m => m.GenreRepository.GetAsync(It.IsAny<Expression<Func<Genre, bool>>>())).ReturnsAsync(genre);
 
             var result = await genreService.GetGenreAsync(g => g.Id == genre.Id);
 
@@ -65,11 +65,11 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetListOfGenresAsync_RequestedListNotNull_ShouldReturnListOfGenres(
+        public async Task GetListOfGenresAsync_RequestedListNotNull_ReturnListOfGenres(
            [Frozen] Mock<IUnitOfWork> mockUnitOfWOrk,
            GenreService genreService)
         {
-            mockUnitOfWOrk.Setup(m => m.GenreRepository.GetListOfGenresAsync())
+            mockUnitOfWOrk.Setup(m => m.GenreRepository.GetListAsync())
                 .ReturnsAsync(new List<Genre>());
             var result = await genreService.GetListOfGenresAsync();
             result.Should().BeOfType(typeof(List<GenreDTO>));
@@ -81,22 +81,22 @@ namespace GameStore.Tests.Services
            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
            GenreService genreService)
         {
-            mockUnitOfWork.Setup(m => m.GenreRepository.RemoveGenreAsync(It.IsAny<int>())).ReturnsAsync(true);
+            mockUnitOfWork.Setup(m => m.GenreRepository.RemoveAsync(It.IsAny<Expression<Func<Genre, bool>>>())).ReturnsAsync(true);
 
             var isDeletedGenre = await genreService.RemoveGenreAsync(genre.Id);
 
-            Assert.True(isDeletedGenre);
+            isDeletedGenre.Should().BeTrue();
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveGenreAsync_GenReNotRemoved_ShouldReturnFalse(
+        public async Task RemoveGenreAsync_GenReNotRemoved_ReturnFalse(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, GenreService genreService)
         {
-            mockUnitOfWork.Setup(m => m.GenreRepository.RemoveGenreAsync(It.IsAny<int>())).ReturnsAsync(false);
+            mockUnitOfWork.Setup(m => m.GenreRepository.RemoveAsync(It.IsAny<Expression<Func<Genre, bool>>>())).ReturnsAsync(false);
 
             var result = await genreService.RemoveGenreAsync(4);
 
-            Assert.False(result);
+            result.Should().BeFalse();
         }
     }
 }

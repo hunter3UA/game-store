@@ -12,5 +12,7 @@ namespace GameStore.API.Static
         public const string GAME_FILE_NAME = "Game.txt";
         public const int RESPONSE_CACHE_DURATION = 60;
         public const string CACHING_PROFILE_NAME = "Caching";
+        public const string DB_NAME = "GameStoreDb";
+        public const string JSON_CONFIG_FILE = "appsettings.json";
     }
 }

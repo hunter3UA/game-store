@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
@@ -35,18 +36,18 @@ namespace GameStore.Tests.Controllers
 
         [Theory, AutoDomainData]
         public async Task GetCommentAsync_CommentExist_ReturnOkResult(
-            Comment comment,
+             List<Comment> comments,
             [Frozen] Mock<ICommentService> mockCommentService,
             IMapper mapper,
             [NoAutoProperties] CommentsController commentsController)
         {
-            mockCommentService.Setup(m => m.GetCommentAsync(It.IsAny<Expression<Func<Comment, bool>>>()))
+            mockCommentService.Setup(m => m.GetListOfCommentsAsync(It.IsAny<Expression<Func<Comment, bool>>>()))
                 .ReturnsAsync(() =>
                 {
-                    return mapper.Map<CommentDTO>(comment);
+                    return mapper.Map<List<CommentDTO>>(comments);
                 });
 
-            var result = await commentsController.GetCommentAsync("gameKey");
+            var result = await commentsController.GetCommentsAsync("gameKey");
 
             result.Should().BeOfType<OkObjectResult>();
         }

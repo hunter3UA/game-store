@@ -14,6 +14,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Microsoft.AspNetCore.Mvc;
+using GameStore.DAL.Repositories.Abstract;
+using GameStore.DAL.Repositories.Implementation;
+
 
 namespace GameStore.API
 {
@@ -21,41 +24,7 @@ namespace GameStore.API
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options =>
-            {
-                options.CacheProfiles.Add(
-                Constants.CACHING_PROFILE_NAME,
-                new CacheProfile()
-                {
-                    Duration = Constants.RESPONSE_CACHE_DURATION
-                });
-            });
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc(
-                    "v1",
-                    new OpenApiInfo
-                    {
-                        Title = "Swagger GS API",
-                        Description = "Swagger",
-                        Version = "v1"
-                    });
-            });
-
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new AutoMapperConfig());
-            });
-            IMapper mapper = mapperConfig.CreateMapper();
-
-            services.AddSingleton<Serilog.ILogger>(Log.Logger);
-            services.AddSingleton(mapper);
-            services.AddTransient<StoreDbContext>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IGameService, GameService>();
-            services.AddScoped<IGenreService, GenreService>();
-            services.AddScoped<ICommentService, CommentService>();
-            services.AddScoped<IPlatformTypeService, PlatformTypeService>();
+            ServiceRegister(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -85,10 +54,54 @@ namespace GameStore.API
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseRouting();
+            app.UseCors("AllowOrigin");
+           
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+        }
+
+        private void ServiceRegister(IServiceCollection services)
+        {
+            services.AddControllers(options =>
+            {
+                options.CacheProfiles.Add(
+                Constants.CACHING_PROFILE_NAME,
+                new CacheProfile()
+                {
+                    Duration = Constants.RESPONSE_CACHE_DURATION
+                });
+            });
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(
+                    "v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Swagger GS API",
+                        Description = "Swagger",
+                        Version = "v1"
+                    });
+            });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowOrigin",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            });
+
+            services.AddSingleton<Serilog.ILogger>(Log.Logger);
+            services.AddAutoMapper(typeof(AutoMapperConfig));
+
+            services.AddScoped<StoreDbContext>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();    
+            
+            services.AddScoped<IGameService, GameService>();
+            services.AddScoped<IGenreService, GenreService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IPlatformTypeService, PlatformTypeService>();
         }
     }
 }

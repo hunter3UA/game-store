@@ -20,7 +20,7 @@ namespace GameStore.DAL.Entities
         [Required]
         public int? GameId { get; set; }
 
-        [Required, ForeignKey("GameId")]
+        [ForeignKey("GameId")]
         public Game Game { get; set; }
     }
 }

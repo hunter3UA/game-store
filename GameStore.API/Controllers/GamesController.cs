@@ -4,10 +4,12 @@ using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class GamesController : ControllerBase

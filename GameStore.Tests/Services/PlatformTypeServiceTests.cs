@@ -26,7 +26,7 @@ namespace GameStore.Tests.Services
         {
             PlatformType platform = mapper.Map<PlatformType>(addPlatformTypeDTO);
             var id = 10;
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.AddPlatformAsync(It.IsAny<PlatformType>()))
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.AddAsync(It.IsAny<PlatformType>()))
                 .ReturnsAsync(() =>
                 {
                     platform.Id = id;
@@ -42,7 +42,7 @@ namespace GameStore.Tests.Services
         public async Task GetListOfPlatformsAsync_RequestedListExist_ReturnListOfPlatfoms(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformTypeService)
         {
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.GetListOfPlatformTypesAsync()).ReturnsAsync(new List<PlatformType>());
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.GetListAsync()).ReturnsAsync(new List<PlatformType>());
 
             var listOfPlatforms = await platformTypeService.GetListOfPlatformsAsync();
 
@@ -53,23 +53,23 @@ namespace GameStore.Tests.Services
         public async Task RemovePlatformTypeAsync_PlatformIsNotRemoved_ShouldReturnFalse(
            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
         {
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.RemovePlatformAsync(It.IsAny<int>())).ReturnsAsync(false);
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.RemoveAsync(It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(false);
 
             var result = await platformService.RemovePlatformAsync(4);
 
-            Assert.False(result);
+            result.Should().BeFalse();
         }
 
         [Theory, AutoDomainData]
         public async Task GetPlatformAsync_GivenValidId_ReturnPlatform(
              PlatformType platform, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
         {
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.GetPlatformTypeAsync(
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.GetAsync(
                 It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(platform);
 
             var result = await platformService.GetPlatformAsync(p => p.Id == platform.Id);
 
-            Assert.Equal(platform.Id, result.Id);
+            result.Id.Should().Be(platform.Id);
         }
     }
 }
