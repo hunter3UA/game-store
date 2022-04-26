@@ -47,14 +47,14 @@ namespace GameStore.API.Controllers
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetPlatformAsync([FromRoute] int id)
         {
-            var platformToSearch = await _platformService.GetPlatformAsync(p => p.Id == id);
+            var searchedPlatform = await _platformService.GetPlatformAsync(p => p.Id == id);
 
-            if (platformToSearch == null)
+            if (searchedPlatform == null)
             {
                 return NotFound();
             }
 
-            return Ok(platformToSearch);
+            return Ok(searchedPlatform);
         }
 
         [HttpPut]

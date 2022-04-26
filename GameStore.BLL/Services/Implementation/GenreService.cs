@@ -27,9 +27,9 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GenreDTO> AddGenreAsync(AddGenreDTO addGenreDTO)
         {
-            Genre genreToAdd = _mapper.Map<Genre>(addGenreDTO);
+            Genre mappedGenre = _mapper.Map<Genre>(addGenreDTO);
 
-            Genre addedGenre = await _unitOfWork.GenreRepository.AddAsync(genreToAdd);
+            Genre addedGenre = await _unitOfWork.GenreRepository.AddAsync(mappedGenre);
             await _unitOfWork.SaveAsync();
 
             if (addedGenre != null)

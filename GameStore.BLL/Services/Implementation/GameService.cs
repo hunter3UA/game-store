@@ -27,17 +27,22 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO)
         {
-            Game gameToAdd = _mapper.Map<Game>(gameToAddDTO);
+            Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
 
-            gameToAdd.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresID.Contains(g.Id));
-            gameToAdd.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
+            mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
+            mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
 
-            if (gameToAdd.Genres.Count() <= 0 || gameToAdd.PlatformTypes.Count() <= 0)
+            if (mappedGame.Genres.Count() <= 0)
             {
-                throw new Exception("Game must contain at least 1 existing genre and 1 existing platform type");
+                throw new Exception("Game must contain at least 1 existing genre");
+            }
+            
+            if (mappedGame.PlatformTypes.Count() <= 0)
+            {
+                throw new Exception("Game must contain at least 1 existing platform type");
             }
 
-            Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameToAdd);
+            Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
             await _unitOfWork.SaveAsync();
 
             if (addedGame != null)
@@ -77,22 +82,27 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO)
         {
-            Game gameToUpdate = _mapper.Map<Game>(updateGameDTO);
+            Game mappedGame = _mapper.Map<Game>(updateGameDTO);
 
-            gameToUpdate.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.GenresID.Contains(g.Id));
-            gameToUpdate.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
+            mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.GenresId.Contains(g.Id));
+            mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
 
-            if (gameToUpdate.PlatformTypes.Count() <= 0 || gameToUpdate.Genres.Count() <= 0)
+            if (mappedGame.Genres.Count() <= 0)
             {
-                throw new Exception("Genres and PlatformTypes can not be empty");
+                throw new Exception("Game must contain at least 1 existing genre");
             }
 
-            Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(gameToUpdate);
+            if (mappedGame.PlatformTypes.Count() <= 0)
+            {
+                throw new Exception("Game must contain at least 1 existing platform type");
+            }
+
+            Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
 
-            return _mapper.Map<GameDTO>(gameToUpdate);
+            return _mapper.Map<GameDTO>(updatedGame);
         }
     }
 }

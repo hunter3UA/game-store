@@ -12,7 +12,7 @@ namespace GameStore.BLL.DTO
 
         public string Key { get; set; }
 
-        public int[] GenresID { get; set; }
+        public int[] GenresId { get; set; }
 
         public int[] PlatformsId { get; set; }
     }

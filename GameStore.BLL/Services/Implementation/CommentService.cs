@@ -27,10 +27,10 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<CommentDTO> AddCommentAsync(string key, AddCommentDTO addCommentDTO)
         {
-            Comment commentToAdd = _mapper.Map<Comment>(addCommentDTO);
+            Comment mappedComment = _mapper.Map<Comment>(addCommentDTO);
 
-            commentToAdd.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == key);
-            Comment addedComment = await _unitOfWork.CommentRepository.AddAsync(commentToAdd);
+            mappedComment.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == key);
+            Comment addedComment = await _unitOfWork.CommentRepository.AddAsync(mappedComment);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"New comment has been added with Id {addedComment.GameId}");

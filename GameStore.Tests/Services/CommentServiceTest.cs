@@ -21,9 +21,9 @@ namespace GameStore.Tests.Services
         public async Task AddCommentAsync_GivenValiedComment_ReturnComment(
             AddCommentDTO addCommentDTO,
             Game game,
-          [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-          IMapper mapper,
-          CommentService commentService)
+           [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+           IMapper mapper,
+           CommentService commentService)
         {
             Comment comment = mapper.Map<Comment>(addCommentDTO);
             var id = 10;

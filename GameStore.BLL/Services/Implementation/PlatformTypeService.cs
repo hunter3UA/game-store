@@ -26,9 +26,9 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<PlatformTypeDTO> AddPlatformTypeAsync(AddPlatformTypeDTO addPlatformDTO)
         {
-            PlatformType platformToAdd = _mapper.Map<PlatformType>(addPlatformDTO);
+            PlatformType mappedPlatform = _mapper.Map<PlatformType>(addPlatformDTO);
 
-            PlatformType addedPlatform = await _unitOfWork.PlatformTypeRepository.AddAsync(platformToAdd);
+            PlatformType addedPlatform = await _unitOfWork.PlatformTypeRepository.AddAsync(mappedPlatform);
             await _unitOfWork.SaveAsync();
 
             if (addedPlatform != null)
