@@ -57,7 +57,7 @@ namespace GameStore.Tests.Controllers
             [Frozen] Mock<IGenreService> mockGenreService, 
             [NoAutoProperties] GenresController genresController)
         {
-            mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<Expression<Func<Genre, bool>>>()))
+            mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<int>()))
                 .ReturnsAsync(() => { return null; });
 
             var result = await genresController.GetGenreAsync(100);
@@ -72,7 +72,7 @@ namespace GameStore.Tests.Controllers
             [Frozen] Mock<IGenreService> mockGenreService,
             [NoAutoProperties] GenresController genresController)
         {
-            mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<Expression<Func<Genre, bool>>>()))
+            mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<int>()))
                 .ReturnsAsync(() => { return mapper.Map<GenreDTO>(genre); });
             var result = await genresController.GetGenreAsync(genre.Id);
 

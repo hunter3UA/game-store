@@ -29,6 +29,7 @@ namespace GameStore.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
@@ -51,8 +52,7 @@ namespace GameStore.API
                     options.SwaggerEndpoint(Constants.SWAGGER_URL, Constants.SWAGGER_NAME);
                 });
             }
-
-            app.UseMiddleware<ErrorHandlingMiddleware>();
+      
             app.UseRouting();
             app.UseCors("AllowOrigin");
            

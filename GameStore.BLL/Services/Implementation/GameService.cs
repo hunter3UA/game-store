@@ -60,9 +60,9 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<List<GameDTO>>(allGames);
         }
 
-        public async Task<GameDTO> GetGameAsync(Expression<Func<Game, bool>> predicate)
+        public async Task<GameDTO> GetGameAsync(string gameKey)
         {
-            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(predicate, p=>p.PlatformTypes, g=>g.Genres);
+            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game=>game.Key==gameKey, p=>p.PlatformTypes, g=>g.Genres);
 
             return _mapper.Map<GameDTO>(searchedGame);
         }
@@ -97,7 +97,7 @@ namespace GameStore.BLL.Services.Implementation
                 throw new Exception("Game must contain at least 1 existing platform type");
             }
 
-            Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame);
+            Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g=>g.Genres,p=>p.PlatformTypes);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");

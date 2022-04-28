@@ -56,7 +56,7 @@ namespace GameStore.API.Controllers
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetGameAsync([FromRoute] string key)
         {
-            var gameByKey = await _gameService.GetGameAsync(g => g.Key == key);
+            var gameByKey = await _gameService.GetGameAsync(key);
 
             if (gameByKey == null)
             {

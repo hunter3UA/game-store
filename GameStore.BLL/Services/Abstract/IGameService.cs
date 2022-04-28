@@ -13,7 +13,7 @@ namespace GameStore.BLL.Services.Abstract
         
         Task<List<GameDTO>> GetListOfGamesAsync();
 
-        Task<GameDTO> GetGameAsync(Expression<Func<Game, bool>> predicate);
+        Task<GameDTO> GetGameAsync(string gameKey);
 
         Task<bool> RemoveGameAsync(string key);
 

@@ -57,7 +57,7 @@ namespace GameStore.Tests.Controllers
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
         {
-            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<Expression<Func<Game, bool>>>()))
+            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<string>()))
                 .ReturnsAsync(() =>
                 {
                     return mapper.Map<GameDTO>(game);
@@ -72,7 +72,7 @@ namespace GameStore.Tests.Controllers
         public async Task GetGameAsync_GameNotExist_ReturnNotFoundResult(
             [Frozen] Mock<IGameService> mockGameService, [NoAutoProperties] GamesController gamesController)
         {
-            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<Expression<Func<Game, bool>>>()))
+            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<string>()))
                 .ReturnsAsync(() => { return null; });
 
             var result = await gamesController.GetGameAsync("testKey");

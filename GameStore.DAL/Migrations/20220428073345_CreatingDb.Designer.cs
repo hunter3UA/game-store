@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    [Migration("20220420163119_CreatingDb")]
+    [Migration("20220428073345_CreatingDb")]
     partial class CreatingDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,7 +103,10 @@ namespace GameStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name", "Key")
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Games");

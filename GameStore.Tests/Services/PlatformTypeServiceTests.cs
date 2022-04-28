@@ -67,7 +67,7 @@ namespace GameStore.Tests.Services
             mockUnitOfWork.Setup(m => m.PlatformTypeRepository.GetAsync(
                 It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(platform);
 
-            var result = await platformService.GetPlatformAsync(p => p.Id == platform.Id);
+            var result = await platformService.GetPlatformAsync(platform.Id);
 
             result.Id.Should().Be(platform.Id);
         }

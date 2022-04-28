@@ -231,9 +231,15 @@ namespace GameStore.DAL.Migrations
                 column: "ParentCommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_Name_Key",
+                name: "IX_Games_Key",
                 table: "Games",
-                columns: new[] { "Name", "Key" },
+                column: "Key",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_Name",
+                table: "Games",
+                column: "Name",
                 unique: true);
 
             migrationBuilder.CreateIndex(

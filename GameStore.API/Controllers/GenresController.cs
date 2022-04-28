@@ -52,7 +52,7 @@ namespace GameStore.API.Controllers
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetGenreAsync([FromQuery] int id)
         {
-            var genreByKey = await _genreService.GetGenreAsync(g => g.Id == id);
+            var genreByKey = await _genreService.GetGenreAsync(id);
 
             if (genreByKey == null)
             {

@@ -13,7 +13,7 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<List<PlatformTypeDTO>> GetListOfPlatformsAsync();
 
-        Task<PlatformTypeDTO> GetPlatformAsync(Expression<Func<PlatformType, bool>> predicate);
+        Task<PlatformTypeDTO> GetPlatformAsync(int id);
 
         Task<bool> RemovePlatformAsync(int id);
     }

@@ -48,10 +48,11 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<List<TEntity>> GetRangeAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
-            var rangeOfEntities = await query.Where(predicate).ToListAsync();
-
+            var rangeOfEntities = await _dbSet.Where(predicate).ToListAsync();
+            
             return rangeOfEntities;
         }
+
 
         public async Task<bool> RemoveAsync(Expression<Func<TEntity,bool>> predicate)
         {
@@ -68,12 +69,23 @@ namespace GameStore.DAL.Repositories.Implementation
             return false;
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity entityToUpdate)
+        public async Task<TEntity> UpdateAsync(TEntity entityToUpdate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
+            var query = Include(includeProperties);
             var entity = await _dbSet.FirstOrDefaultAsync(e => e.Id == entityToUpdate.Id);
 
             if (entity != null)
             {
+                foreach(var navEntity in _dbContext.Entry(entityToUpdate).Navigations)
+                {
+                    if (navEntity.CurrentValue != null)
+                    {
+                        var navEntityName = navEntity.Metadata.Name;
+                        var navExist = _dbContext.Entry(entity).Navigation(navEntityName);
+                        await navExist.LoadAsync();
+                        navExist.CurrentValue = navEntity.CurrentValue;
+                    }
+                }
                 _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
                 _dbContext.Entry(entity).State = EntityState.Modified;
             }

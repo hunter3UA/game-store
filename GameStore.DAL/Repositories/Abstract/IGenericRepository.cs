@@ -19,6 +19,6 @@ namespace GameStore.DAL.Repositories.Abstract
 
         Task<bool> RemoveAsync(Expression<Func<TEntity, bool>> predicate);
 
-        Task<TEntity> UpdateAsync(TEntity entityToUpdate);
+        Task<TEntity> UpdateAsync(TEntity entityToUpdate, params Expression<Func<TEntity, object>>[] includeProperties);
     }
 }

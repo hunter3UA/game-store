@@ -36,7 +36,7 @@ namespace GameStore.API.Controllers
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetCommentsAsync([FromRoute] string gameKey)
         {
-            var commentsByGameKey = await _commentService.GetListOfCommentsAsync(c => c.Game.Key == gameKey);
+            var commentsByGameKey = await _commentService.GetListOfCommentsAsync(c => c.Game.Key == gameKey && c.ParentCommentId==null);
 
             if (commentsByGameKey == null)
             {

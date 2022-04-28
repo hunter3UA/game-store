@@ -1,11 +1,12 @@
-﻿using System; 
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.DAL.Entities
 {
-    [Index("Name", "Key", IsUnique = true)]
+    [Index(nameof(Name), IsUnique = true)]
+    [Index(nameof(Key), IsUnique = true)]
     public class Game : BaseEntity
     {
         [Required, MaxLength(500)]

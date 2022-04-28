@@ -46,9 +46,9 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<List<PlatformTypeDTO>>(allPlatforms);
         }
 
-        public async Task<PlatformTypeDTO> GetPlatformAsync(Expression<Func<PlatformType, bool>> predicate)
+        public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
         {
-            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(predicate);
+            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p=>p.Id==id);
 
             return _mapper.Map<PlatformTypeDTO>(searchedPlatform);
         }

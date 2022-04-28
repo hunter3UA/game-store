@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
 using GameStore.BLL.Services.Abstract;
@@ -47,7 +46,7 @@ namespace GameStore.API.Controllers
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetPlatformAsync([FromRoute] int id)
         {
-            var searchedPlatform = await _platformService.GetPlatformAsync(p => p.Id == id);
+            var searchedPlatform = await _platformService.GetPlatformAsync(id);
 
             if (searchedPlatform == null)
             {

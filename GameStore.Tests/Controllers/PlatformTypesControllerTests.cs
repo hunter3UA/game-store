@@ -59,7 +59,7 @@ namespace GameStore.Tests.Controllers
             [Frozen] Mock<IPlatformTypeService> mockPlatformService, 
             [NoAutoProperties] PlatformTypesController platformsController)
         {
-            mockPlatformService.Setup(m => m.GetPlatformAsync(It.IsAny<Expression<Func<PlatformType, bool>>>()))
+            mockPlatformService.Setup(m => m.GetPlatformAsync(It.IsAny<int>()))
                 .ReturnsAsync(() =>
                 {
                     return mapper.Map<PlatformTypeDTO>(platformType);

@@ -59,7 +59,7 @@ namespace GameStore.Tests.Services
         {
             mockUnitOfWork.Setup(m => m.GenreRepository.GetAsync(It.IsAny<Expression<Func<Genre, bool>>>())).ReturnsAsync(genre);
 
-            var result = await genreService.GetGenreAsync(g => g.Id == genre.Id);
+            var result = await genreService.GetGenreAsync(genre.Id);
 
             result.Should().BeOfType<GenreDTO>().And.NotBeNull();
         }

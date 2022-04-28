@@ -75,7 +75,7 @@ namespace GameStore.Tests.Services
                 It.IsAny<Expression<Func<Game, bool>>>(), 
                 It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(game);
 
-            var actualGame = await gameService.GetGameAsync(g => g.Key == key);
+            var actualGame = await gameService.GetGameAsync(key);
 
             Assert.Equal(key, actualGame.Key);
         }
@@ -96,11 +96,12 @@ namespace GameStore.Tests.Services
         [Theory, AutoDomainData]
         public async Task UpdateGameAsync_GivenValidGameToBeUpdated_ReturnGame(
             UpdateGameDTO updateGameDTO, 
-            Game existedGame, 
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, 
             GameService gameService)
         {
-            mockUnitOfWork.Setup(m => m.GameRepository.UpdateAsync(It.IsAny<Game>())).ReturnsAsync(existedGame);
+            mockUnitOfWork.Setup(m => m.GameRepository.UpdateAsync(
+                It.IsAny<Game>(),
+                It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(()=> { return new Game { Name = updateGameDTO.Name }; } );
 
             var result = await gameService.UpdateGameAsync(updateGameDTO);
 

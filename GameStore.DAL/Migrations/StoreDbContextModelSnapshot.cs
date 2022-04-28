@@ -101,7 +101,10 @@ namespace GameStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name", "Key")
+                    b.HasIndex("Key")
+                        .IsUnique();
+
+                    b.HasIndex("Name")
                         .IsUnique();
 
                     b.ToTable("Games");

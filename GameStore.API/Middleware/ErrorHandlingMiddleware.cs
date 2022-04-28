@@ -31,11 +31,11 @@ namespace GameStore.API.Middleware
             {
                 await _next(context);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                await HandleException(context, ex, env.IsDevelopment());
-                _logger.LogError($"Error: {ex.Message}");
-            }
+                await HandleException(context, e, env.IsDevelopment());
+                _logger.LogError($"Error: {e.Message}");
+            }  
         }
 
         private static string GetResponseBody(Exception ex, bool isDevelopment, int httpStatusCode)

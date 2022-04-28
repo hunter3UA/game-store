@@ -40,8 +40,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<CommentDTO>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate)
         {
-            var commentsByGameKey = await _unitOfWork.CommentRepository.GetRangeAsync(predicate,c=>c.Answers);
-            commentsByGameKey = commentsByGameKey.Where(c => c.ParentCommentId == null).ToList();
+            var commentsByGameKey = await _unitOfWork.CommentRepository.GetRangeAsync(predicate,c=>c.Answers );
 
             return _mapper.Map<List<CommentDTO>>(commentsByGameKey);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace GameStore.BLL.DTO
@@ -14,8 +15,10 @@ namespace GameStore.BLL.DTO
 
         public string Key { get; set; }
 
+        [Required]
         public int[] GenresId { get; set; }
 
+        [Required]
         public int[] PlatformsId { get; set; }
     }
 }

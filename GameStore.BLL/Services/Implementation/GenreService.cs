@@ -40,9 +40,9 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<GenreDTO>(addedGenre);
         }
 
-        public async Task<GenreDTO> GetGenreAsync(Expression<Func<Genre, bool>> predicate)
+        public async Task<GenreDTO> GetGenreAsync(int id)
         {
-            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(predicate, g=>g.SubGenres);
+            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre=>genre.Id==id, g=>g.SubGenres);
 
             return _mapper.Map<GenreDTO>(searchedGenre);
         }
