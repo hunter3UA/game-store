@@ -20,6 +20,12 @@ namespace GameStore.DAL.Context
 
         public DbSet<PlatformsInGames> PlatformsInGames { get; set; }
 
+        public DbSet<Publisher> Publishers { get; set; }
+
+        public DbSet<OrderDetails> OrderDetails { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfiguration dbConfig = new ConfigurationBuilder()
@@ -33,8 +39,10 @@ namespace GameStore.DAL.Context
             modelBuilder.Entity<Game>(GamesConfigure);
             modelBuilder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
             modelBuilder.Entity<Genre>().HasQueryFilter(g => !g.IsDeleted);
-            modelBuilder.Entity<PlatformType>().HasQueryFilter(g => !g.IsDeleted);
             modelBuilder.Entity<PlatformType>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Publisher>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<Order>().HasQueryFilter(p => !p.IsDeleted);
+            modelBuilder.Entity<OrderDetails>().HasQueryFilter(p => !p.IsDeleted);
             Initialize(modelBuilder);
         }
 
@@ -65,6 +73,9 @@ namespace GameStore.DAL.Context
 
         private void Initialize(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Publisher>().HasData(
+              new Publisher { Id = 1, CompanyName = "DeepSiler", Description = "Desc of Publisher 1 ", HomePage = "Home" },
+              new Publisher { Id = 2, CompanyName = "GSC", Description = "Desc of Publisher 2 ", HomePage = "Home2" });
             modelBuilder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Strategy" },
                 new Genre { Id = 2, Name = "RTS", ParentGenreId = 1 },
@@ -88,9 +99,9 @@ namespace GameStore.DAL.Context
                 new PlatformType { Id = 3, Type = "Desktop" },
                 new PlatformType { Id = 4, Type = "Console" });
             modelBuilder.Entity<Game>().HasData(
-                new Game { Id = 1, Name = "Stalker2", Key = "stalker-2", Description = "New part of Stalker" },
-                new Game { Id = 2, Name = "Dying light", Key = "dying-light", Description = "Best part" },
-                new Game { Id = 3, Name = "Left 4 Dead", Key = "left-4-dead", Description = "Action " });
+                new Game { Id = 1, Name = "Stalker2", Key = "stalker-2", Description = "New part of Stalker", PublisherId = 2, UnitsInStock = 10, Price = 70 },
+                new Game { Id = 2, Name = "Dying light", Key = "dying-light", Description = "Best part", PublisherId = 1, UnitsInStock = 0, Price = 50 },
+                new Game { Id = 3, Name = "Left 4 Dead", Key = "left-4-dead", Description = "Action ", PublisherId = 2, UnitsInStock = 3, Price = 100 });
             modelBuilder.Entity<GenresInGames>().HasData(
                 new GenresInGames { GameId = 1, GenreId = 1 },
                 new GenresInGames { GameId = 2, GenreId = 3 },
@@ -103,6 +114,13 @@ namespace GameStore.DAL.Context
             modelBuilder.Entity<Comment>().HasData(
                 new Comment { Id = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
                 new Comment { Id = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 });
+            modelBuilder.Entity<Order>().HasData(
+                new Order { Id = 1, CustomerId = 1, },
+                new Order { Id = 2, CustomerId = 2, });
+            modelBuilder.Entity<OrderDetails>().HasData(
+                new OrderDetails { Id = 1, GameId = 1, OrderId = 1, Price = 100, Quantity = 1, Discount = 10 },
+                new OrderDetails { Id = 2, GameId = 2, OrderId = 1, Price = 70, Quantity = 1, Discount = 10 },
+                new OrderDetails { Id = 3, GameId = 2, OrderId = 2, Price = 70, Quantity = 1, Discount = 10 });
         }
     }
 }

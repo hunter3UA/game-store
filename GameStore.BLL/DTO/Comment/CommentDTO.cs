@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameStore.BLL.DTO
+namespace GameStore.BLL.DTO.Comment
 {
     public class CommentDTO
     {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GameStore.BLL.DTO;
-using GameStore.DAL.Entities;
+using GameStore.BLL.DTO.Game;
 
 namespace GameStore.BLL.Services.Abstract
 {
@@ -15,7 +13,7 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<GameDTO> GetGameAsync(string gameKey);
 
-        Task<bool> RemoveGameAsync(string key);
+        Task<bool> RemoveGameAsync(int id);
 
         Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO); 
     }

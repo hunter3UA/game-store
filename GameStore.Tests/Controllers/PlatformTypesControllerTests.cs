@@ -7,6 +7,7 @@ using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.Tests.Attributes;

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.BLL.DTO
+namespace GameStore.BLL.DTO.Game
 {
     public class AddGameDTO
     {
@@ -15,5 +15,13 @@ namespace GameStore.BLL.DTO
 
         [Required]
         public int[] PlatformsId { get; set; }
+
+        public decimal Price { get; set; }
+
+        public bool Discounted { get; set; }
+
+        public short UnitsInStock { get; set; }
+
+        public int PublisherId { get; set; }
     }
 }

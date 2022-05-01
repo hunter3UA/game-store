@@ -2,11 +2,14 @@
 using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class GenresController : ControllerBase
@@ -33,7 +36,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/genres/getall")]
+        [Route("/genres")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetAllGenresAsync()
         {
@@ -48,9 +51,9 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/genres")]
+        [Route("/genres/{id}")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<IActionResult> GetGenreAsync([FromQuery] int id)
+        public async Task<IActionResult> GetGenreAsync([FromRoute] int id)
         {
             var genreByKey = await _genreService.GetGenreAsync(id);
 
@@ -64,7 +67,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("/genres/remove")]
-        public async Task<IActionResult> RemoveGenreAsync([FromQuery] int id)
+        public async Task<IActionResult> RemoveGenreAsync([FromRoute] int id)
         {
             var isRemovedGenre = await _genreService.RemoveGenreAsync(id);
 

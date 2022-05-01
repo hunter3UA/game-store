@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GameStore.BLL.DTO;
-using GameStore.DAL.Entities;
+using GameStore.BLL.DTO.Genre;
 
 namespace GameStore.BLL.Services.Abstract
 {

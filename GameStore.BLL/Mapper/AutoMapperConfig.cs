@@ -1,5 +1,10 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Comment;
+using GameStore.BLL.DTO.Game;
+using GameStore.BLL.DTO.Genre;
+using GameStore.BLL.DTO.PlatformType;
+using GameStore.BLL.DTO.Publisher;
 using GameStore.DAL.Entities;
 
 namespace GameStore.BLL.Mapper
@@ -18,6 +23,8 @@ namespace GameStore.BLL.Mapper
             CreateMap<UpdateGameDTO, Game>();
             CreateMap<AddPlatformTypeDTO, PlatformType>();
             CreateMap<AddGenreDTO, Genre>();
+            CreateMap<AddPublisherDTO, Publisher>();
+            CreateMap<Publisher, PublisherDTO>();
         }
     }
 }

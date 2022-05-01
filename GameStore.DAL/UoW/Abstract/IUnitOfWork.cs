@@ -14,6 +14,8 @@ namespace GameStore.DAL.UoW.Abstract
 
         IGenericRepository<Comment> CommentRepository { get; }
 
+        IGenericRepository<Publisher> PublisherRepository { get; }
+
         Task SaveAsync();
     }
 }

@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -63,10 +64,6 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedGenre)
             {
                 _logger.LogInformation($"Genre with Id: {id} has been deleted");
-            }
-            else
-            {
-                _logger.LogInformation($"Genre has not been deleted");
             }
 
             return isDeletedGenre;

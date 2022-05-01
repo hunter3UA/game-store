@@ -15,13 +15,15 @@ namespace GameStore.DAL.UoW.Abstract
             IGenericRepository<Game> gameRepository,
             IGenericRepository<Genre> genreRepository,
             IGenericRepository<PlatformType> platformTypeRepository,
-            IGenericRepository<Comment> commentRepository)
+            IGenericRepository<Comment> commentRepository,
+            IGenericRepository<Publisher> publisherRepository)
         {
             _dbContext = dbContext;
             GameRepository = gameRepository;
             GenreRepository = genreRepository;
             PlatformTypeRepository = platformTypeRepository;
             CommentRepository = commentRepository;
+            PublisherRepository = publisherRepository;
         }
 
         public IGenericRepository<Game> GameRepository { get; }
@@ -31,6 +33,8 @@ namespace GameStore.DAL.UoW.Abstract
         public IGenericRepository<PlatformType> PlatformTypeRepository { get; }
 
         public IGenericRepository<Comment> CommentRepository { get; }
+
+        public IGenericRepository<Publisher> PublisherRepository { get; }
 
         public void Dispose()
         {

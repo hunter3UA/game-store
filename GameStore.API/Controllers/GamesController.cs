@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +49,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(listOfGames);
+            return Ok(listOfGames);    
         }
 
         [HttpGet]
@@ -81,17 +82,18 @@ namespace GameStore.API.Controllers
         }
 
         [HttpDelete]
-        [Route("/games/remove/{key}")]
-        public async Task<IActionResult> RemoveGameAsync([FromRoute] string key)
+        [Route("/games/remove/{id}")]
+        public async Task<IActionResult> RemoveGameAsync([FromRoute] int  id)
         {
-            bool isRemovedGame = await _gameService.RemoveGameAsync(key);
+            bool isRemovedGame = await _gameService.RemoveGameAsync(id);
 
             if (!isRemovedGame)
             {
                 return NotFound(isRemovedGame);
             }
 
-            return Ok($"{isRemovedGame}. Game with Id {key} has been deleted");
+            return new JsonResult($"{isRemovedGame}. Game with Id {id} has been deleted");
+            
         }
 
         [HttpGet]

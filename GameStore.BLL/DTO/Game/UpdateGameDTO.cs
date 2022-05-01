@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.BLL.DTO
+namespace GameStore.BLL.DTO.Game
 {
     public class UpdateGameDTO
     {

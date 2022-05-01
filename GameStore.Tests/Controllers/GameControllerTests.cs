@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Web.Http.Results;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.Tests.Attributes;
@@ -82,13 +80,13 @@ namespace GameStore.Tests.Controllers
 
         [Theory, AutoDomainData]
         public async Task RemoveGameAsync_GameRemoved_ReturnOkResult(
-            string key,
+            int id,
             [Frozen] Mock<IGameService> mockGameService, 
             [NoAutoProperties] GamesController gamesController)
         {
-            mockGameService.Setup(m => m.RemoveGameAsync(It.IsAny<string>())).ReturnsAsync(true);
+            mockGameService.Setup(m => m.RemoveGameAsync(It.IsAny<int>())).ReturnsAsync(true);
 
-            var result = await gamesController.RemoveGameAsync(key);
+            var result = await gamesController.RemoveGameAsync(id);
 
             result.Should().BeOfType<OkObjectResult>();
         }

@@ -4,14 +4,16 @@ using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220501081941_UpdateOrderDetailTableName")]
+    partial class UpdateOrderDetailTableName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,14 +356,14 @@ namespace GameStore.DAL.Migrations
                             Id = 1,
                             CustomerId = 1,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 1, 11, 59, 55, 277, DateTimeKind.Local).AddTicks(5770)
+                            OrderDate = new DateTime(2022, 5, 1, 11, 19, 40, 859, DateTimeKind.Local).AddTicks(7042)
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 1, 11, 59, 55, 279, DateTimeKind.Local).AddTicks(8191)
+                            OrderDate = new DateTime(2022, 5, 1, 11, 19, 40, 864, DateTimeKind.Local).AddTicks(4277)
                         });
                 });
 
@@ -544,9 +546,6 @@ namespace GameStore.DAL.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CompanyName")
-                        .IsUnique();
 
                     b.ToTable("Publishers");
 

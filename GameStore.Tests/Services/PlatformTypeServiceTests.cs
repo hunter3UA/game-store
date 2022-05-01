@@ -6,6 +6,7 @@ using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;

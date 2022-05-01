@@ -4,14 +4,16 @@ using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220428140852_AddedEntities")]
+    partial class AddedEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,18 +356,18 @@ namespace GameStore.DAL.Migrations
                             Id = 1,
                             CustomerId = 1,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 1, 11, 59, 55, 277, DateTimeKind.Local).AddTicks(5770)
+                            OrderDate = new DateTime(2022, 4, 28, 17, 8, 52, 61, DateTimeKind.Local).AddTicks(3801)
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 1, 11, 59, 55, 279, DateTimeKind.Local).AddTicks(8191)
+                            OrderDate = new DateTime(2022, 4, 28, 17, 8, 52, 63, DateTimeKind.Local).AddTicks(4275)
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetails", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -545,9 +547,6 @@ namespace GameStore.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyName")
-                        .IsUnique();
-
                     b.ToTable("Publishers");
 
                     b.HasData(
@@ -621,7 +620,7 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetails", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetail", b =>
                 {
                     b.HasOne("GameStore.DAL.Entities.Game", "Game")
                         .WithMany("OrderDetails")

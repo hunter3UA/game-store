@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -67,14 +67,14 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<GameDTO>(searchedGame);
         }
 
-        public async Task<bool> RemoveGameAsync(string key)
+        public async Task<bool> RemoveGameAsync(int id)
         {
-            bool isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key == key);
+            bool isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Id==id);
             await _unitOfWork.SaveAsync();
 
             if (isRemovedGame)
             {
-                _logger.LogInformation($"Game with Key {key} has been deleted");
+                _logger.LogInformation($"Game with Key {id} has been deleted");
             }
 
             return isRemovedGame;

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/platformTypes/all")]
+        [Route("/platformTypes")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetListOfPlatformsAsync()
         {

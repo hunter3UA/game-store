@@ -102,6 +102,7 @@ namespace GameStore.API
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
+            services.AddScoped<IPublisherService, PublisherService>();
         }
     }
 }

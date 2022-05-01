@@ -1,8 +1,7 @@
-﻿using System;
+﻿using GameStore.BLL.DTO.Genre;
 using System.Collections.Generic;
-using System.Text;
 
-namespace GameStore.BLL.DTO
+namespace GameStore.BLL.DTO.Game
 {
     public class GameDTO
     {
@@ -17,5 +16,11 @@ namespace GameStore.BLL.DTO
         public List<GenreDTO> Genres { get; set; }
 
         public List<PlatformTypeDTO> PlatformTypes { get; set; }
+
+        public decimal Price { get; set; }
+
+        public bool Discounted { get; set; }
+
+        public short UnitsInStock { get; set; }
     }
 }

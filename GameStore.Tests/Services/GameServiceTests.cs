@@ -5,6 +5,7 @@ using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -88,7 +89,7 @@ namespace GameStore.Tests.Services
         {
             mockUnitOfWork.Setup(m => m.GameRepository.RemoveAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(true);
 
-            var isDeletedGame = await gameService.RemoveGameAsync(game.Key);
+            var isDeletedGame = await gameService.RemoveGameAsync(game.Id);
 
             isDeletedGame.Should().BeTrue();
         }

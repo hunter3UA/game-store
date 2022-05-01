@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameStore.DAL.Entities
 {
-    [Index(nameof(Name), IsUnique = true)]
-    [Index(nameof(Key), IsUnique = true)]
+    [Index("Name", IsUnique = true)]
+    [Index("Key", IsUnique = true)]
     public class Game : BaseEntity
     {
         [Required, MaxLength(500)]
@@ -23,5 +25,22 @@ namespace GameStore.DAL.Entities
         public IEnumerable<PlatformType> PlatformTypes { get; set; }
 
         public IEnumerable<Genre> Genres { get; set; }
+
+        public IEnumerable<OrderDetails> OrderDetails { get; set; }
+
+        [Required, Range(0.1, double.MaxValue)]
+        public decimal Price { get; set; }
+
+        [Required, DefaultValue(false)]
+        public bool Discounted { get; set; }
+
+        [Required, Range(0, short.MaxValue)]
+        public short UnitsInStock { get; set; }
+
+        [Required]
+        public int PublisherId { get; set; }
+
+        [ForeignKey("PublisherId")]
+        public Publisher Publisher { get; set; }
     }
 }
