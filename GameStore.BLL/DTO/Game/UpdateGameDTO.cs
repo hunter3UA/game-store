@@ -17,5 +17,7 @@ namespace GameStore.BLL.DTO.Game
 
         [Required]
         public int[] PlatformsId { get; set; }
+
+        public int PublisherId { get; set; }
     }
 }

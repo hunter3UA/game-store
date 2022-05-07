@@ -59,7 +59,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return new JsonResult(allPublishers);
+            return Ok(allPublishers);
         }
 
         [HttpDelete]

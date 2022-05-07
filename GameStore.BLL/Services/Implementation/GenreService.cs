@@ -51,7 +51,6 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
             List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g=>g.SubGenres);
-            allGenres = allGenres.Where(g => g.ParentGenreId == null).ToList();
 
             return _mapper.Map<List<GenreDTO>>(allGenres);
         }

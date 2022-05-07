@@ -12,7 +12,7 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<CommentDTO> AddCommentAsync(string key, AddCommentDTO addCommentDTO);
 
-        Task<List<CommentDTO>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate);
+        Task<List<CommentDTO>> GetListOfCommentsAsync(string gameKey);
 
         Task<bool> RemoveCommentAsync(int id);
     }

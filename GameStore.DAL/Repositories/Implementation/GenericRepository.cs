@@ -48,7 +48,7 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<List<TEntity>> GetRangeAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
-            var rangeOfEntities = await _dbSet.Where(predicate).ToListAsync();
+            var rangeOfEntities = await query.Where(predicate).ToListAsync();
             
             return rangeOfEntities;
         }

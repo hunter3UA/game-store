@@ -24,7 +24,6 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("/games/new")]
-        [ResponseCache(CacheProfileName = "Caching")]
         public async Task<IActionResult> AddGameAsync([FromBody] AddGameDTO addGameDTO)
         {
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
@@ -39,7 +38,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/games")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetListOfGamesAsync()
         {
             var listOfGames = await _gameService.GetListOfGamesAsync();
@@ -54,7 +52,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/game/{key}")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetGameAsync([FromRoute] string key)
         {
             var gameByKey = await _gameService.GetGameAsync(key);

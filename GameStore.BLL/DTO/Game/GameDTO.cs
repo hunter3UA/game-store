@@ -1,4 +1,5 @@
 ﻿using GameStore.BLL.DTO.Genre;
+using GameStore.BLL.DTO.Publisher;
 using System.Collections.Generic;
 
 namespace GameStore.BLL.DTO.Game
@@ -17,9 +18,11 @@ namespace GameStore.BLL.DTO.Game
 
         public List<PlatformTypeDTO> PlatformTypes { get; set; }
 
+        public PublisherDTO Publisher { get; set; }
+
         public decimal Price { get; set; }
 
-        public bool Discounted { get; set; }
+        public bool Discontinued { get; set; }
 
         public short UnitsInStock { get; set; }
     }

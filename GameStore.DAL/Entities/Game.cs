@@ -32,7 +32,7 @@ namespace GameStore.DAL.Entities
         public decimal Price { get; set; }
 
         [Required, DefaultValue(false)]
-        public bool Discounted { get; set; }
+        public bool Discontinued { get; set; }
 
         [Required, Range(0, short.MaxValue)]
         public short UnitsInStock { get; set; }

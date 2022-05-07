@@ -42,7 +42,7 @@ namespace GameStore.Tests.Controllers
             IMapper mapper,
             [NoAutoProperties] CommentsController commentsController)
         {
-            mockCommentService.Setup(m => m.GetListOfCommentsAsync(It.IsAny<Expression<Func<Comment, bool>>>()))
+            mockCommentService.Setup(m => m.GetListOfCommentsAsync(It.IsAny<string>()))
                 .ReturnsAsync(() =>
                 {
                     return mapper.Map<List<CommentDTO>>(comments);

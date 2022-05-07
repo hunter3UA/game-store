@@ -62,7 +62,7 @@ namespace GameStore.Tests.Services
             mockUnitOfWork.Setup(m => m.CommentRepository.GetAsync(
                 It.IsAny<Expression<Func<Comment, bool>>>())).ReturnsAsync(comment);
                 
-            var result = await commentServie.GetListOfCommentsAsync(c => c.Game.Key == game.Key);
+            var result = await commentServie.GetListOfCommentsAsync(game.Key);
 
             result.Should().BeOfType<List<CommentDTO>>().And.NotBeNull();
         }

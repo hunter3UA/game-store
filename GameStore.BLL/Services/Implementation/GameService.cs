@@ -31,6 +31,7 @@ namespace GameStore.BLL.Services.Implementation
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
+            mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
             if (mappedGame.Genres.Count() <= 0)
             {
@@ -55,14 +56,14 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<GameDTO>> GetListOfGamesAsync()
         {
-            List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p=>p.PlatformTypes);
+            List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p=>p.PlatformTypes,pb=>pb.Publisher);
 
             return _mapper.Map<List<GameDTO>>(allGames);
         }
 
         public async Task<GameDTO> GetGameAsync(string gameKey)
         {
-            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game=>game.Key==gameKey, p=>p.PlatformTypes, g=>g.Genres);
+            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game=>game.Key==gameKey, p=>p.PlatformTypes, g=>g.Genres,pub=>pub.Publisher);
 
             return _mapper.Map<GameDTO>(searchedGame);
         }
@@ -103,6 +104,12 @@ namespace GameStore.BLL.Services.Implementation
             _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
 
             return _mapper.Map<GameDTO>(updatedGame);
+        }
+
+        private string CreateGameKey(string name)
+        {
+            var key = name.Trim().ToLower().Replace(" ", "-");
+            return key;
         }
     }
 }

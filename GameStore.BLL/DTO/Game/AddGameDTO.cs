@@ -7,8 +7,6 @@ namespace GameStore.BLL.DTO.Game
         public string Name { get; set; }
 
         public string Description { get; set; }
-      
-        public string Key { get; set; }
 
         [Required]
         public int[] GenresId { get; set; }
@@ -18,7 +16,7 @@ namespace GameStore.BLL.DTO.Game
 
         public decimal Price { get; set; }
 
-        public bool Discounted { get; set; }
+        public bool Discountinued { get; set; }
 
         public short UnitsInStock { get; set; }
 
