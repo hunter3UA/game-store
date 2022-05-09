@@ -83,7 +83,11 @@ namespace GameStore.DAL.Repositories.Implementation
                         var navEntityName = navEntity.Metadata.Name;
                         var navExist = _dbContext.Entry(entity).Navigation(navEntityName);
                         await navExist.LoadAsync();
-                        navExist.CurrentValue = navEntity.CurrentValue;
+                        if(navEntity.CurrentValue!=null || navExist.CurrentValue != null)
+                        {
+                            navExist.CurrentValue = navEntity.CurrentValue;
+                        }
+                        
                     }
                 }
                 _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);

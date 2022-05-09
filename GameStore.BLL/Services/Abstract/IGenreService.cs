@@ -13,6 +13,8 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<GenreDTO> GetGenreAsync(int id);
 
+        Task<GenreDTO> UpdateGenreAsync(UpdateGenreDTO updateGenreDTO);
+
         Task<bool> RemoveGenreAsync(int id);
     }
 }

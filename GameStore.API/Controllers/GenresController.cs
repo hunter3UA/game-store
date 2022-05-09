@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GameStore.API.Static;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Cors;
@@ -66,7 +64,20 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        [Route("/genres/remove")]
+        [Route("/genres/update")]
+        public async Task<IActionResult> UpdateGenreAsync([FromRoute] UpdateGenreDTO updateGenreDTO)
+        {
+            var updatedGenre = await _genreService.UpdateGenreAsync(updateGenreDTO);
+
+            if (updatedGenre != null)
+            {
+                return BadRequest();
+            }
+            return Ok(updatedGenre);
+        }
+
+        [HttpDelete]
+        [Route("/genres/remove/{id}")]
         public async Task<IActionResult> RemoveGenreAsync([FromRoute] int id)
         {
             var isRemovedGenre = await _genreService.RemoveGenreAsync(id);
@@ -77,6 +88,6 @@ namespace GameStore.API.Controllers
             }
 
             return Ok($"{isRemovedGenre}.Genre with Id {id} has been deleted");
-        }
+        } 
     }
 }

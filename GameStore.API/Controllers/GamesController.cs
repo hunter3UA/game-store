@@ -94,7 +94,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/game/{gameKey}/download")]
+        [Route("/games/{gameKey}/download")]
         [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public IActionResult DownloadGameFile([FromRoute] string gameKey)
         {

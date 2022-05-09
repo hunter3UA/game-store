@@ -8,10 +8,8 @@ namespace GameStore.BLL.DTO.Game
 
         public string Description { get; set; }
 
-        [Required]
         public int[] GenresId { get; set; }
 
-        [Required]
         public int[] PlatformsId { get; set; }
 
         public decimal Price { get; set; }
@@ -20,6 +18,6 @@ namespace GameStore.BLL.DTO.Game
 
         public short UnitsInStock { get; set; }
 
-        public int PublisherId { get; set; }
+        public int? PublisherId { get; set; }
     }
 }

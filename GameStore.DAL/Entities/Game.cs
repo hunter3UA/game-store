@@ -37,8 +37,7 @@ namespace GameStore.DAL.Entities
         [Required, Range(0, short.MaxValue)]
         public short UnitsInStock { get; set; }
 
-        [Required]
-        public int PublisherId { get; set; }
+        public int? PublisherId { get; set; }
 
         [ForeignKey("PublisherId")]
         public Publisher Publisher { get; set; }

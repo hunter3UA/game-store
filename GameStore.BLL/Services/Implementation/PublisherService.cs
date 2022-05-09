@@ -64,9 +64,14 @@ namespace GameStore.BLL.Services.Implementation
             return isDeletedPublisher;
         }
 
-        public Task<PublisherDTO> UpdatePublisherAsync(AddPublisherDTO updatePublisherDTO)
+        public async Task<PublisherDTO> UpdatePublisherAsync(UpdatePublisherDTO updatePublisherDTO)
         {
-            throw new System.NotImplementedException();
+            Publisher mappedPublisher = _mapper.Map<Publisher>(updatePublisherDTO);
+
+            Publisher updatedPublisher = await _unitOfWork.PublisherRepository.UpdateAsync(mappedPublisher);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<PublisherDTO>(updatedPublisher);
         }
     }
 }

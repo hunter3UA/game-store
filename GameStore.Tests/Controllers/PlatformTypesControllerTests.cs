@@ -29,7 +29,7 @@ namespace GameStore.Tests.Controllers
             PlatformType platformToAdd = mapper.Map<PlatformType>(addPlatformDTO);
             var id = 10;
             platformToAdd.Id = id;
-            mockPlatformService.Setup(m => m.AddPlatformTypeAsync(It.IsAny<AddPlatformTypeDTO>()))
+            mockPlatformService.Setup(m => m.AddPlatformAsync(It.IsAny<AddPlatformTypeDTO>()))
                 .ReturnsAsync(() =>
                 {
                     platformToAdd.Id = id;

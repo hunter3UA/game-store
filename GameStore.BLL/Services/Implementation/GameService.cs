@@ -33,16 +33,6 @@ namespace GameStore.BLL.Services.Implementation
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
             mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
-            if (mappedGame.Genres.Count() <= 0)
-            {
-                throw new Exception("Game must contain at least 1 existing genre");
-            }
-            
-            if (mappedGame.PlatformTypes.Count() <= 0)
-            {
-                throw new Exception("Game must contain at least 1 existing platform type");
-            }
-
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
             await _unitOfWork.SaveAsync();
 

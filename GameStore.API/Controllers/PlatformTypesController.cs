@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,7 @@ namespace GameStore.API.Controllers
         [Route("/platformTypes/add")]
         public async Task<IActionResult> AddPlatformTypeAsync([FromBody] AddPlatformTypeDTO platformDTO)
         {
-            var addedPlatform = await _platformService.AddPlatformTypeAsync(platformDTO);
+            var addedPlatform = await _platformService.AddPlatformAsync(platformDTO);
 
             if (addedPlatform == null)
             {
@@ -58,6 +59,20 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
+        [Route("/platformTypes/update")]
+        public async Task<IActionResult> UpdatePlatformAsync([FromBody] UpdatePlatformTypeDTO updatePlatformTypeDTO)
+        {
+            var updatedPlatform = await _platformService.UpdatePlatformAsync(updatePlatformTypeDTO);
+
+            if (updatedPlatform == null)
+            {
+                return BadRequest();
+            }
+            
+            return Ok(updatedPlatform);
+        }
+
+        [HttpDelete]
         [Route("/platformTypes/remove/{id}")]
         public async Task<IActionResult> RemovePlatformAsync([FromRoute] int id)
         {

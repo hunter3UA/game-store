@@ -34,7 +34,7 @@ namespace GameStore.Tests.Services
                     return platform;
                 });
 
-            var result = await platformTypeService.AddPlatformTypeAsync(addPlatformTypeDTO);
+            var result = await platformTypeService.AddPlatformAsync(addPlatformTypeDTO);
 
             result.Should().BeOfType<PlatformTypeDTO>().Which.Id.Should().Be(id);
         }

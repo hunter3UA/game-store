@@ -76,5 +76,20 @@ namespace GameStore.API.Controllers
             return new JsonResult($"{isDeletedPublisher}. Publisher with id {id} has been deleted");
 
         }
+
+
+        [HttpPut]
+        [Route("/publishers/update")]
+        public async Task<IActionResult> UpdatePublisherAsync([FromBody] UpdatePublisherDTO updatePublisherDTO)
+        {
+            var updatedPublisher = await _publisherService.UpdatePublisherAsync(updatePublisherDTO);
+
+            if (updatedPublisher == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(updatedPublisher);
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
@@ -25,7 +26,7 @@ namespace GameStore.BLL.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<PlatformTypeDTO> AddPlatformTypeAsync(AddPlatformTypeDTO addPlatformDTO)
+        public async Task<PlatformTypeDTO> AddPlatformAsync(AddPlatformTypeDTO addPlatformDTO)
         {
             PlatformType mappedPlatform = _mapper.Map<PlatformType>(addPlatformDTO);
 
@@ -65,6 +66,16 @@ namespace GameStore.BLL.Services.Implementation
             }
 
             return isRemovedPlatform;
+        }
+
+        public async Task<PlatformTypeDTO> UpdatePlatformAsync(UpdatePlatformTypeDTO updatePlatformDTO)
+        {
+            PlatformType mappedPlatform = _mapper.Map<PlatformType>(updatePlatformDTO);
+
+            PlatformType updatedPlatform = await _unitOfWork.PlatformTypeRepository.UpdateAsync(mappedPlatform);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<PlatformTypeDTO>(updatedPlatform);
         }
     }
 }

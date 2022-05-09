@@ -58,6 +58,11 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<bool> RemoveGenreAsync(int id)
         {
             bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
+            var childGenres = await _unitOfWork.GenreRepository.GetRangeAsync(g => g.ParentGenreId == id);
+            foreach(var genre in childGenres)
+            {
+                genre.ParentGenreId = null;
+            }
             await _unitOfWork.SaveAsync();
 
             if (isDeletedGenre)
@@ -66,6 +71,16 @@ namespace GameStore.BLL.Services.Implementation
             }
 
             return isDeletedGenre;
+        }
+
+        public async Task<GenreDTO> UpdateGenreAsync(UpdateGenreDTO updateGenreDTO)
+        {
+            Genre mappedGenre = _mapper.Map<Genre>(updateGenreDTO);
+
+            Genre updatedGenre = await _unitOfWork.GenreRepository.UpdateAsync(mappedGenre);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<GenreDTO>(updatedGenre);
         }
     }
 }
