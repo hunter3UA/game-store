@@ -35,7 +35,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/genres")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetAllGenresAsync()
         {
             var allGenres = await _genreService.GetListOfGenresAsync();
@@ -50,7 +49,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/genres/{id}")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetGenreAsync([FromRoute] int id)
         {
             var genreByKey = await _genreService.GetGenreAsync(id);

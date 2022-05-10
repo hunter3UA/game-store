@@ -17,14 +17,44 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("games/{gamekey}/buy")]
-
-        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey,[FromBody] AddOrderDetailsDTO addOrderDetailsDTO)
+        [Route("/basket")]
+        public async Task<IActionResult> GetOrderAsync()
         {
+            var orderByCustomer = await _orderService.GetOrderAsync();
 
-
-            return Ok();
+            if (orderByCustomer == null)
+            {
+                return BadRequest();
+            }
+            return Ok(orderByCustomer);
         }
 
+        [HttpPost]
+        [Route("/games/{gamekey}/buy")]
+        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey,[FromBody] AddOrderDetailsDTO addOrderDetailsDTO)
+        {
+            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, addOrderDetailsDTO);
+
+            if (addedOrderDetails == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(addedOrderDetails);
+        }
+
+        [HttpPut]
+        [Route("/basket/details/update")]
+        public async Task<IActionResult> ChangeQuantityOfOrderDetails([FromBody] ChangeQuantityDTO changeQuantityDTO)
+        {
+            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetails(changeQuantityDTO);
+
+            if (updatedOrderDetails == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(updatedOrderDetails);           
+        }
     }
 }

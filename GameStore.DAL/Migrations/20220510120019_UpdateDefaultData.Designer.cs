@@ -4,14 +4,16 @@ using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220510120019_UpdateDefaultData")]
+    partial class UpdateDefaultData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,14 +356,14 @@ namespace GameStore.DAL.Migrations
                             Id = 1,
                             CustomerId = 1,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 10, 15, 27, 53, 463, DateTimeKind.Local).AddTicks(3043)
+                            OrderDate = new DateTime(2022, 5, 10, 15, 0, 19, 291, DateTimeKind.Local).AddTicks(6562)
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 10, 15, 27, 53, 465, DateTimeKind.Local).AddTicks(2518)
+                            OrderDate = new DateTime(2022, 5, 10, 15, 0, 19, 293, DateTimeKind.Local).AddTicks(3830)
                         });
                 });
 
@@ -382,7 +384,7 @@ namespace GameStore.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -629,9 +631,7 @@ namespace GameStore.DAL.Migrations
 
                     b.HasOne("GameStore.DAL.Entities.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Game");
 

@@ -118,9 +118,9 @@ namespace GameStore.DAL.Context
                 new Order { Id = 1, CustomerId = 1, },
                 new Order { Id = 2, CustomerId = 2, });
             modelBuilder.Entity<OrderDetails>().HasData(
-                new OrderDetails { Id = 1, GameId = 1, OrderId = 1, Price = 100, Quantity = 1, Discount = 10 },
-                new OrderDetails { Id = 2, GameId = 2, OrderId = 1, Price = 70, Quantity = 1, Discount = 10 },
-                new OrderDetails { Id = 3, GameId = 2, OrderId = 2, Price = 70, Quantity = 1, Discount = 10 });
+                new OrderDetails { Id = 1, GameId = 1, OrderId = 1, Price = 70, Quantity = 1, Discount = 0 },
+                new OrderDetails { Id = 2, GameId = 2, OrderId = 1, Price = 50, Quantity = 1, Discount = 0 },
+                new OrderDetails { Id = 3, GameId = 2, OrderId = 2, Price = 50, Quantity = 1, Discount = 0 });
         }
     }
 }

@@ -4,14 +4,16 @@ using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220510115500_UpdateDefaultDiscountValue")]
+    partial class UpdateDefaultDiscountValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,14 +356,14 @@ namespace GameStore.DAL.Migrations
                             Id = 1,
                             CustomerId = 1,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 10, 15, 27, 53, 463, DateTimeKind.Local).AddTicks(3043)
+                            OrderDate = new DateTime(2022, 5, 10, 14, 55, 0, 77, DateTimeKind.Local).AddTicks(6284)
                         },
                         new
                         {
                             Id = 2,
                             CustomerId = 2,
                             IsDeleted = false,
-                            OrderDate = new DateTime(2022, 5, 10, 15, 27, 53, 465, DateTimeKind.Local).AddTicks(2518)
+                            OrderDate = new DateTime(2022, 5, 10, 14, 55, 0, 80, DateTimeKind.Local).AddTicks(6237)
                         });
                 });
 
@@ -382,7 +384,7 @@ namespace GameStore.DAL.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
@@ -403,8 +405,18 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            Discount = 0.0,
+                            Discount = 10.0,
                             GameId = 1,
+                            IsDeleted = false,
+                            OrderId = 1,
+                            Price = 100m,
+                            Quantity = (short)1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Discount = 10.0,
+                            GameId = 2,
                             IsDeleted = false,
                             OrderId = 1,
                             Price = 70m,
@@ -412,22 +424,12 @@ namespace GameStore.DAL.Migrations
                         },
                         new
                         {
-                            Id = 2,
-                            Discount = 0.0,
-                            GameId = 2,
-                            IsDeleted = false,
-                            OrderId = 1,
-                            Price = 50m,
-                            Quantity = (short)1
-                        },
-                        new
-                        {
                             Id = 3,
-                            Discount = 0.0,
+                            Discount = 10.0,
                             GameId = 2,
                             IsDeleted = false,
                             OrderId = 2,
-                            Price = 50m,
+                            Price = 70m,
                             Quantity = (short)1
                         });
                 });
@@ -629,9 +631,7 @@ namespace GameStore.DAL.Migrations
 
                     b.HasOne("GameStore.DAL.Entities.Order", "Order")
                         .WithMany("OrderDetails")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderId");
 
                     b.Navigation("Game");
 

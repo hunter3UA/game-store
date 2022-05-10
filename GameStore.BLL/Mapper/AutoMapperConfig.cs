@@ -3,6 +3,8 @@ using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.DTO.Genre;
+using GameStore.BLL.DTO.Order;
+using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.DTO.Publisher;
@@ -33,6 +35,11 @@ namespace GameStore.BLL.Mapper
             CreateMap<AddPublisherDTO, Publisher>();
             CreateMap<Publisher, PublisherDTO>();
             CreateMap<UpdatePublisherDTO, Publisher>();
+
+            CreateMap<AddOrderDetailsDTO, OrderDetails>();
+            CreateMap<OrderDetails, OrderDetailsDTO>();
+
+            CreateMap<Order, OrderDTO>();
         }
     }
 }

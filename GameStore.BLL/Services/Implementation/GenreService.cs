@@ -57,12 +57,13 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<bool> RemoveGenreAsync(int id)
         {
-            bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
-            var childGenres = await _unitOfWork.GenreRepository.GetRangeAsync(g => g.ParentGenreId == id);
-            foreach(var genre in childGenres)
+            var genreById = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == id, subG=>subG.SubGenres);
+                
+            foreach(var genre in genreById.SubGenres)
             {
-                genre.ParentGenreId = null;
-            }
+                genre.ParentGenreId = genreById.ParentGenreId;
+            } 
+            bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
             await _unitOfWork.SaveAsync();
 
             if (isDeletedGenre)

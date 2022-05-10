@@ -4,9 +4,8 @@
     {
         public short Quantity { get; set; }
 
-        public double Discount { get; set; }
-
         public int CustomerId { get; set; }
 
+        public double Price { get; set; }
     }
 }

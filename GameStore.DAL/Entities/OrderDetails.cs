@@ -19,10 +19,11 @@ namespace GameStore.DAL.Entities
         [Required,Range(1,short.MaxValue)]
         public short Quantity { get; set; }
 
-        [Required, DefaultValue(1)]
+        [Required, DefaultValue(0)]
         public double Discount { get; set; }
 
-        public int? OrderId { get; set; }
+        [Required]
+        public int OrderId { get; set; }
 
         [ForeignKey("OrderId")]
         public Order Order { get; set; }
