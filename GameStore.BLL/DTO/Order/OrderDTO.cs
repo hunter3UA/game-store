@@ -1,7 +1,7 @@
-﻿using GameStore.BLL.DTO.OrderDetails;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GameStore.BLL.DTO.OrderDetails;
 
 namespace GameStore.BLL.DTO.Order
 {
@@ -15,7 +15,8 @@ namespace GameStore.BLL.DTO.Order
 
         public List<OrderDetailsDTO> OrderDetails { get; set; }
 
-        public double TotalSum { 
+        public double TotalSum 
+        { 
             get
             {
                 return OrderDetails.Sum(o => o.Total);

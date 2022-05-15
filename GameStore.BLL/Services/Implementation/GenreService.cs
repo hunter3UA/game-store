@@ -43,26 +43,30 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GenreDTO> GetGenreAsync(int id)
         {
-            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre=>genre.Id==id, g=>g.SubGenres);
+            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre => genre.Id == id, g => g.SubGenres);
 
             return _mapper.Map<GenreDTO>(searchedGenre);
         }
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
-            List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g=>g.SubGenres);
+            List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
 
             return _mapper.Map<List<GenreDTO>>(allGenres);
         }
 
         public async Task<bool> RemoveGenreAsync(int id)
         {
-            var genreById = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == id, subG=>subG.SubGenres);
-                
-            foreach(var genre in genreById.SubGenres)
+            var genreById = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == id, subG => subG.SubGenres);
+
+            if (genreById.SubGenres != null)
             {
-                genre.ParentGenreId = genreById.ParentGenreId;
-            } 
+                foreach (var genre in genreById.SubGenres)
+                {
+                    genre.ParentGenreId = genreById.ParentGenreId;
+                }
+            }
+
             bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
             await _unitOfWork.SaveAsync();
 

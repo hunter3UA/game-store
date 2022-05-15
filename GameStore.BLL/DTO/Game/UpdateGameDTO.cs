@@ -10,14 +10,16 @@ namespace GameStore.BLL.DTO.Game
 
         public string Description { get; set; }
 
-        public string Key { get; set; }
+        public bool Discountinued { get; set; }
 
-        [Required]
-        public int[] GenresId { get; set; }
+        public short UnitsInStock { get; set; }
 
-        [Required]
-        public int[] PlatformsId { get; set; }
+        public int[] Genres { get; set; }
 
-        public int PublisherId { get; set; }
+        public int[] Platforms { get; set; }
+
+        public int? PublisherId { get; set; }
+
+        public decimal Price { get; set; }
     }
 }

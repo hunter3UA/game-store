@@ -18,8 +18,7 @@ namespace GameStore.DAL.UoW.Abstract
             IGenericRepository<Comment> commentRepository,
             IGenericRepository<Publisher> publisherRepository,
             IGenericRepository<Order> orderRepository,
-            IGenericRepository<OrderDetails> orderDetailsRepository         
-            )
+            IGenericRepository<OrderDetails> orderDetailsRepository)              
         {
             _dbContext = dbContext;
             GameRepository = gameRepository;

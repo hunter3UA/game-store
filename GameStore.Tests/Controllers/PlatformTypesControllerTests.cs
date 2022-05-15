@@ -71,7 +71,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task RemovePlatformTypeAsync_PlatformRemove_ReturnOkResult(
+        public async Task RemovePlatformTypeAsync_PlatformRemove_ReturnJsonResult(
             int id,
             [Frozen] Mock<IPlatformTypeService> mockPlatformService, 
             [NoAutoProperties] PlatformTypesController platformsController)
@@ -80,7 +80,7 @@ namespace GameStore.Tests.Controllers
 
             var result = await platformsController.RemovePlatformAsync(id);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
     }
 }

@@ -50,14 +50,14 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
         {
-            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p=>p.Id==id);
+            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id);
 
             return _mapper.Map<PlatformTypeDTO>(searchedPlatform);
         }
 
         public async Task<bool> RemovePlatformAsync(int id)
         {
-            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p=>p.Id==id);
+            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p => p.Id == id);
             await _unitOfWork.SaveAsync();
 
             if (isRemovedPlatform)

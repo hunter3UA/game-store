@@ -1,11 +1,7 @@
-﻿using GameStore.BLL.DTO.Publisher;
+﻿using System.Threading.Tasks;
+using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Services.Abstract;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameStore.API.Controllers
 {
@@ -74,9 +70,7 @@ namespace GameStore.API.Controllers
             }
 
             return new JsonResult($"{isDeletedPublisher}. Publisher with id {id} has been deleted");
-
         }
-
 
         [HttpPut]
         [Route("/publishers/update")]

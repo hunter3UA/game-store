@@ -1,5 +1,5 @@
-﻿using GameStore.BLL.DTO.Game;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using GameStore.BLL.DTO.Game;
 
 namespace GameStore.BLL.DTO.Publisher
 {
@@ -13,6 +13,6 @@ namespace GameStore.BLL.DTO.Publisher
 
         public string HomePage { get; set; }
 
-        List<GameDTO> Games { get; set; }
+        public List<GameDTO> Games { get; set; }
     }
 }

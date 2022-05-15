@@ -21,7 +21,7 @@ namespace GameStore.Tests.Controllers
         public async Task AddGameAsync_GivenValidGame_ReturnGame(
             AddGameDTO addGameDTO,
             IMapper mapper,
-        [Frozen] Mock<IGameService> mockGameService, 
+        [Frozen] Mock<IGameService> mockGameService,
         [NoAutoProperties] GamesController gameController)
         {
             Game gameToAdd = mapper.Map<Game>(addGameDTO);
@@ -50,7 +50,7 @@ namespace GameStore.Tests.Controllers
 
         [Theory, AutoDomainData]
         public async Task GetGameAsync_GameExist_ReturnOkResult(
-            Game game, 
+            Game game,
             IMapper mapper,
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
@@ -79,22 +79,22 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveGameAsync_GameRemoved_ReturnOkResult(
+        public async Task RemoveGameAsync_GameRemoved_ReturnJsonResult(
             int id,
-            [Frozen] Mock<IGameService> mockGameService, 
+            [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
         {
             mockGameService.Setup(m => m.RemoveGameAsync(It.IsAny<int>())).ReturnsAsync(true);
 
             var result = await gamesController.RemoveGameAsync(id);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
         public async Task UpdateGameAsync_GivenGameIsValid_ReturnOkResult(
             UpdateGameDTO updateGameDTO,
-          [Frozen] Mock<IGameService> mockGameService, 
+          [Frozen] Mock<IGameService> mockGameService,
           [NoAutoProperties] GamesController gamesController)
         {
             mockGameService.Setup(m => m.UpdateGameAsync(It.IsAny<UpdateGameDTO>())).ReturnsAsync(new GameDTO());
@@ -107,7 +107,7 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public void DownloadGameFile_GivenKey_ReturnFile([NoAutoProperties] GamesController gamesController)
         {
-            var result =  gamesController.DownloadGameFile("key");
+            var result = gamesController.DownloadGameFile("key");
 
             result.Should().BeOfType<PhysicalFileResult>();
         }

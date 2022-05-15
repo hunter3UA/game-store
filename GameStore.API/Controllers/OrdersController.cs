@@ -1,10 +1,12 @@
-﻿using GameStore.BLL.DTO.OrderDetails;
-using GameStore.BLL.Services.Abstract;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
+using GameStore.BLL.DTO.OrderDetails;
+using GameStore.BLL.Services.Abstract;
 
 namespace GameStore.API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -26,14 +28,15 @@ namespace GameStore.API.Controllers
             {
                 return BadRequest();
             }
+
             return Ok(orderByCustomer);
         }
 
         [HttpPost]
         [Route("/games/{gamekey}/buy")]
-        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey,[FromBody] AddOrderDetailsDTO addOrderDetailsDTO)
+        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey, [FromBody] int customerId)
         {
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, addOrderDetailsDTO);
+            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, 1);
 
             if (addedOrderDetails == null)
             {
@@ -45,9 +48,9 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("/basket/details/update")]
-        public async Task<IActionResult> ChangeQuantityOfOrderDetails([FromBody] ChangeQuantityDTO changeQuantityDTO)
+        public async Task<IActionResult> ChangeQuantityOfOrderDetailsAsync([FromBody] ChangeQuantityDTO changeQuantityDTO)
         {
-            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetails(changeQuantityDTO);
+            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
 
             if (updatedOrderDetails == null)
             {
@@ -55,6 +58,20 @@ namespace GameStore.API.Controllers
             }
 
             return Ok(updatedOrderDetails);           
+        }
+
+        [HttpDelete]
+        [Route("/basket/details/remove/{id}")]
+        public async Task<IActionResult> RemoveOrderDetailsAsync([FromRoute] int id) 
+        {
+            var deletedOrderDetails = await _orderService.RemoveOrderDetailsAsync(id);
+
+            if (!deletedOrderDetails)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
     }
 }

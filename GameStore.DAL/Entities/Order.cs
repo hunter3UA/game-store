@@ -6,6 +6,11 @@ namespace GameStore.DAL.Entities
 {
     public class Order : BaseEntity
     {
+        public Order()
+        {
+            OrderDate = DateTime.Now;
+        }
+        
         [Required]
         public int CustomerId { get; set; }
 
@@ -13,10 +18,5 @@ namespace GameStore.DAL.Entities
         public DateTime OrderDate { get; set; }
 
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
-
-        public Order()
-        {
-            OrderDate = DateTime.Now;
-        }
     }
 }

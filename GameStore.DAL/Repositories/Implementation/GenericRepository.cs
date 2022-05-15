@@ -31,13 +31,13 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            var query = Include(includeProperties);           
+            var query = Include(includeProperties);
             var searchedEntity = await query.FirstOrDefaultAsync(predicate);
 
             return searchedEntity;
         }
 
-        public async Task<List<TEntity>> GetListAsync(params Expression<Func<TEntity,object>>[] includeProperties)
+        public async Task<List<TEntity>> GetListAsync(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
             var listOfEntities = await query.ToListAsync();
@@ -49,12 +49,11 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             var query = Include(includeProperties);
             var rangeOfEntities = await query.Where(predicate).ToListAsync();
-            
+
             return rangeOfEntities;
         }
 
-
-        public async Task<bool> RemoveAsync(Expression<Func<TEntity,bool>> predicate)
+        public async Task<bool> RemoveAsync(Expression<Func<TEntity, bool>> predicate)
         {
             var entityToRemove = await _dbSet.FirstOrDefaultAsync(predicate);
 
@@ -76,20 +75,20 @@ namespace GameStore.DAL.Repositories.Implementation
 
             if (entity != null)
             {
-                foreach(var navEntity in _dbContext.Entry(entityToUpdate).Navigations)
+                foreach (var navEntity in _dbContext.Entry(entityToUpdate).Navigations)
                 {
                     if (navEntity.CurrentValue != null)
                     {
                         var navEntityName = navEntity.Metadata.Name;
                         var navExist = _dbContext.Entry(entity).Navigation(navEntityName);
                         await navExist.LoadAsync();
-                        if(navEntity.CurrentValue!=null || navExist.CurrentValue != null)
+                        if (navEntity.CurrentValue != null || navExist.CurrentValue != null)
                         {
                             navExist.CurrentValue = navEntity.CurrentValue;
                         }
-                        
                     }
                 }
+
                 _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
                 _dbContext.Entry(entity).State = EntityState.Modified;
             }

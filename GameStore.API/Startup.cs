@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
 
-
 namespace GameStore.API
 {
     public class Startup
@@ -60,7 +59,6 @@ namespace GameStore.API
             {
                 endpoints.MapControllers();
             });
-
         }
 
         private void ServiceRegister(IServiceCollection services)
@@ -87,8 +85,10 @@ namespace GameStore.API
             });
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin",
-                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy(
+                    "AllowOrigin",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().WithExposedHeaders("x-custom-header")
+                    .AllowAnyMethod());
             });
 
             services.AddSingleton<Serilog.ILogger>(Log.Logger);

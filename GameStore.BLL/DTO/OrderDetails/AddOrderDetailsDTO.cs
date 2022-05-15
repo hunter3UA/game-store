@@ -2,10 +2,8 @@
 {
     public class AddOrderDetailsDTO
     {
-        public short Quantity { get; set; }
-
         public int CustomerId { get; set; }
 
-        public double Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

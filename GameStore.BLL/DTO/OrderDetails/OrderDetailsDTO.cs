@@ -1,4 +1,6 @@
-﻿namespace GameStore.BLL.DTO.OrderDetails
+﻿using GameStore.BLL.DTO.Game;
+
+namespace GameStore.BLL.DTO.OrderDetails
 {
     public class OrderDetailsDTO
     {
@@ -14,7 +16,12 @@
 
         public int OrderId { get; set; }
 
-        public double Total { 
+        public int GameId { get; set; }
+
+        public GameDTO Game { get; set; }
+
+        public double Total 
+        { 
             get
             {
                 return Quantity * Price;

@@ -19,7 +19,7 @@ namespace GameStore.BLL.Mapper
             CreateMap<Game, GameDTO>();
             CreateMap<AddGameDTO, Game>();
             CreateMap<Game, AddGameDTO>();
-            CreateMap<UpdateGameDTO, Game>();
+            CreateMap<UpdateGameDTO, Game>().ForMember((m) => m.Genres, mapper => mapper.Ignore());
 
             CreateMap<AddCommentDTO, Comment>();
             CreateMap<Comment, CommentDTO>();
@@ -27,11 +27,11 @@ namespace GameStore.BLL.Mapper
             CreateMap<PlatformType, PlatformTypeDTO>();
             CreateMap<AddPlatformTypeDTO, PlatformType>();
             CreateMap<UpdatePlatformTypeDTO, PlatformType>();
-           
+
             CreateMap<AddGenreDTO, Genre>();
             CreateMap<Genre, GenreDTO>();
             CreateMap<UpdateGenreDTO, Genre>();
-                      
+
             CreateMap<AddPublisherDTO, Publisher>();
             CreateMap<Publisher, PublisherDTO>();
             CreateMap<UpdatePublisherDTO, Publisher>();

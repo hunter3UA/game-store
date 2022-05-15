@@ -1,11 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
 {
@@ -39,7 +39,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<PublisherDTO>> GetListOfPublishersAsync()
         {
-            List<Publisher> allPublishers = await _unitOfWork.PublisherRepository.GetListAsync(p=>p.Games);
+            List<Publisher> allPublishers = await _unitOfWork.PublisherRepository.GetListAsync(p => p.Games);
 
             return _mapper.Map<List<PublisherDTO>>(allPublishers);
         }

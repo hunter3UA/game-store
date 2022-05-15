@@ -46,7 +46,7 @@ namespace GameStore.Tests.Services
             GenreService genreService)
         {
             mockUnitOfWork.Setup(m => m.GenreRepository.AddAsync(It.IsAny<Genre>())).ReturnsAsync(() => { return null; });
-                
+
             var result = await genreService.AddGenreAsync(null);
 
             result.Should().BeNull();
@@ -63,6 +63,20 @@ namespace GameStore.Tests.Services
             var result = await genreService.GetGenreAsync(genre.Id);
 
             result.Should().BeOfType<GenreDTO>().And.NotBeNull();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task GetGenreAsync_RequestedGenreNotExist_ReturnGenre(
+           [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+           GenreService genreService)
+        {
+            mockUnitOfWork.Setup(m => m.GenreRepository.GetAsync(
+                It.IsAny<Expression<Func<Genre, bool>>>(),
+                It.IsAny<Expression<Func<Genre, object>>[]>())).ReturnsAsync(() => { return null; });
+
+            var result = await genreService.GetGenreAsync(1);
+
+            result.Should().BeNull();
         }
 
         [Theory, AutoDomainData]
@@ -98,6 +112,31 @@ namespace GameStore.Tests.Services
             var result = await genreService.RemoveGenreAsync(4);
 
             result.Should().BeFalse();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateGenreAsync_GivenValidGenre_ReturnGenre(UpdateGenreDTO updateGenreDTO, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, GenreService genreService)
+        {
+            mockUnitOfWork.Setup(m => m.GenreRepository.UpdateAsync(
+               It.IsAny<Genre>(),
+               It.IsAny<Expression<Func<Genre, object>>[]>())).ReturnsAsync(() => { return new Genre { Name = updateGenreDTO.Name }; });
+
+            var result = await genreService.UpdateGenreAsync(updateGenreDTO);
+
+            result.Name.Should().BeEquivalentTo(updateGenreDTO.Name);
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateGenreAsync_GivenInvalidGenre_ReturnNull(UpdateGenreDTO updateGenreDTO, [Frozen] Mock<IUnitOfWork> mockUnitOfWork, GenreService genreService)
+        {
+            updateGenreDTO.Id = 10;
+            mockUnitOfWork.Setup(m => m.GenreRepository.UpdateAsync(
+               It.IsAny<Genre>(),
+               It.IsAny<Expression<Func<Genre, object>>[]>())).ReturnsAsync(() => { return null; });
+
+            var result = await genreService.UpdateGenreAsync(updateGenreDTO);
+
+            result.Should().BeNull();
         }
     }
 }

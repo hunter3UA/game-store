@@ -47,7 +47,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(listOfGames);    
+            return Ok(listOfGames);
         }
 
         [HttpGet]
@@ -80,7 +80,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("/games/remove/{id}")]
-        public async Task<IActionResult> RemoveGameAsync([FromRoute] int  id)
+        public async Task<IActionResult> RemoveGameAsync([FromRoute] int id)
         {
             bool isRemovedGame = await _gameService.RemoveGameAsync(id);
 
@@ -90,7 +90,6 @@ namespace GameStore.API.Controllers
             }
 
             return new JsonResult($"{isRemovedGame}. Game with Id {id} has been deleted");
-            
         }
 
         [HttpGet]
@@ -100,7 +99,7 @@ namespace GameStore.API.Controllers
         {
             string path = Directory.GetCurrentDirectory();
 
-            return PhysicalFile($"{path}\\wwwroot\\Game.txt",Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
+            return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
         }
     }
 }

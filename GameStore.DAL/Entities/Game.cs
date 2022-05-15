@@ -28,7 +28,7 @@ namespace GameStore.DAL.Entities
 
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
 
-        [Required, Range(0.1, double.MaxValue)]
+        [Required, Range(0.1, 10000)]
         public decimal Price { get; set; }
 
         [Required, DefaultValue(false)]

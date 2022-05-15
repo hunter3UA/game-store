@@ -35,7 +35,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/platformTypes")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetListOfPlatformsAsync()
         {
             var listOfPlatforms = await _platformService.GetListOfPlatformsAsync();
@@ -45,7 +44,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/platformTypes/{id}")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetPlatformAsync([FromRoute] int id)
         {
             var searchedPlatform = await _platformService.GetPlatformAsync(id);
@@ -69,7 +67,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
             
-            return Ok(updatedPlatform);
+            return new JsonResult(updatedPlatform);
         }
 
         [HttpDelete]
@@ -83,7 +81,7 @@ namespace GameStore.API.Controllers
                 return NotFound(false);
             }
 
-            return Ok($"{isRemovedPlatform}. Platform with Id {id} has been deleted ");
+            return new JsonResult($"{isRemovedPlatform}. Platform with Id {id} has been deleted ");
         }
     }
 }

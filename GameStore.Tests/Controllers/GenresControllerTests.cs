@@ -81,7 +81,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveGenreAsync_GenreRemoved_ReturnOkResult(
+        public async Task RemoveGenreAsync_GenreRemoved_ReturnJsonResult(
             int id,
             [Frozen] Mock<IGenreService> mockGenreService,
             [NoAutoProperties] GenresController genresController)
@@ -90,7 +90,7 @@ namespace GameStore.Tests.Controllers
 
             var result = await genresController.RemoveGenreAsync(id);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
     }
 }

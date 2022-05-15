@@ -1,6 +1,6 @@
-﻿using GameStore.BLL.DTO.Publisher;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GameStore.BLL.DTO.Publisher;
 
 namespace GameStore.BLL.Services.Abstract
 {

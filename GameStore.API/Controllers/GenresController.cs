@@ -20,7 +20,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/genres/add")]
+        [Route("/genres/new")]
         public async Task<IActionResult> AddGenreAsync([FromBody] AddGenreDTO addGenreDTO)
         {
             var addedGenre = await _genreService.AddGenreAsync(addGenreDTO);
@@ -63,14 +63,15 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("/genres/update")]
-        public async Task<IActionResult> UpdateGenreAsync([FromRoute] UpdateGenreDTO updateGenreDTO)
+        public async Task<IActionResult> UpdateGenreAsync([FromBody] UpdateGenreDTO updateGenreDTO)
         {
             var updatedGenre = await _genreService.UpdateGenreAsync(updateGenreDTO);
 
-            if (updatedGenre != null)
+            if (updatedGenre == null)
             {
                 return BadRequest();
             }
+
             return Ok(updatedGenre);
         }
 
@@ -85,7 +86,7 @@ namespace GameStore.API.Controllers
                 return NotFound(isRemovedGenre);
             }
 
-            return Ok($"{isRemovedGenre}.Genre with Id {id} has been deleted");
+            return new JsonResult($"{isRemovedGenre}.Genre with Id {id} has been deleted");
         } 
     }
 }

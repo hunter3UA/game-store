@@ -13,10 +13,10 @@ namespace GameStore.DAL.Entities
         [ForeignKey("GameId")]
         public Game Game { get; set; }
 
-        [Required,Range(0.1, double.MaxValue)]
+        [Required, Range(0.1, 10000)]
         public decimal Price { get; set; }
 
-        [Required,Range(1,short.MaxValue)]
+        [Required, Range(1, short.MaxValue)]
         public short Quantity { get; set; }
 
         [Required, DefaultValue(0)]
