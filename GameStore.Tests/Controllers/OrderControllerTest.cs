@@ -40,9 +40,9 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_RequestExistingOrder_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
-            mockOrderService.Setup(m => m.GetOrderAsync()).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
+            mockOrderService.Setup(m => m.GetOrderAsync(1)).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
 
-            var result = await ordersController.GetOrderAsync();
+            var result = await ordersController.GetOrderAsync(1);
 
             result.Should().BeOfType<OkObjectResult>();
         }
@@ -50,11 +50,11 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_RequestNotExistingOrder_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
-            mockOrderService.Setup(m => m.GetOrderAsync()).ReturnsAsync(() => { return null; });
+            mockOrderService.Setup(m => m.GetOrderAsync(1)).ReturnsAsync(() => { return null; });
 
-            var result = await ordersController.GetOrderAsync();
+            var result = await ordersController.GetOrderAsync(1);
 
-            result.Should().BeOfType<BadRequestResult>();
+            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory, AutoDomainData]

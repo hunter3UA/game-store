@@ -33,13 +33,13 @@ namespace GameStore.BLL.Services.Implementation
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId);
             if (orderOfCustomer == null)
             {
-                orderOfCustomer = await CreateOrder();
+                orderOfCustomer = await CreateOrder(customerId);
             }
 
             OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
             if (orderItemToAdd != null)
             {
-                return null;
+                return _mapper.Map<OrderDetailsDTO>(orderItemToAdd);
             }
 
             OrderDetails addedOrderDetails = await CreateOrderDetails(orderOfCustomer.Id, gameOfDetails.Id, gameOfDetails.Price);
@@ -70,9 +70,15 @@ namespace GameStore.BLL.Services.Implementation
             return isDeletedOrderDetails;
         }
 
-        public async Task<OrderDTO> GetOrderAsync()
+        public async Task<OrderDTO> GetOrderAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == 1, details => details.OrderDetails);
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId, details => details.OrderDetails);
+
+            if(orderByCustomer==null)
+            {
+                return null;
+            }
+
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
@@ -81,11 +87,11 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
 
-        private async Task<Order> CreateOrder()
+        private async Task<Order> CreateOrder(int customerId)
         {
             Order orderToAdd = new Order()
             {
-                CustomerId = 1
+                CustomerId = customerId
             };
 
             Order addedOrder = await _unitOfWork.OrderRepository.AddAsync(orderToAdd);

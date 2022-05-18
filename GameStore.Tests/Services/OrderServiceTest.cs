@@ -38,20 +38,6 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task AddOrderDetailsAsync_GivenExistedDetails_ReturnNull(
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            OrderService orderService)
-        {
-            mockUnitOfWork.Setup(m => m.OrderDetailsRepository.GetAsync(
-                It.IsAny<Expression<Func<OrderDetails, bool>>>(),
-                It.IsAny<Expression<Func<OrderDetails, object>>[]>())).ReturnsAsync(() => { return new OrderDetails(); });
-
-            var result = await orderService.AddOrderDetailsAsync("Test", 1);
-
-            result.Should().BeNull();
-        }
-
-        [Theory, AutoDomainData]
         public async Task ChangeQuantityDetailsAsync_GivenValidData_ReturnOrderDetails(
             ChangeQuantityDTO changeQuantityDTO,
             OrderService orderService)
@@ -76,7 +62,7 @@ namespace GameStore.Tests.Services
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_ReturnOrder(OrderService orderService)
         {
-            var result = await orderService.GetOrderAsync();
+            var result = await orderService.GetOrderAsync(1);
 
             result.Should().BeOfType<OrderDTO>();
         }

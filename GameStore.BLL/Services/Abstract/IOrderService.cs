@@ -8,7 +8,7 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId);
 
-        Task<OrderDTO> GetOrderAsync();
+        Task<OrderDTO> GetOrderAsync(int cusomerId);
 
         Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO);
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Services.Abstract;
+using System;
 
 namespace GameStore.API.Controllers
 {
@@ -19,14 +20,14 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/basket")]
-        public async Task<IActionResult> GetOrderAsync()
+        [Route("/basket/{id}")]
+        public async Task<IActionResult> GetOrderAsync([FromRoute] int id)
         {
-            var orderByCustomer = await _orderService.GetOrderAsync();
+            var orderByCustomer = await _orderService.GetOrderAsync(id);
 
             if (orderByCustomer == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
             return Ok(orderByCustomer);
@@ -34,9 +35,10 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("/games/{gamekey}/buy")]
-        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey, [FromBody] int customerId)
+        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey,[FromBody] int customerId)
         {
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, 1);
+         
+            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
 
             if (addedOrderDetails == null)
             {
