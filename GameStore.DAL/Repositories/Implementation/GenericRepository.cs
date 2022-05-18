@@ -7,6 +7,7 @@ using GameStore.DAL.Entities;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using GameStore.DAL.Context;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
@@ -71,22 +72,13 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<TEntity> UpdateAsync(TEntity entityToUpdate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
-            var entity = await _dbSet.FirstOrDefaultAsync(e => e.Id == entityToUpdate.Id);
+            var entity = await query.FirstOrDefaultAsync(e => e.Id == entityToUpdate.Id);
 
             if (entity != null)
             {
                 foreach (var navEntity in _dbContext.Entry(entityToUpdate).Navigations)
                 {
-                    if (navEntity.CurrentValue != null)
-                    {
-                        var navEntityName = navEntity.Metadata.Name;
-                        var navExist = _dbContext.Entry(entity).Navigation(navEntityName);
-                        await navExist.LoadAsync();
-                        if (navEntity.CurrentValue != null || navExist.CurrentValue != null)
-                        {
-                            navExist.CurrentValue = navEntity.CurrentValue;
-                        }
-                    }
+                    await CheckEntity(navEntity, entity);
                 }
 
                 _dbContext.Entry(entity).CurrentValues.SetValues(entityToUpdate);
@@ -102,6 +94,20 @@ namespace GameStore.DAL.Repositories.Implementation
 
             return includeProperties
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+        }
+
+        private async Task CheckEntity(NavigationEntry navEntity, TEntity entity)
+        {
+            if (navEntity.CurrentValue != null)
+            {
+                var navEntityName = navEntity.Metadata.Name;
+                var navExist = _dbContext.Entry(entity).Navigation(navEntityName);
+                await navExist.LoadAsync();
+                if (navEntity.CurrentValue != null || navExist.CurrentValue != null)
+                {
+                    navExist.CurrentValue = navEntity.CurrentValue;
+                }
+            }
         }
     }
 }

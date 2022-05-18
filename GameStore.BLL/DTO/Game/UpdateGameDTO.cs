@@ -8,9 +8,11 @@ namespace GameStore.BLL.DTO.Game
 
         public string Name { get; set; }
 
+        public string Key { get; set; }
+
         public string Description { get; set; }
 
-        public bool Discountinued { get; set; }
+        public bool Discontinued { get; set; }
 
         public short UnitsInStock { get; set; }
 

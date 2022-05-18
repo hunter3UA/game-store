@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Static;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Cors;
