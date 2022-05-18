@@ -114,13 +114,6 @@ namespace GameStore.DAL.Context
             modelBuilder.Entity<Comment>().HasData(
                 new Comment { Id = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
                 new Comment { Id = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 });
-            modelBuilder.Entity<Order>().HasData(
-                new Order { Id = 1, CustomerId = 1, },
-                new Order { Id = 2, CustomerId = 2, });
-            modelBuilder.Entity<OrderDetails>().HasData(
-                new OrderDetails { Id = 1, GameId = 1, OrderId = 1, Price = 70, Quantity = 1, Discount = 0 },
-                new OrderDetails { Id = 2, GameId = 2, OrderId = 1, Price = 50, Quantity = 1, Discount = 0 },
-                new OrderDetails { Id = 3, GameId = 2, OrderId = 2, Price = 50, Quantity = 1, Discount = 0 });
         }
     }
 }
