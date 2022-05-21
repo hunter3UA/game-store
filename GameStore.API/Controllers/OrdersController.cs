@@ -25,15 +25,15 @@ namespace GameStore.API.Controllers
         [Route("/basket")]
         public async Task<IActionResult> GetOrderAsync()
         {
-            var customer = _authService.GetCookies(HttpContext);
-            var orderByCustomer = await _orderService.GetOrderAsync(Convert.ToInt32(customer));
+            var customerId = _authService.GetCookies(HttpContext);
+            var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
             if (orderByCustomer == null)
             {
                 return NotFound();
             }
 
-            return Ok(orderByCustomer);
+            return new JsonResult(orderByCustomer);
         }
 
         [HttpGet]
@@ -41,7 +41,7 @@ namespace GameStore.API.Controllers
         public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey)
         {
             var customerId = _authService.GetCookies(HttpContext);
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, Convert.ToInt32(customerId));
+            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
 
             if (addedOrderDetails == null)
             {
@@ -62,7 +62,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(updatedOrderDetails);           
+            return new JsonResult(updatedOrderDetails);           
         }
 
         [HttpDelete]
