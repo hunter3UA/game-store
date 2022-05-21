@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
@@ -30,7 +29,9 @@ namespace GameStore.BLL.Services.Implementation
             Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
+
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
+
             mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
@@ -76,6 +77,7 @@ namespace GameStore.BLL.Services.Implementation
             Game mappedGame = _mapper.Map<Game>(updateGameDTO);
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.Genres.Contains(g.Id));
+
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.Platforms.Contains(p.Id));
 
             Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
