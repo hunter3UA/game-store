@@ -29,6 +29,7 @@ namespace GameStore.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
+
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
@@ -87,8 +88,8 @@ namespace GameStore.API
             {
                 options.AddPolicy(
                     "AllowOrigin",
-                    builder => builder.AllowAnyOrigin().AllowAnyHeader().WithExposedHeaders("x-custom-header")
-                    .AllowAnyMethod());
+                    builder => builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin=>true).AllowCredentials()
+                    );
             });
 
             services.AddSingleton<Serilog.ILogger>(Log.Logger);
@@ -104,6 +105,7 @@ namespace GameStore.API
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddScoped<IPublisherService, PublisherService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IAuthService, AuthService>();
         }
     }
 }

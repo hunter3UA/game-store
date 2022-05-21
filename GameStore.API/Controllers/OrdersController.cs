@@ -13,17 +13,20 @@ namespace GameStore.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IAuthService _authService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService,IAuthService authService)
         {
             _orderService = orderService;
+            _authService = authService;
         }
 
         [HttpGet]
-        [Route("/basket/{id}")]
-        public async Task<IActionResult> GetOrderAsync([FromRoute] int id)
+        [Route("/basket")]
+        public async Task<IActionResult> GetOrderAsync()
         {
-            var orderByCustomer = await _orderService.GetOrderAsync(id);
+            var customer = _authService.GetCookies(HttpContext);
+            var orderByCustomer = await _orderService.GetOrderAsync(Convert.ToInt32(customer));
 
             if (orderByCustomer == null)
             {
@@ -33,19 +36,19 @@ namespace GameStore.API.Controllers
             return Ok(orderByCustomer);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("/games/{gamekey}/buy")]
-        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey,[FromBody] int customerId)
+        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey)
         {
-         
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
+            var customerId = _authService.GetCookies(HttpContext);
+            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, Convert.ToInt32(customerId));
 
             if (addedOrderDetails == null)
             {
                 return BadRequest();
             }
 
-            return Ok(addedOrderDetails);
+            return new JsonResult(addedOrderDetails);
         }
 
         [HttpPut]
