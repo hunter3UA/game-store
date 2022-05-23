@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
@@ -33,7 +34,7 @@ namespace GameStore.BLL.Services.Implementation
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId);
             if (orderOfCustomer == null)
             {
-                orderOfCustomer = await CreateOrder(customerId);
+                orderOfCustomer = await CreateOrderAsync(customerId);
             }
 
             OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
@@ -42,7 +43,7 @@ namespace GameStore.BLL.Services.Implementation
                 return _mapper.Map<OrderDetailsDTO>(orderItemToAdd);
             }
 
-            OrderDetails addedOrderDetails = await CreateOrderDetails(orderOfCustomer.Id, gameOfDetails.Id, gameOfDetails.Price);
+            OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Id, gameOfDetails.Price);
 
             return _mapper.Map<OrderDetailsDTO>(addedOrderDetails);
         }
@@ -73,7 +74,7 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<OrderDTO> GetOrderAsync(int customerId)
         {
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId, details => details.OrderDetails);
-
+          
             if(orderByCustomer==null)
             {
                 return null;
@@ -87,7 +88,7 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
 
-        private async Task<Order> CreateOrder(int customerId)
+        private async Task<Order> CreateOrderAsync(int customerId)
         {
             Order orderToAdd = new Order()
             {
@@ -105,7 +106,7 @@ namespace GameStore.BLL.Services.Implementation
             return addedOrder;
         }
 
-        private async Task<OrderDetails> CreateOrderDetails(int orderId, int gameId, decimal price)
+        private async Task<OrderDetails> CreateOrderDetailsAsync(int orderId, int gameId, decimal price)
         {
             OrderDetails orderDetailsToAdd = new OrderDetails()
             {

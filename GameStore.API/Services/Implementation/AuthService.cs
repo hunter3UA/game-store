@@ -1,14 +1,14 @@
 ﻿using System;
-using GameStore.BLL.Services.Abstract;
+using GameStore.API.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 
-namespace GameStore.BLL.Services.Implementation
+namespace GameStore.API.Services.Implementation
 {
     public class AuthService : IAuthService
     {
         private const string KEY = "CustomerId";
 
-        public string GetCookies(HttpContext context)
+        public int GetCookies(HttpContext context)
         {
             string customerId;
             var cookies = context.Request.Cookies.ContainsKey(KEY);
@@ -21,7 +21,7 @@ namespace GameStore.BLL.Services.Implementation
                 context.Request.Cookies.TryGetValue(KEY, out customerId);
             }
 
-            return customerId;
+            return Convert.ToInt32(customerId);
         }
 
         private string CreateCookies(HttpContext context)

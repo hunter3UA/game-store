@@ -16,6 +16,8 @@ using Serilog;
 using Microsoft.AspNetCore.Mvc;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
+using GameStore.API.Services.Abstract;
+using GameStore.API.Services.Implementation;
 
 namespace GameStore.API
 {

@@ -20,9 +20,9 @@ namespace GameStore.Tests.Controllers
         {
             mockOrderService.Setup(m => m.AddOrderDetailsAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(new BLL.DTO.OrderDetails.OrderDetailsDTO());
 
-            var result = await ordersController.AddOrderDetailsAsync("Test", 1);
+            var result = await ordersController.AddOrderDetailsAsync("Test");
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
@@ -32,27 +32,27 @@ namespace GameStore.Tests.Controllers
         {
             mockOrderService.Setup(m => m.AddOrderDetailsAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(() => { return null; });
 
-            var result = await ordersController.AddOrderDetailsAsync("Test", 1);
+            var result = await ordersController.AddOrderDetailsAsync("Test");
 
             result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_RequestExistingOrder_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
+        public async Task GetOrderAsync_RequestExistingOrder_ReturnJsonResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
             mockOrderService.Setup(m => m.GetOrderAsync(1)).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
 
-            var result = await ordersController.GetOrderAsync(1);
+            var result = await ordersController.GetOrderAsync();
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_RequestNotExistingOrder_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
+        public async Task GetOrderAsync_RequestNotExistingOrder_ReturnNotFoundResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
-            mockOrderService.Setup(m => m.GetOrderAsync(1)).ReturnsAsync(() => { return null; });
+            mockOrderService.Setup(m => m.GetOrderAsync(It.IsAny<int>())).ReturnsAsync(() => { return null; });
 
-            var result = await ordersController.GetOrderAsync(1);
+            var result = await ordersController.GetOrderAsync();
 
             result.Should().BeOfType<NotFoundResult>();
         }
