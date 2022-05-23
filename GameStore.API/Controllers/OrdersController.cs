@@ -13,19 +13,19 @@ namespace GameStore.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly ICustomerGenerator _authService;
+        private readonly ICustomerGenerator _customerGenerator;
 
-        public OrdersController(IOrderService orderService,ICustomerGenerator authService)
+        public OrdersController(IOrderService orderService,ICustomerGenerator customerGenerator)
         {
             _orderService = orderService;
-            _authService = authService;
+            _customerGenerator = customerGenerator;
         }
 
         [HttpGet]
         [Route("/basket")]
         public async Task<IActionResult> GetOrderAsync()
         {
-            var customerId = _authService.GetCookies(HttpContext);
+            var customerId = _customerGenerator.GetCookies(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
             if (orderByCustomer == null)
@@ -40,7 +40,7 @@ namespace GameStore.API.Controllers
         [Route("/games/{gamekey}/buy")]
         public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey)
         {
-            var customerId = _authService.GetCookies(HttpContext);
+            var customerId = _customerGenerator.GetCookies(HttpContext);
             var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
 
             if (addedOrderDetails == null)
