@@ -16,8 +16,7 @@ using Serilog;
 using Microsoft.AspNetCore.Mvc;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
-using GameStore.API.Services.Abstract;
-using GameStore.API.Services.Implementation;
+using GameStore.API.Helpers;
 
 namespace GameStore.API
 {
@@ -107,7 +106,7 @@ namespace GameStore.API
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddScoped<IPublisherService, PublisherService>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICustomerGenerator, CustomerGenerator>();
         }
     }
 }

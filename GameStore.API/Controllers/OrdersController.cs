@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Services.Abstract;
-using GameStore.API.Services.Abstract;
+using GameStore.API.Helpers;
 
 namespace GameStore.API.Controllers
 {
@@ -13,9 +13,9 @@ namespace GameStore.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IAuthService _authService;
+        private readonly ICustomerGenerator _authService;
 
-        public OrdersController(IOrderService orderService,IAuthService authService)
+        public OrdersController(IOrderService orderService,ICustomerGenerator authService)
         {
             _orderService = orderService;
             _authService = authService;

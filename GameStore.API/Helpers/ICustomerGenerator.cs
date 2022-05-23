@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace GameStore.API.Services.Abstract
+namespace GameStore.API.Helpers
 {
-    public interface IAuthService
+    public interface ICustomerGenerator
     {
         int GetCookies(HttpContext context);
     }

@@ -1,10 +1,9 @@
 ﻿using System;
-using GameStore.API.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 
-namespace GameStore.API.Services.Implementation
+namespace GameStore.API.Helpers
 {
-    public class AuthService : IAuthService
+    public class CustomerGenerator : ICustomerGenerator
     {
         private const string KEY = "CustomerId";
 
