@@ -36,6 +36,7 @@ namespace GameStore.API.Middleware
                 await HandleException(context, e, env.IsDevelopment());
                 _logger.LogError($"Error: {e.Message}");
             }  
+            
         }
 
         private static string GetResponseBody(Exception ex, bool isDevelopment, int httpStatusCode)

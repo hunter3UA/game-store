@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.BLL.DTO
+namespace GameStore.BLL.DTO.Comment
 {
     public class AddCommentDTO
-    {
+    {   
         public string Name { get; set; }
-      
+
         public string Body { get; set; }
 
         public int? ParentCommentId { get; set; }

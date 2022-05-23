@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
-using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -30,17 +29,10 @@ namespace GameStore.BLL.Services.Implementation
             Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
+
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
 
-            if (mappedGame.Genres.Count() <= 0)
-            {
-                throw new Exception("Game must contain at least 1 existing genre");
-            }
-            
-            if (mappedGame.PlatformTypes.Count() <= 0)
-            {
-                throw new Exception("Game must contain at least 1 existing platform type");
-            }
+            mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
             await _unitOfWork.SaveAsync();
@@ -55,26 +47,26 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<GameDTO>> GetListOfGamesAsync()
         {
-            List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p=>p.PlatformTypes);
+            List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p => p.PlatformTypes, pb => pb.Publisher);
 
             return _mapper.Map<List<GameDTO>>(allGames);
         }
 
         public async Task<GameDTO> GetGameAsync(string gameKey)
         {
-            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game=>game.Key==gameKey, p=>p.PlatformTypes, g=>g.Genres);
+            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres, pub => pub.Publisher);
 
             return _mapper.Map<GameDTO>(searchedGame);
         }
 
-        public async Task<bool> RemoveGameAsync(string key)
+        public async Task<bool> RemoveGameAsync(int id)
         {
-            bool isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key == key);
+            bool isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Id == id);
             await _unitOfWork.SaveAsync();
 
             if (isRemovedGame)
             {
-                _logger.LogInformation($"Game with Key {key} has been deleted");
+                _logger.LogInformation($"Game with Key {id} has been deleted");
             }
 
             return isRemovedGame;
@@ -84,25 +76,22 @@ namespace GameStore.BLL.Services.Implementation
         {
             Game mappedGame = _mapper.Map<Game>(updateGameDTO);
 
-            mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.GenresId.Contains(g.Id));
-            mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
+            mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.Genres.Contains(g.Id));
 
-            if (mappedGame.Genres.Count() <= 0)
-            {
-                throw new Exception("Game must contain at least 1 existing genre");
-            }
+            mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.Platforms.Contains(p.Id));
 
-            if (mappedGame.PlatformTypes.Count() <= 0)
-            {
-                throw new Exception("Game must contain at least 1 existing platform type");
-            }
-
-            Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g=>g.Genres,p=>p.PlatformTypes);
+            Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
 
             return _mapper.Map<GameDTO>(updatedGame);
+        }
+
+        private string CreateGameKey(string name)
+        {
+            var key = name.Trim().ToLower().Replace(" ", "-");
+            return key;
         }
     }
 }

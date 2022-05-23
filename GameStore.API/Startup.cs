@@ -16,7 +16,7 @@ using Serilog;
 using Microsoft.AspNetCore.Mvc;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
-
+using GameStore.API.Helpers;
 
 namespace GameStore.API
 {
@@ -30,6 +30,7 @@ namespace GameStore.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
+
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
@@ -60,7 +61,6 @@ namespace GameStore.API
             {
                 endpoints.MapControllers();
             });
-
         }
 
         private void ServiceRegister(IServiceCollection services)
@@ -87,8 +87,10 @@ namespace GameStore.API
             });
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowOrigin",
-                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                options.AddPolicy(
+                    "AllowOrigin",
+                    builder => builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin=>true).AllowCredentials()
+                    );
             });
 
             services.AddSingleton<Serilog.ILogger>(Log.Logger);
@@ -102,6 +104,9 @@ namespace GameStore.API
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
+            services.AddScoped<IPublisherService, PublisherService>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<ICustomerGenerator, CustomerGenerator>();
         }
     }
 }

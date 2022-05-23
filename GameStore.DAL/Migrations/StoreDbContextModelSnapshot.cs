@@ -86,6 +86,9 @@ namespace GameStore.DAL.Migrations
                         .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Discontinued")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -99,6 +102,15 @@ namespace GameStore.DAL.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("PublisherId")
+                        .HasColumnType("int");
+
+                    b.Property<short>("UnitsInStock")
+                        .HasColumnType("smallint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Key")
@@ -107,6 +119,8 @@ namespace GameStore.DAL.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
+                    b.HasIndex("PublisherId");
+
                     b.ToTable("Games");
 
                     b.HasData(
@@ -114,25 +128,37 @@ namespace GameStore.DAL.Migrations
                         {
                             Id = 1,
                             Description = "New part of Stalker",
+                            Discontinued = false,
                             IsDeleted = false,
                             Key = "stalker-2",
-                            Name = "Stalker2"
+                            Name = "Stalker2",
+                            Price = 70m,
+                            PublisherId = 2,
+                            UnitsInStock = (short)10
                         },
                         new
                         {
                             Id = 2,
                             Description = "Best part",
+                            Discontinued = false,
                             IsDeleted = false,
                             Key = "dying-light",
-                            Name = "Dying light"
+                            Name = "Dying light",
+                            Price = 50m,
+                            PublisherId = 1,
+                            UnitsInStock = (short)0
                         },
                         new
                         {
                             Id = 3,
                             Description = "Action ",
+                            Discontinued = false,
                             IsDeleted = false,
                             Key = "left-4-dead",
-                            Name = "Left 4 Dead"
+                            Name = "Left 4 Dead",
+                            Price = 100m,
+                            PublisherId = 2,
+                            UnitsInStock = (short)3
                         });
                 });
 
@@ -302,6 +328,62 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int")
+                        .HasColumnName("ProductId");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<short>("Quantity")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderDetails");
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.PlatformType", b =>
                 {
                     b.Property<int>("Id")
@@ -388,6 +470,57 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Publisher", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("ntext");
+
+                    b.Property<string>("HomePage")
+                        .IsRequired()
+                        .HasMaxLength(400)
+                        .HasColumnType("ntext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyName")
+                        .IsUnique();
+
+                    b.ToTable("Publishers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CompanyName = "DeepSiler",
+                            Description = "Desc of Publisher 1 ",
+                            HomePage = "Home",
+                            IsDeleted = false
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CompanyName = "GSC",
+                            Description = "Desc of Publisher 2 ",
+                            HomePage = "Home2",
+                            IsDeleted = false
+                        });
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
                 {
                     b.HasOne("GameStore.DAL.Entities.Game", "Game")
@@ -401,6 +534,15 @@ namespace GameStore.DAL.Migrations
                         .HasForeignKey("ParentCommentId");
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Game", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Publisher", "Publisher")
+                        .WithMany("Games")
+                        .HasForeignKey("PublisherId");
+
+                    b.Navigation("Publisher");
                 });
 
             modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
@@ -427,6 +569,25 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("Game");
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetails", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameStore.DAL.Entities.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("GameStore.DAL.Entities.PlatformsInGames", b =>
@@ -456,11 +617,23 @@ namespace GameStore.DAL.Migrations
             modelBuilder.Entity("GameStore.DAL.Entities.Game", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("OrderDetails");
                 });
 
             modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
                 {
                     b.Navigation("SubGenres");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Publisher", b =>
+                {
+                    b.Navigation("Games");
                 });
 #pragma warning restore 612, 618
         }

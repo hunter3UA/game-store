@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace GameStore.BLL.DTO
+namespace GameStore.BLL.DTO.Genre
 {
     public class GenreDTO
     {
@@ -11,5 +9,7 @@ namespace GameStore.BLL.DTO
         public string Name { get; set; }
 
         public List<GenreDTO> SubGenres { get; set; }
+
+        public int ParentGenreId { get; set; }
     }
 }

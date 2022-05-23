@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Platform;
+using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -24,7 +24,7 @@ namespace GameStore.BLL.Services.Implementation
             _logger = logger;
         }
 
-        public async Task<PlatformTypeDTO> AddPlatformTypeAsync(AddPlatformTypeDTO addPlatformDTO)
+        public async Task<PlatformTypeDTO> AddPlatformAsync(AddPlatformTypeDTO addPlatformDTO)
         {
             PlatformType mappedPlatform = _mapper.Map<PlatformType>(addPlatformDTO);
 
@@ -48,14 +48,14 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
         {
-            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p=>p.Id==id);
+            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id);
 
             return _mapper.Map<PlatformTypeDTO>(searchedPlatform);
         }
 
         public async Task<bool> RemovePlatformAsync(int id)
         {
-            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p=>p.Id==id);
+            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p => p.Id == id);
             await _unitOfWork.SaveAsync();
 
             if (isRemovedPlatform)
@@ -64,6 +64,16 @@ namespace GameStore.BLL.Services.Implementation
             }
 
             return isRemovedPlatform;
+        }
+
+        public async Task<PlatformTypeDTO> UpdatePlatformAsync(UpdatePlatformTypeDTO updatePlatformDTO)
+        {
+            PlatformType mappedPlatform = _mapper.Map<PlatformType>(updatePlatformDTO);
+
+            PlatformType updatedPlatform = await _unitOfWork.PlatformTypeRepository.UpdateAsync(mappedPlatform);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<PlatformTypeDTO>(updatedPlatform);
         }
     }
 }

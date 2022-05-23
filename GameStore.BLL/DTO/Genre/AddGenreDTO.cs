@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace GameStore.BLL.DTO
+﻿namespace GameStore.BLL.DTO.Genre
 {
     public class AddGenreDTO
     {

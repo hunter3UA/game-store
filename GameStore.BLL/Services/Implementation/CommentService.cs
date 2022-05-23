@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -38,9 +39,10 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<CommentDTO>(addedComment);
         }
 
-        public async Task<List<CommentDTO>> GetListOfCommentsAsync(Expression<Func<Comment, bool>> predicate)
+        public async Task<List<CommentDTO>> GetListOfCommentsAsync(string gameKey)
         {
-            var commentsByGameKey = await _unitOfWork.CommentRepository.GetRangeAsync(predicate,c=>c.Answers );
+            var commentsByGameKey = await _unitOfWork.CommentRepository.GetRangeAsync(g => g.Game.Key == gameKey, c => c.Answers);
+            commentsByGameKey = commentsByGameKey.Where(c => c.ParentCommentId == null).ToList();
 
             return _mapper.Map<List<CommentDTO>>(commentsByGameKey);
         }

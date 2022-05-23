@@ -7,6 +7,7 @@ using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.Tests.Attributes;
@@ -41,7 +42,7 @@ namespace GameStore.Tests.Controllers
             IMapper mapper,
             [NoAutoProperties] CommentsController commentsController)
         {
-            mockCommentService.Setup(m => m.GetListOfCommentsAsync(It.IsAny<Expression<Func<Comment, bool>>>()))
+            mockCommentService.Setup(m => m.GetListOfCommentsAsync(It.IsAny<string>()))
                 .ReturnsAsync(() =>
                 {
                     return mapper.Map<List<CommentDTO>>(comments);

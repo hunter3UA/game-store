@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using GameStore.API.Static;
-using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/game/{gameKey}/newcomment")]
+        [Route("/games/{gameKey}/newcomment")]
         public async Task<IActionResult> AddCommentAsync([FromRoute] string gameKey, [FromBody] AddCommentDTO addCommentDTO)
         {
             var addedComment = await _commentService.AddCommentAsync(gameKey, addCommentDTO);
@@ -32,11 +32,10 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/game/{gameKey}/comments")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        [Route("/games/{gameKey}/comments")]
         public async Task<IActionResult> GetCommentsAsync([FromRoute] string gameKey)
         {
-            var commentsByGameKey = await _commentService.GetListOfCommentsAsync(c => c.Game.Key == gameKey && c.ParentCommentId==null);
+            var commentsByGameKey = await _commentService.GetListOfCommentsAsync(gameKey);
 
             if (commentsByGameKey == null)
             {

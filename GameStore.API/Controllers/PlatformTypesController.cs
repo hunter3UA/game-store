@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Platform;
+using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +23,7 @@ namespace GameStore.API.Controllers
         [Route("/platformTypes/add")]
         public async Task<IActionResult> AddPlatformTypeAsync([FromBody] AddPlatformTypeDTO platformDTO)
         {
-            var addedPlatform = await _platformService.AddPlatformTypeAsync(platformDTO);
+            var addedPlatform = await _platformService.AddPlatformAsync(platformDTO);
 
             if (addedPlatform == null)
             {
@@ -32,8 +34,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/platformTypes/all")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        [Route("/platformTypes")]
         public async Task<IActionResult> GetListOfPlatformsAsync()
         {
             var listOfPlatforms = await _platformService.GetListOfPlatformsAsync();
@@ -43,7 +44,6 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/platformTypes/{id}")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
         public async Task<IActionResult> GetPlatformAsync([FromRoute] int id)
         {
             var searchedPlatform = await _platformService.GetPlatformAsync(id);
@@ -57,6 +57,20 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
+        [Route("/platformTypes/update")]
+        public async Task<IActionResult> UpdatePlatformAsync([FromBody] UpdatePlatformTypeDTO updatePlatformTypeDTO)
+        {
+            var updatedPlatform = await _platformService.UpdatePlatformAsync(updatePlatformTypeDTO);
+
+            if (updatedPlatform == null)
+            {
+                return BadRequest();
+            }
+            
+            return new JsonResult(updatedPlatform);
+        }
+
+        [HttpDelete]
         [Route("/platformTypes/remove/{id}")]
         public async Task<IActionResult> RemovePlatformAsync([FromRoute] int id)
         {
@@ -67,7 +81,7 @@ namespace GameStore.API.Controllers
                 return NotFound(false);
             }
 
-            return Ok($"{isRemovedPlatform}. Platform with Id {id} has been deleted ");
+            return new JsonResult($"{isRemovedPlatform}. Platform with Id {id} has been deleted ");
         }
     }
 }

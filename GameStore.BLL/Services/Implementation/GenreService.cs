@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -42,21 +43,30 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<GenreDTO> GetGenreAsync(int id)
         {
-            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre=>genre.Id==id, g=>g.SubGenres);
+            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre => genre.Id == id, g => g.SubGenres);
 
             return _mapper.Map<GenreDTO>(searchedGenre);
         }
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
-            List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g=>g.SubGenres);
-            allGenres = allGenres.Where(g => g.ParentGenreId == null).ToList();
+            List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
 
             return _mapper.Map<List<GenreDTO>>(allGenres);
         }
 
         public async Task<bool> RemoveGenreAsync(int id)
         {
+            var genreById = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == id, subG => subG.SubGenres);
+
+            if (genreById.SubGenres != null)
+            {
+                foreach (var genre in genreById.SubGenres)
+                {
+                    genre.ParentGenreId = genreById.ParentGenreId;
+                }
+            }
+
             bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
             await _unitOfWork.SaveAsync();
 
@@ -64,12 +74,18 @@ namespace GameStore.BLL.Services.Implementation
             {
                 _logger.LogInformation($"Genre with Id: {id} has been deleted");
             }
-            else
-            {
-                _logger.LogInformation($"Genre has not been deleted");
-            }
 
             return isDeletedGenre;
+        }
+
+        public async Task<GenreDTO> UpdateGenreAsync(UpdateGenreDTO updateGenreDTO)
+        {
+            Genre mappedGenre = _mapper.Map<Genre>(updateGenreDTO);
+
+            Genre updatedGenre = await _unitOfWork.GenreRepository.UpdateAsync(mappedGenre);
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<GenreDTO>(updatedGenre);
         }
     }
 }

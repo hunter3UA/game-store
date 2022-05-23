@@ -7,6 +7,7 @@ using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
 using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.Tests.Attributes;
@@ -28,7 +29,7 @@ namespace GameStore.Tests.Controllers
             PlatformType platformToAdd = mapper.Map<PlatformType>(addPlatformDTO);
             var id = 10;
             platformToAdd.Id = id;
-            mockPlatformService.Setup(m => m.AddPlatformTypeAsync(It.IsAny<AddPlatformTypeDTO>()))
+            mockPlatformService.Setup(m => m.AddPlatformAsync(It.IsAny<AddPlatformTypeDTO>()))
                 .ReturnsAsync(() =>
                 {
                     platformToAdd.Id = id;
@@ -70,7 +71,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task RemovePlatformTypeAsync_PlatformRemove_ReturnOkResult(
+        public async Task RemovePlatformTypeAsync_PlatformRemove_ReturnJsonResult(
             int id,
             [Frozen] Mock<IPlatformTypeService> mockPlatformService, 
             [NoAutoProperties] PlatformTypesController platformsController)
@@ -79,7 +80,7 @@ namespace GameStore.Tests.Controllers
 
             var result = await platformsController.RemovePlatformAsync(id);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
     }
 }

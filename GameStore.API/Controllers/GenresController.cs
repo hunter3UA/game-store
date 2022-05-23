@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GameStore.API.Static;
-using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class GenresController : ControllerBase
@@ -19,7 +20,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/genres/add")]
+        [Route("/genres/new")]
         public async Task<IActionResult> AddGenreAsync([FromBody] AddGenreDTO addGenreDTO)
         {
             var addedGenre = await _genreService.AddGenreAsync(addGenreDTO);
@@ -33,8 +34,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/genres/getall")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        [Route("/genres")]
         public async Task<IActionResult> GetAllGenresAsync()
         {
             var allGenres = await _genreService.GetListOfGenresAsync();
@@ -48,9 +48,8 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/genres")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
-        public async Task<IActionResult> GetGenreAsync([FromQuery] int id)
+        [Route("/genres/{id}")]
+        public async Task<IActionResult> GetGenreAsync([FromRoute] int id)
         {
             var genreByKey = await _genreService.GetGenreAsync(id);
 
@@ -63,8 +62,22 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        [Route("/genres/remove")]
-        public async Task<IActionResult> RemoveGenreAsync([FromQuery] int id)
+        [Route("/genres/update")]
+        public async Task<IActionResult> UpdateGenreAsync([FromBody] UpdateGenreDTO updateGenreDTO)
+        {
+            var updatedGenre = await _genreService.UpdateGenreAsync(updateGenreDTO);
+
+            if (updatedGenre == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(updatedGenre);
+        }
+
+        [HttpDelete]
+        [Route("/genres/remove/{id}")]
+        public async Task<IActionResult> RemoveGenreAsync([FromRoute] int id)
         {
             var isRemovedGenre = await _genreService.RemoveGenreAsync(id);
 
@@ -73,7 +86,7 @@ namespace GameStore.API.Controllers
                 return NotFound(isRemovedGenre);
             }
 
-            return Ok($"{isRemovedGenre}.Genre with Id {id} has been deleted");
-        }
+            return new JsonResult($"{isRemovedGenre}.Genre with Id {id} has been deleted");
+        } 
     }
 }
