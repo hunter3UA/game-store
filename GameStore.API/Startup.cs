@@ -1,4 +1,3 @@
-using AutoMapper;
 using GameStore.API.Middleware;
 using GameStore.API.Static;
 using GameStore.BLL.Mapper;
@@ -105,8 +104,9 @@ namespace GameStore.API
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddScoped<IPublisherService, PublisherService>();
-            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICustomerGenerator, CustomerGenerator>();
+            services.AddScoped<IOrderService, OrderService>();
         }
     }
 }

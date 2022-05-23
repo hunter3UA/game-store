@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.DAL.Entities
@@ -16,6 +17,9 @@ namespace GameStore.DAL.Entities
 
         [Required]
         public DateTime OrderDate { get; set; }
+
+        [Required,DefaultValue(OrderStatus.Opened)]
+        public OrderStatus Status { get; set; }
 
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
     }

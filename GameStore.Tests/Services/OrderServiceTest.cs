@@ -21,7 +21,7 @@ namespace GameStore.Tests.Services
             OrderDetails detailsToAdd,
             Game gameOfDetails,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            OrderService orderService)
+            BasketService orderService)
         {
             detailsToAdd.Game = gameOfDetails;
             mockUnitOfWork.Setup(m => m.OrderDetailsRepository.GetAsync(
@@ -40,7 +40,7 @@ namespace GameStore.Tests.Services
         [Theory, AutoDomainData]
         public async Task ChangeQuantityDetailsAsync_GivenValidData_ReturnOrderDetails(
             ChangeQuantityDTO changeQuantityDTO,
-            OrderService orderService)
+            BasketService orderService)
         {
             var result = await orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
 
@@ -49,7 +49,7 @@ namespace GameStore.Tests.Services
 
         [Theory, AutoDomainData]
         public async Task ChangeQuntityDetailsAsync_GivenInvalidData_ReturnNull(
-            OrderService orderService,
+            BasketService orderService,
             ChangeQuantityDTO changeQuantityDTO)
         {
             changeQuantityDTO.Quantity = -1;
@@ -60,7 +60,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_ReturnOrder(OrderService orderService)
+        public async Task GetOrderAsync_ReturnOrder(BasketService orderService)
         {
             var result = await orderService.GetOrderAsync(1);
 
@@ -68,7 +68,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveOrderDetailsAsync_GivenValidId_ReturnTrue([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
+        public async Task RemoveOrderDetailsAsync_GivenValidId_ReturnTrue([Frozen] Mock<IUnitOfWork> mockUnitOfWork, BasketService orderService)
         {
             mockUnitOfWork.Setup(m => m.OrderDetailsRepository.RemoveAsync(It.IsAny<Expression<Func<OrderDetails, bool>>>())).ReturnsAsync(true);
 
@@ -78,7 +78,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveOrderDetailsAsync_GivenInvalidId_ReturnTrue([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
+        public async Task RemoveOrderDetailsAsync_GivenInvalidId_ReturnTrue([Frozen] Mock<IUnitOfWork> mockUnitOfWork, BasketService orderService)
         {
             mockUnitOfWork.Setup(m => m.OrderDetailsRepository.RemoveAsync(It.IsAny<Expression<Func<OrderDetails, bool>>>())).ReturnsAsync(false);
 
