@@ -3,6 +3,7 @@ using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
 
 
-        public OrderService(IUnitOfWork unitOfWork,IMapper mapper)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -31,7 +32,8 @@ namespace GameStore.BLL.Services.Implementation
             }
 
             orderById.Status = OrderStatus.Processed;
-            Order updatedOrder =  await _unitOfWork.OrderRepository.UpdateAsync(orderById,od=>od.OrderDetails);
+            orderById.Expiration = DateTime.Now.AddMinutes(15);
+            Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);
             await _unitOfWork.SaveAsync();
 
             return _mapper.Map<OrderDTO>(updatedOrder);
@@ -52,27 +54,12 @@ namespace GameStore.BLL.Services.Implementation
             return true;
         }
 
-        private async Task ClearReservedGamesAsync(Order orderToCancel)
-        {
-            foreach (var item in orderToCancel.OrderDetails)
-            {
-                Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
-                gameOfItem.UnitsInStock += item.Quantity;
-
-                await _unitOfWork.OrderDetailsRepository.RemoveAsync(o => o.Id == item.Id);
-                await _unitOfWork.GameRepository.UpdateAsync(gameOfItem);
-            }
-
-            await _unitOfWork.SaveAsync();
-
-        }
-
         private async Task<bool> ReserveGame(IEnumerable<OrderDetails> detailsOfOrder)
         {
             bool isCompletedReserving = true;
             foreach (var item in detailsOfOrder)
             {
-                Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId,g=>g.Genres,g=>g.PlatformTypes);
 
                 if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
                 {
@@ -83,7 +70,7 @@ namespace GameStore.BLL.Services.Implementation
                 }
                 else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
                 {
-                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od=>od.Id==item.Id);
+                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
                     isCompletedReserving = false;
                 }
                 else
@@ -96,7 +83,17 @@ namespace GameStore.BLL.Services.Implementation
 
             return isCompletedReserving;
         }
+        private async Task ClearReservedGamesAsync(Order orderToCancel)
+        {
+            foreach (var item in orderToCancel.OrderDetails)
+            {
+                Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                gameOfItem.UnitsInStock += item.Quantity;
 
+                await _unitOfWork.OrderDetailsRepository.RemoveAsync(o => o.Id == item.Id);
+            }
 
+            await _unitOfWork.SaveAsync();
+        }
     }
 }

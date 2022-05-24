@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
 using GameStore.API.Helpers;
+using GameStore.BLL.BackgroundServices;
 
 namespace GameStore.API
 {
@@ -107,6 +108,7 @@ namespace GameStore.API
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICustomerGenerator, CustomerGenerator>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddHostedService<OrderExpirationService>();
         }
     }
 }

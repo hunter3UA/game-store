@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GameStore.API.Controllers
@@ -11,5 +8,20 @@ namespace GameStore.API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
+        private readonly IOrderService _orderService;
+
+        public OrdersController(IOrderService orderService)
+        {
+            _orderService = orderService;
+        }
+
+
+        [HttpGet]
+        [Route("/order")]
+        public async Task<IActionResult> MakeOrderAsync()
+        {
+            return Ok();
+        }
+
     }
 }

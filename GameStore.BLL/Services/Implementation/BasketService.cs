@@ -73,8 +73,8 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<OrderDTO> GetOrderAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status==OrderStatus.Opened, details => details.OrderDetails);
-          
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status!=OrderStatus.Succeeded, details => details.OrderDetails);
+
             if(orderByCustomer==null)
             {
                 return null;

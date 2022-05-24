@@ -18,6 +18,9 @@ namespace GameStore.DAL.Entities
         [Required]
         public DateTime OrderDate { get; set; }
 
+        [DefaultValue(null)]
+        public DateTime? Expiration { get; set; }
+
         [Required,DefaultValue(OrderStatus.Opened)]
         public OrderStatus Status { get; set; }
 
