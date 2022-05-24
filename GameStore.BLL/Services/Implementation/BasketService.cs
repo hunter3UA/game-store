@@ -15,12 +15,15 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<BasketService> _logger;
+        private readonly IOrderService _orderService;
 
-        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger)
+        public BasketService(IOrderService orderService,IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _orderService = orderService;
             _logger = logger;
+           
         }
 
         public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
@@ -78,6 +81,11 @@ namespace GameStore.BLL.Services.Implementation
             if(orderByCustomer==null)
             {
                 return null;
+            }
+
+            if (orderByCustomer.Status == OrderStatus.Processed)
+            {
+                await _orderService.CancelOrderAsync(orderByCustomer.Id);
             }
 
             foreach (var item in orderByCustomer.OrderDetails)

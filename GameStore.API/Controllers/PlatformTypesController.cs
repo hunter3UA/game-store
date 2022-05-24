@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using GameStore.API.Static;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Services.Abstract;

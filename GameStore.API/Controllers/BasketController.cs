@@ -7,7 +7,6 @@ using GameStore.API.Helpers;
 
 namespace GameStore.API.Controllers
 {
-    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class BasketController : ControllerBase
@@ -24,7 +23,7 @@ namespace GameStore.API.Controllers
         [HttpGet]
         [Route("/basket")]
         public async Task<IActionResult> GetOrderAsync()
-        {
+        {     
             var customerId = _customerGenerator.GetCookies(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 

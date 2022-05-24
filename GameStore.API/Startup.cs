@@ -89,11 +89,13 @@ namespace GameStore.API
             {
                 options.AddPolicy(
                     "AllowOrigin",
-                    builder => builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin=>true).AllowCredentials()
+                    builder => builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials()
                     );
             });
 
-            services.AddSingleton<Serilog.ILogger>(Log.Logger);
+
+
+            services.AddSingleton(Log.Logger);
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
             services.AddScoped<StoreDbContext>();

@@ -9,5 +9,7 @@ namespace GameStore.BLL.Services.Abstract
         Task<OrderDTO> MakeOrderAsync(int orderId);
 
         Task<bool> CancelOrderAsync(int orderId);
+
+        Task<OrderDTO> GetOrderAsync(int orderId);
     }
 }

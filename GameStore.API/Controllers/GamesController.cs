@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
-    [EnableCors("AllowOrigin")]
     [Route("api/[controller]")]
     [ApiController]
     public class GamesController : ControllerBase

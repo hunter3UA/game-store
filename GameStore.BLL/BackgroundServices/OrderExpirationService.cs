@@ -1,5 +1,4 @@
-﻿
-using Calabonga.Microservices.BackgroundWorkers;
+﻿using Calabonga.Microservices.BackgroundWorkers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -36,9 +35,7 @@ namespace GameStore.BLL.BackgroundServices
                 foreach (var item in orders)
                 {
                     await orderService.CancelOrderAsync(item.Id);
-                    item.Status = OrderStatus.Canceled;
                 }
-                await unitOfWork.SaveAsync();
             }
 
         }
