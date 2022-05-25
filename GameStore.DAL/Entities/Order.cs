@@ -9,7 +9,7 @@ namespace GameStore.DAL.Entities
     {
         public Order()
         {
-            OrderDate = DateTime.Now;
+            OrderDate = DateTime.UtcNow;
         }
         
         [Required]

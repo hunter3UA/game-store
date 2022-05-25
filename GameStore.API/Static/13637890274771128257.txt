@@ -1,0 +1,5 @@
+Order #13
+ Games:
+Game: Stalker2 - Quantity: 2 - Price: 70,00;
+Game: Left 4 Dead - Quantity: 1 - Price: 100,00;
+Total sum: 240,00

@@ -1,0 +1,4 @@
+Order #14
+Games:
+Game: Stalker2 - Quantity: 3 - Price: 70,00;
+Total sum: 210,00

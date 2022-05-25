@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Order;
+using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -14,16 +15,34 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-
         public OrderService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
+        public async Task<bool> PayOrderAsync(int orderId, PaymentType paymentType)
+        {
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId,od=>od.OrderDetails);
+            if (orderById == null)
+            {
+                return false;
+            }
+
+            foreach(var item in orderById.OrderDetails)
+            {
+                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+            }
+
+            return true;
+        }
+
+     
+
         public async Task<OrderDTO> MakeOrderAsync(int orderId)
         {
             Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId, od => od.OrderDetails);
+
             bool isCompletedReserving = await ReserveGame(orderById.OrderDetails);
 
             if (!isCompletedReserving)
