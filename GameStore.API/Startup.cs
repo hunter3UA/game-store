@@ -29,6 +29,7 @@ namespace GameStore.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+           
             app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseSerilogRequestLogging(options =>
@@ -87,13 +88,12 @@ namespace GameStore.API
             });
             services.AddCors(options =>
             {
+                
                 options.AddPolicy(
                     "AllowOrigin",
-                    builder => builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin => true).AllowCredentials()
+                    builder => builder.AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition").SetIsOriginAllowed(origin => true).AllowCredentials()
                     );
             });
-
-
 
             services.AddSingleton(Log.Logger);
             services.AddAutoMapper(typeof(AutoMapperConfig));

@@ -31,7 +31,7 @@ namespace GameStore.BLL.BackgroundServices
                 IUnitOfWork unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 IOrderService orderService = scope.ServiceProvider.GetRequiredService<IOrderService>();
 
-                IEnumerable<Order> orders = await unitOfWork.OrderRepository.GetRangeAsync(o => o.Status == OrderStatus.Processed && o.Expiration < DateTime.Now);
+                IEnumerable<Order> orders = await unitOfWork.OrderRepository.GetRangeAsync(o => o.Status == OrderStatus.Processing && o.Expiration < DateTime.UtcNow);
                 foreach (var item in orders)
                 {
                     await orderService.CancelOrderAsync(item.Id);

@@ -52,8 +52,8 @@ namespace GameStore.BLL.Services.Implementation
 
             await _unitOfWork.SaveAsync();
 
-            orderById.Status = OrderStatus.Processed;
-            orderById.Expiration = DateTime.Now.AddMinutes(15);
+            orderById.Status = OrderStatus.Processing;
+            orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);
             await _unitOfWork.SaveAsync();
 
@@ -63,6 +63,11 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<OrderDTO> GetOrderAsync(int customerId)
         {
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o =>o.CustomerId==customerId, o => o.OrderDetails);
+
+            if (orderByCustomer == null)
+            {
+                return null;
+            }
 
             foreach (var item in orderByCustomer.OrderDetails)
             {
@@ -74,12 +79,11 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<bool> CancelOrderAsync(int orderId)
         {
-            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processed, od => od.OrderDetails);
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, od => od.OrderDetails);
 
             if (orderById == null)
             {
                 return false;
-
             }
 
             await CancelReservedGamesAsync(orderById);
@@ -126,7 +130,6 @@ namespace GameStore.BLL.Services.Implementation
                 Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
                 gameOfItem.UnitsInStock += item.Quantity;
 
-                await _unitOfWork.OrderDetailsRepository.RemoveAsync(o => o.Id == item.Id);
             }
         }
     }

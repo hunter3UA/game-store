@@ -1,11 +1,12 @@
-﻿using GameStore.API.Helpers;
+﻿using System.IO;
+using System.Threading.Tasks;
+using GameStore.API.Helpers;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Abstract;
-using GameStore.BLL.Services.Implementation;
+using GameStore.BLL.Services.Implementation.PaymentServices;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Threading.Tasks;
+
 
 namespace GameStore.API.Controllers
 {
@@ -37,9 +38,11 @@ namespace GameStore.API.Controllers
                     return PhysicalFile(filePath.ToString(), Constants.TEXT_PLAIN_CONTENT_TYPE, Path.GetFileName(filePath.ToString()));
                 case 2:
                     _paymentContext.SetStrategy(new IBoxPayment());
-                    break;
+                    await _paymentContext.ExecutePay(orderPayment.OrderId);
+                    return Ok();
                 case 3:
                     _paymentContext.SetStrategy(new VisaPayment());
+                    await _paymentContext.ExecutePay(orderPayment.OrderId);
                     break;
             }
             return Ok();

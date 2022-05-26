@@ -1,13 +1,12 @@
 ﻿using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GameStore.BLL.Services.Implementation
+namespace GameStore.BLL.Services.Implementation.PaymentServices
 {
     public class BankPayment : IPaymentStrategy
     {
@@ -25,13 +24,16 @@ namespace GameStore.BLL.Services.Implementation
             }
 
             string filePath =  await CreateInvoiceFileAsync(orderToPay);
+
+            orderToPay.Status = OrderStatus.Succeeded;
+            await _unitOfWork.SaveAsync();
        
             return filePath;
         }
 
         private async Task<Order> Initialize(int orderId)
         {
-            Order orderToPay = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId, od => od.OrderDetails);
+            Order orderToPay = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status==OrderStatus.Processing, od => od.OrderDetails);
             foreach (var item in orderToPay.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
@@ -49,7 +51,7 @@ namespace GameStore.BLL.Services.Implementation
                 Directory.CreateDirectory(path);
             }
 
-            string name = $"{orderToPay.Id}{DateTime.Now.Ticks}.txt";
+            string name = $"{orderToPay.Id}{DateTime.UtcNow.Ticks}.txt";
             string fullPath = Path.Combine(path, name);
 
             decimal total = orderToPay.OrderDetails.Sum(o => o.Price * o.Quantity);

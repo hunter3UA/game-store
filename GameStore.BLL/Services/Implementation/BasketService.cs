@@ -38,6 +38,9 @@ namespace GameStore.BLL.Services.Implementation
             if (orderOfCustomer == null)
             {
                 orderOfCustomer = await CreateOrderAsync(customerId);
+            }else if (orderOfCustomer.Status == OrderStatus.Processing)
+            {
+                return null;
             }
 
             OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
@@ -81,11 +84,6 @@ namespace GameStore.BLL.Services.Implementation
             if(orderByCustomer==null)
             {
                 return null;
-            }
-
-            if (orderByCustomer.Status == OrderStatus.Processed)
-            {
-                await _orderService.CancelOrderAsync(orderByCustomer.Id);
             }
 
             foreach (var item in orderByCustomer.OrderDetails)
