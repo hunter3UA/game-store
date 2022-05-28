@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
@@ -15,15 +14,12 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<BasketService> _logger;
-        private readonly IOrderService _orderService;
 
-        public BasketService(IOrderService orderService,IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger)
+        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _orderService = orderService;
             _logger = logger;
-           
         }
 
         public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
@@ -34,11 +30,12 @@ namespace GameStore.BLL.Services.Implementation
                 return null;
             }
 
-            Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId);
+            Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId && g.Status != OrderStatus.Succeeded);
             if (orderOfCustomer == null)
             {
                 orderOfCustomer = await CreateOrderAsync(customerId);
-            }else if (orderOfCustomer.Status == OrderStatus.Processing)
+            }
+            else if (orderOfCustomer.Status == OrderStatus.Processing)
             {
                 return null;
             }
@@ -57,8 +54,13 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
         {
             OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId, g => g.Game);
-            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
 
+            if (orderDetailsToUpdate == null)
+            {
+                return null;
+            }
+
+            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
             if (orderDetailsToUpdate.Quantity > orderDetailsToUpdate.Game.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
             {
                 return null;
@@ -74,14 +76,19 @@ namespace GameStore.BLL.Services.Implementation
             bool isDeletedOrderDetails = await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == id);
             await _unitOfWork.SaveAsync();
 
+            if (isDeletedOrderDetails)
+            {
+                _logger.LogInformation($"Order with id: {id} has  removed");
+            }
+
             return isDeletedOrderDetails;
         }
 
-        public async Task<OrderDTO> GetOrderAsync(int customerId)
+        public async Task<OrderDTO> GetBasketAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status!=OrderStatus.Succeeded, details => details.OrderDetails);
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, details => details.OrderDetails);
 
-            if(orderByCustomer==null)
+            if (orderByCustomer == null)
             {
                 return null;
             }
@@ -106,7 +113,7 @@ namespace GameStore.BLL.Services.Implementation
 
             if (addedOrder != null)
             {
-                _logger.LogInformation($"Order with id: {addedOrder.Id} has been added");
+                _logger.LogInformation($"Order with id: {addedOrder.Id} has added");
             }
 
             return addedOrder;
@@ -128,7 +135,7 @@ namespace GameStore.BLL.Services.Implementation
 
             if (addedOrderDetails != null)
             {
-                _logger.LogInformation($"OrderDetails with id: {addedOrderDetails.Id} has been added");
+                _logger.LogInformation($"OrderDetails with id: {addedOrderDetails.Id} has added");
             }
 
             return addedOrderDetails;

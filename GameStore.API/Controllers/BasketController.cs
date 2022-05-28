@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Services.Abstract;
@@ -22,10 +21,10 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/basket")]
-        public async Task<IActionResult> GetOrderAsync()
+        public async Task<IActionResult> GetBasketAsync()
         {     
             var customerId = _customerGenerator.GetCookies(HttpContext);
-            var orderByCustomer = await _orderService.GetOrderAsync(customerId);
+            var orderByCustomer = await _orderService.GetBasketAsync(customerId);
 
             if (orderByCustomer == null)
             {

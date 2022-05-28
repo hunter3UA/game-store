@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GameStore.API.Helpers;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Order;
+using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Implementation.PaymentServices;
 using Microsoft.AspNetCore.Mvc;
@@ -32,15 +33,15 @@ namespace GameStore.API.Controllers
         {       
             switch (orderPayment.PaymentType)
             {
-                case 1:
+                case (int)PaymentType.BankPayment:
                     _paymentContext.SetStrategy(new BankPayment());
                     object filePath = await _paymentContext.ExecutePay(orderPayment.OrderId);
                     return PhysicalFile(filePath.ToString(), Constants.TEXT_PLAIN_CONTENT_TYPE, Path.GetFileName(filePath.ToString()));
-                case 2:
+                case (int)PaymentType.IBoxPayment:
                     _paymentContext.SetStrategy(new IBoxPayment());
                     await _paymentContext.ExecutePay(orderPayment.OrderId);
                     return Ok();
-                case 3:
+                case (int)PaymentType.VisaPayment:
                     _paymentContext.SetStrategy(new VisaPayment());
                     await _paymentContext.ExecutePay(orderPayment.OrderId);
                     break;

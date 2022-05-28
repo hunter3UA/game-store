@@ -62,7 +62,7 @@ namespace GameStore.Tests.Services
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_ReturnOrder(BasketService orderService)
         {
-            var result = await orderService.GetOrderAsync(1);
+            var result = await orderService.GetBasketAsync(1);
 
             result.Should().BeOfType<OrderDTO>();
         }

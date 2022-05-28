@@ -40,7 +40,7 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_RequestExistingOrder_ReturnJsonResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketController ordersController)
         {
-            mockOrderService.Setup(m => m.GetOrderAsync(1)).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
+            mockOrderService.Setup(m => m.GetBasketAsync(1)).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
 
             var result = await ordersController.GetOrderAsync();
 
@@ -50,7 +50,7 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_RequestNotExistingOrder_ReturnNotFoundResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketController ordersController)
         {
-            mockOrderService.Setup(m => m.GetOrderAsync(It.IsAny<int>())).ReturnsAsync(() => { return null; });
+            mockOrderService.Setup(m => m.GetBasketAsync(It.IsAny<int>())).ReturnsAsync(() => { return null; });
 
             var result = await ordersController.GetOrderAsync();
 
