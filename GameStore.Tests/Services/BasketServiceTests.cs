@@ -14,7 +14,7 @@ using Xunit;
 
 namespace GameStore.Tests.Services
 {
-    public class OrderServiceTest
+    public class BasketServiceTests
     {
         [Theory, AutoDomainData]
         public async Task AddOrderDetailsAsync_GivenValidDetails_ReturnDetails(

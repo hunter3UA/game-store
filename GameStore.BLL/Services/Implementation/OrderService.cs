@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Order;
-using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -21,36 +20,25 @@ namespace GameStore.BLL.Services.Implementation
             _mapper = mapper;
         }
 
-        public async Task<bool> PayOrderAsync(int orderId, PaymentType paymentType)
-        {
-            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId,od=>od.OrderDetails);
-            if (orderById == null)
-            {
-                return false;
-            }
-
-            foreach(var item in orderById.OrderDetails)
-            {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
-            }
-
-            return true;
-        }
-
-     
-
         public async Task<OrderDTO> MakeOrderAsync(int orderId)
         {
-            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId, od => od.OrderDetails);
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(
+                o => o.Id == orderId && 
+                o.Status != OrderStatus.Processing && 
+                o.Status != OrderStatus.Succeeded, 
+                od => od.OrderDetails);
 
-            bool isCompletedReserving = await ReserveGame(orderById.OrderDetails);
+            if (orderById == null || orderById.OrderDetails==null)
+            {
+                return null;
+            }
+
+            bool isCompletedReserving = await ReserveGame(orderById);
 
             if (!isCompletedReserving)
             {
                 return null;
             }
-
-            await _unitOfWork.SaveAsync();
 
             orderById.Status = OrderStatus.Processing;
             orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
@@ -62,7 +50,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<OrderDTO> GetOrderAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o =>o.CustomerId==customerId && o.Status==OrderStatus.Processing, o => o.OrderDetails);
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
 
             if (orderByCustomer == null)
             {
@@ -93,10 +81,10 @@ namespace GameStore.BLL.Services.Implementation
             return true;
         }
 
-        private async Task<bool> ReserveGame(IEnumerable<OrderDetails> detailsOfOrder)
+        private async Task<bool> ReserveGame(Order orderToReserve)
         {
             bool isCompletedReserving = true;
-            foreach (var item in detailsOfOrder)
+            foreach (var item in orderToReserve.OrderDetails)
             {
                 Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId, g => g.Genres, g => g.PlatformTypes);
 
@@ -123,13 +111,13 @@ namespace GameStore.BLL.Services.Implementation
 
             return isCompletedReserving;
         }
+
         private async Task CancelReservedGamesAsync(Order orderToCancel)
         {
             foreach (var item in orderToCancel.OrderDetails)
             {
                 Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
                 gameOfItem.UnitsInStock += item.Quantity;
-
             }
         }
     }

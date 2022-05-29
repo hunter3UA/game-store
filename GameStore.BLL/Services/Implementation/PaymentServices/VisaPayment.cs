@@ -10,7 +10,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
     {
         public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork)
         {
-            Order orderById = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status==OrderStatus.Processing);
+            Order orderById = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing);
 
             if (orderById == null)
             {

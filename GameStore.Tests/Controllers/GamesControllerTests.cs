@@ -15,7 +15,7 @@ using Xunit;
 
 namespace GameStore.Tests.Controllers
 {
-    public class GameControllerTests
+    public class GamesControllerTests
     {
         [Theory, AutoDomainData]
         public async Task AddGameAsync_GivenValidGame_ReturnGame(

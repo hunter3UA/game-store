@@ -24,7 +24,6 @@ namespace GameStore.API.Controllers
             _orderService = orderService;
             _customerGenerator = customerGenerator;
             _paymentContext = paymentContext;
-
         }
 
         [HttpPost]
@@ -33,15 +32,15 @@ namespace GameStore.API.Controllers
         {       
             switch (orderPayment.PaymentType)
             {
-                case (int)PaymentType.BankPayment:
+                case PaymentType.BankPayment:
                     _paymentContext.SetStrategy(new BankPayment());
                     object filePath = await _paymentContext.ExecutePay(orderPayment.OrderId);
                     return PhysicalFile(filePath.ToString(), Constants.TEXT_PLAIN_CONTENT_TYPE, Path.GetFileName(filePath.ToString()));
-                case (int)PaymentType.IBoxPayment:
+                case PaymentType.IBoxPayment:
                     _paymentContext.SetStrategy(new IBoxPayment());
                     await _paymentContext.ExecutePay(orderPayment.OrderId);
                     return Ok();
-                case (int)PaymentType.VisaPayment:
+                case PaymentType.VisaPayment:
                     _paymentContext.SetStrategy(new VisaPayment());
                     await _paymentContext.ExecutePay(orderPayment.OrderId);
                     break;
@@ -77,7 +76,6 @@ namespace GameStore.API.Controllers
             return Ok();
         }
 
-
         [HttpGet]
         [Route("/order")]
         public async Task<IActionResult> GetOrderAsync()
@@ -92,6 +90,5 @@ namespace GameStore.API.Controllers
 
             return new JsonResult(orderByCustomer);
         }
-
     }
 }

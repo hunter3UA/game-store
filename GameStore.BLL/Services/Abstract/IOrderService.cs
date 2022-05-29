@@ -6,8 +6,6 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface IOrderService
     {
-        Task<bool> PayOrderAsync(int orderId, PaymentType paymentType);
-
         Task<OrderDTO> MakeOrderAsync(int orderId);
 
         Task<bool> CancelOrderAsync(int orderId);

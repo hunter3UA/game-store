@@ -11,12 +11,12 @@ using Xunit;
 
 namespace GameStore.Tests.Controllers
 {
-    public class OrderControllerTest
+    public class BasketsControllerTest
     {
         [Theory, AutoDomainData]
         public async Task AddOrderDetailsAsync_AddValidOrderDetails_ReturnOrderDetails(
             [Frozen] Mock<IBasketService> mockOrderService,
-            [NoAutoProperties] BasketController ordersController)
+            [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.AddOrderDetailsAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(new BLL.DTO.OrderDetails.OrderDetailsDTO());
 
@@ -28,7 +28,7 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public async Task AddOrderDetailsAsync_AddInValidOrderDetails_ReturnOrderDetails(
             [Frozen] Mock<IBasketService> mockOrderService,
-            [NoAutoProperties] BasketController ordersController)
+            [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.AddOrderDetailsAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(() => { return null; });
 
@@ -38,37 +38,37 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_RequestExistingOrder_ReturnJsonResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketController ordersController)
+        public async Task GetBasketAsync_RequestExistingOrder_ReturnJsonResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.GetBasketAsync(1)).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
 
-            var result = await ordersController.GetOrderAsync();
+            var result = await ordersController.GetBasketAsync();
 
             result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_RequestNotExistingOrder_ReturnNotFoundResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketController ordersController)
+        public async Task GetBasketAsync_RequestNotExistingOrder_ReturnNotFoundResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.GetBasketAsync(It.IsAny<int>())).ReturnsAsync(() => { return null; });
 
-            var result = await ordersController.GetOrderAsync();
+            var result = await ordersController.GetBasketAsync();
 
             result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task ChangeQauntitOfOrderDetailsyAsync_GivenValidData_ReturnOkResult([Frozen] Mock<IBasketService> mockOrderService, ChangeQuantityDTO changeQuantityDTO, [NoAutoProperties] BasketController ordersController)
+        public async Task ChangeQauntitOfOrderDetailsyAsync_GivenValidData_ReturnOkResult([Frozen] Mock<IBasketService> mockOrderService, ChangeQuantityDTO changeQuantityDTO, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.ChangeQuantityOfDetailsAsync(It.IsAny<ChangeQuantityDTO>())).ReturnsAsync(new OrderDetailsDTO());
 
             var result = await ordersController.ChangeQuantityOfOrderDetailsAsync(changeQuantityDTO);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task ChangeQauntitOfOrderDetailsyAsync_GivenInValidData_ReturnBadRequestResult([Frozen] Mock<IBasketService> mockOrderService, ChangeQuantityDTO changeQuantityDTO, [NoAutoProperties] BasketController ordersController)
+        public async Task ChangeQauntitOfOrderDetailsyAsync_GivenInValidData_ReturnBadRequestResult([Frozen] Mock<IBasketService> mockOrderService, ChangeQuantityDTO changeQuantityDTO, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.ChangeQuantityOfDetailsAsync(It.IsAny<ChangeQuantityDTO>())).ReturnsAsync(() => { return null; });
 
@@ -78,7 +78,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveOrderDetailsAsync_RemoveExistingOrderDetails_ReturnOkResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketController ordersController)
+        public async Task RemoveOrderDetailsAsync_RemoveExistingOrderDetails_ReturnOkResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.RemoveOrderDetailsAsync(It.IsAny<int>())).ReturnsAsync(() => { return true; });
 
@@ -88,7 +88,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveOrderDetailsAsync_RemoveNotExistingOrderDetails_ReturnBadRequestResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketController ordersController)
+        public async Task RemoveOrderDetailsAsync_RemoveNotExistingOrderDetails_ReturnBadRequestResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.RemoveOrderDetailsAsync(It.IsAny<int>())).ReturnsAsync(() => { return false; });
 

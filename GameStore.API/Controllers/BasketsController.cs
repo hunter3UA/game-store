@@ -8,12 +8,12 @@ namespace GameStore.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BasketController : ControllerBase
+    public class BasketsController : ControllerBase
     {
         private readonly IBasketService _orderService;
         private readonly ICustomerGenerator _customerGenerator;
 
-        public BasketController(IBasketService orderService,ICustomerGenerator customerGenerator)
+        public BasketsController(IBasketService orderService,ICustomerGenerator customerGenerator)
         {
             _orderService = orderService;
             _customerGenerator = customerGenerator;
