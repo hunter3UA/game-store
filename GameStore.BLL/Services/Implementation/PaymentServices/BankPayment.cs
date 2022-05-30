@@ -21,7 +21,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 
             if (orderToPay == null)
             {
-                throw new NullReferenceException("Order for payment can not be null");
+                throw new Exception("Order for payment can not be null");
             }
 
             string filePath = await CreateInvoiceFileAsync(orderToPay);

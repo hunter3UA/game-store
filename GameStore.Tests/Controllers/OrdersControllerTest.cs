@@ -4,7 +4,6 @@ using GameStore.API.Controllers;
 using GameStore.API.Helpers;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Abstract;
-using GameStore.BLL.Services.Implementation.PaymentServices;
 using GameStore.Tests.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -107,7 +106,5 @@ namespace GameStore.Tests.Controllers
 
             result.Should().BeOfType<PhysicalFileResult>();
         }
-
-
     }
 }

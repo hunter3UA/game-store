@@ -32,7 +32,10 @@ namespace GameStore.BLL.Services.Implementation
 
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
 
-            mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
+            if (string.IsNullOrEmpty(mappedGame.Key))
+            {
+                mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
+            }
 
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
             await _unitOfWork.SaveAsync();
@@ -79,6 +82,11 @@ namespace GameStore.BLL.Services.Implementation
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.Genres.Contains(g.Id));
 
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.Platforms.Contains(p.Id));
+
+            if (string.IsNullOrEmpty(updateGameDTO.Key))
+            {
+                mappedGame.Key = CreateGameKey(updateGameDTO.Name);
+            }
 
             Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
             await _unitOfWork.SaveAsync();
