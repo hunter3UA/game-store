@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using GameStore.API.Static;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +27,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(addedComment);
+            return new JsonResult(addedComment);
         }
 
         [HttpGet]
@@ -39,24 +38,10 @@ namespace GameStore.API.Controllers
 
             if (commentsByGameKey == null)
             {
-                return NotFound(commentsByGameKey);
+                return NotFound();
             }
 
-            return Ok(commentsByGameKey);
-        }
-
-        [HttpDelete]
-        [Route("/comments/remove/{id}")]
-        public async Task<IActionResult> RemoveCommentAsync([FromRoute] int id)
-        {
-            bool isRemovedComment = await _commentService.RemoveCommentAsync(id);
-
-            if (!isRemovedComment)
-            {
-                return NotFound(isRemovedComment);
-            }
-
-            return Ok($"{isRemovedComment}. Comment with Id {id} has been deleted");
+            return new JsonResult(commentsByGameKey);
         }
     }
 }

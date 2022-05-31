@@ -55,7 +55,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(allPublishers);
+            return new JsonResult(allPublishers);
         }
 
         [HttpDelete]
@@ -69,7 +69,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return new JsonResult($"{isDeletedPublisher}. Publisher with id {id} has been deleted");
+            return Ok();
         }
 
         [HttpPut]
@@ -83,7 +83,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(updatedPublisher);
+            return new JsonResult(updatedPublisher);
         }
     }
 }

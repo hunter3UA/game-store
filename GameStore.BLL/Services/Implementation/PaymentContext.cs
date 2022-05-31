@@ -9,7 +9,7 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private IPaymentStrategy _paymentStrategy;
-
+        
         public PaymentContext(IUnitOfWork unitOfWOrk)
         {
             _unitOfWork = unitOfWOrk;
@@ -17,6 +17,8 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<object> ExecutePay(int orderId)
         {
+
+
             object paymentResult = await _paymentStrategy.PayAsync(orderId, _unitOfWork);
 
             return paymentResult;

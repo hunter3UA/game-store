@@ -30,7 +30,7 @@ namespace GameStore.BLL.Services.Implementation
                 o.Status != OrderStatus.Succeeded,
                 od => od.OrderDetails);
 
-            if (orderById == null || orderById.OrderDetails == null )
+            if (orderById == null || orderById.OrderDetails == null)
             {
                 return null;
             }
@@ -65,6 +65,8 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                if (item.Game == null)
+                    return null;
             }
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
@@ -96,16 +98,16 @@ namespace GameStore.BLL.Services.Implementation
             {
                 Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId, g => g.Genres, g => g.PlatformTypes);
 
-                if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
+                if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
                 {
-                    item.Quantity = gameToReserve.UnitsInStock;
+                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
                     isCompletedReserving = false;
 
                     await _unitOfWork.SaveAsync();
                 }
-                else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
+                else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
                 {
-                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+                    item.Quantity = gameToReserve.UnitsInStock;
                     isCompletedReserving = false;
 
                     await _unitOfWork.SaveAsync();
@@ -125,7 +127,10 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderToCancel.OrderDetails)
             {
                 Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
-                gameOfItem.UnitsInStock += item.Quantity;
+                if (gameOfItem == null)
+                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+                else
+                    gameOfItem.UnitsInStock += item.Quantity;
             }
         }
     }

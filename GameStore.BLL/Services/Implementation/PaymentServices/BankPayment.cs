@@ -44,6 +44,12 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             foreach (var item in orderToPay.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                if (item.Game == null)
+                {
+                    orderToPay.Status = OrderStatus.Canceled;
+                    await _unitOfWork.SaveAsync();
+                    throw new Exception("Some games have been deleted");
+                }
             }
 
             return orderToPay;

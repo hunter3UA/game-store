@@ -8,6 +8,8 @@ namespace GameStore.BLL.DTO.Game
 
         public string Description { get; set; }
 
+        public string Key { get; set; }
+
         public int[] GenresId { get; set; }
 
         public int[] PlatformsId { get; set; }

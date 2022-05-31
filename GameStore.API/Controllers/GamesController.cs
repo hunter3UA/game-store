@@ -30,7 +30,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(addedGame);
+            return new JsonResult(addedGame);
         }
 
         [HttpGet]
@@ -44,7 +44,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(listOfGames);
+            return new JsonResult(listOfGames);
         }
 
         [HttpGet]
@@ -58,7 +58,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(gameByKey);
+            return new JsonResult(gameByKey);
         }
 
         [HttpPut]
@@ -72,7 +72,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(updatedGame);
+            return new JsonResult(updatedGame);
         }
 
         [HttpDelete]
@@ -86,7 +86,7 @@ namespace GameStore.API.Controllers
                 return NotFound(isRemovedGame);
             }
 
-            return new JsonResult($"{isRemovedGame}. Game with Id {id} has been deleted");
+            return Ok();
         }
 
         [HttpGet]

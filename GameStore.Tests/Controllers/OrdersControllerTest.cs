@@ -16,13 +16,13 @@ namespace GameStore.Tests.Controllers
     public class OrdersControllerTest
     {
         [Theory, AutoDomainData]
-        public async Task MakeOrderAsync_GivenValidOrderId_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
+        public async Task MakeOrderAsync_GivenValidOrderId_ReturnJsonResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
             mockOrderService.Setup(m => m.MakeOrderAsync(It.IsAny<int>())).ReturnsAsync(() => { return new OrderDTO(); });
 
             var result = await ordersController.MakeOrderAsync(1);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
@@ -57,7 +57,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task CancelOrderAsync_GivenValidOrder_ReturnOkObjectResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
+        public async Task CancelOrderAsync_GivenValidOrder_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
             mockOrderService.Setup(m => m.CancelOrderAsync(It.IsAny<int>())).ReturnsAsync(true);
 

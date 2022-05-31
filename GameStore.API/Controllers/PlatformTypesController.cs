@@ -28,7 +28,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(addedPlatform);
+            return new JsonResult(addedPlatform);
         }
 
         [HttpGet]
@@ -37,7 +37,12 @@ namespace GameStore.API.Controllers
         {
             var listOfPlatforms = await _platformService.GetListOfPlatformsAsync();
 
-            return Ok(listOfPlatforms);
+            if (listOfPlatforms == null)
+            {
+                return NotFound();
+            }
+
+            return new JsonResult(listOfPlatforms);
         }
 
         [HttpGet]
@@ -51,7 +56,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(searchedPlatform);
+            return new JsonResult(searchedPlatform);
         }
 
         [HttpPut]
@@ -79,7 +84,7 @@ namespace GameStore.API.Controllers
                 return NotFound(false);
             }
 
-            return new JsonResult($"{isRemovedPlatform}. Platform with Id {id} has been deleted ");
+            return Ok();
         }
     }
 }

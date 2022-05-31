@@ -53,13 +53,13 @@ namespace GameStore.API.Controllers
         public async Task<IActionResult> MakeOrderAsync([FromRoute] int orderId)
         {
             var createdOrder = await _orderService.MakeOrderAsync(orderId);
-
+         
             if (createdOrder == null)
             {
                 return BadRequest();
             }
 
-            return Ok(createdOrder);
+            return new JsonResult(createdOrder);
         }
 
         [HttpDelete]

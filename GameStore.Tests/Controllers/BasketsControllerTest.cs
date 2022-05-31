@@ -14,7 +14,7 @@ namespace GameStore.Tests.Controllers
     public class BasketsControllerTest
     {
         [Theory, AutoDomainData]
-        public async Task AddOrderDetailsAsync_AddValidOrderDetails_ReturnOrderDetails(
+        public async Task AddOrderDetailsAsync_AddValidOrderDetails_ReturnJsonResult(
             [Frozen] Mock<IBasketService> mockOrderService,
             [NoAutoProperties] BasketsController ordersController)
         {
@@ -26,7 +26,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task AddOrderDetailsAsync_AddInValidOrderDetails_ReturnOrderDetails(
+        public async Task AddOrderDetailsAsync_AddInValidOrderDetails_ReturnJsonResult(
             [Frozen] Mock<IBasketService> mockOrderService,
             [NoAutoProperties] BasketsController ordersController)
         {
@@ -58,7 +58,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task ChangeQauntitOfOrderDetailsyAsync_GivenValidData_ReturnOkResult([Frozen] Mock<IBasketService> mockOrderService, ChangeQuantityDTO changeQuantityDTO, [NoAutoProperties] BasketsController ordersController)
+        public async Task ChangeQauntitOfOrderDetailsyAsync_GivenValidData_ReturnJsonResult([Frozen] Mock<IBasketService> mockOrderService, ChangeQuantityDTO changeQuantityDTO, [NoAutoProperties] BasketsController ordersController)
         {
             mockOrderService.Setup(m => m.ChangeQuantityOfDetailsAsync(It.IsAny<ChangeQuantityDTO>())).ReturnsAsync(new OrderDetailsDTO());
 

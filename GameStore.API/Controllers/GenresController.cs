@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using GameStore.API.Static;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -29,7 +27,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(addedGenre);
+            return new JsonResult(addedGenre);
         }
 
         [HttpGet]
@@ -43,7 +41,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(allGenres);
+            return new JsonResult(allGenres);
         }
 
         [HttpGet]
@@ -57,7 +55,7 @@ namespace GameStore.API.Controllers
                 return NotFound();
             }
 
-            return Ok(genreByKey);
+            return new JsonResult(genreByKey);
         }
 
         [HttpPut]
@@ -71,7 +69,7 @@ namespace GameStore.API.Controllers
                 return BadRequest();
             }
 
-            return Ok(updatedGenre);
+            return new JsonResult(updatedGenre);
         }
 
         [HttpDelete]
@@ -85,7 +83,7 @@ namespace GameStore.API.Controllers
                 return NotFound(isRemovedGenre);
             }
 
-            return new JsonResult($"{isRemovedGenre}.Genre with Id {id} has been deleted");
+            return Ok();
         } 
     }
 }

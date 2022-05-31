@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
@@ -86,7 +88,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<OrderDTO> GetBasketAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, details => details.OrderDetails);
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, od => od.OrderDetails);
 
             if (orderByCustomer == null)
             {
@@ -96,7 +98,13 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                if (item.Game == null)
+                {
+                    await RemoveOrderDetailsAsync(item.Id);
+                }
             }
+
+            orderByCustomer.OrderDetails = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == orderByCustomer.Id,od=>od.Game);
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
