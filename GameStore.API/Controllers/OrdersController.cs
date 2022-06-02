@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using System.Threading.Tasks;
 using GameStore.API.Helpers;
 using GameStore.API.Static;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -27,15 +27,15 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/pay")]
+        [Route("pay")]
         public async Task<IActionResult> PayAsync([FromBody] OrderPaymentDTO orderPayment)
         {       
             switch (orderPayment.PaymentType)
             {
                 case PaymentType.BankPayment:
                     _paymentContext.SetStrategy(new BankPayment());
-                    object filePath = await _paymentContext.ExecutePay(orderPayment.OrderId);
-                    return PhysicalFile(filePath.ToString(), Constants.TEXT_PLAIN_CONTENT_TYPE, Path.GetFileName(filePath.ToString()));
+                    object stream = await _paymentContext.ExecutePay(orderPayment.OrderId);                 
+                    return File((byte[])stream, Constants.TextPlainContentType,$"{orderPayment.OrderId}{DateTime.Now.Ticks}");
                 case PaymentType.IBoxPayment:
                     _paymentContext.SetStrategy(new IBoxPayment());
                     await _paymentContext.ExecutePay(orderPayment.OrderId);
@@ -49,44 +49,32 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/order/{orderId}")]
+        [Route("{orderId}")]
         public async Task<IActionResult> MakeOrderAsync([FromRoute] int orderId)
         {
             var createdOrder = await _orderService.MakeOrderAsync(orderId);
-         
-            if (createdOrder == null)
-            {
-                return BadRequest();
-            }
 
             return new JsonResult(createdOrder);
         }
 
         [HttpDelete]
-        [Route("/order/{orderId}")]
+        [Route("{orderId}")]
         public async Task<IActionResult> CancelOrderAsync([FromRoute] int orderId)
         {
-            var canceledOrder = await _orderService.CancelOrderAsync(orderId);
-
-            if (canceledOrder == false)
-            {
-                return BadRequest();
-            }
+            await _orderService.CancelOrderAsync(orderId);
 
             return Ok();
         }
 
         [HttpGet]
-        [Route("/order")]
+        [Route("/api/order")]
         public async Task<IActionResult> GetOrderAsync()
         {
             var customerId = _customerGenerator.GetCookies(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
             if (orderByCustomer == null)
-            {
                 return NotFound();
-            }
 
             return new JsonResult(orderByCustomer);
         }

@@ -29,10 +29,7 @@ namespace GameStore.BLL.Services.Implementation
             Publisher addedPublisher = await _unitOfWork.PublisherRepository.AddAsync(mappedPublisher);
             await _unitOfWork.SaveAsync();
 
-            if (addedPublisher != null)
-            {
-                _logger.LogInformation($"Publisher with Id {addedPublisher.Id} has been added");
-            }
+            _logger.LogInformation($"Publisher with Id {addedPublisher.Id} has been added");
 
             return _mapper.Map<PublisherDTO>(addedPublisher);
         }
@@ -41,27 +38,14 @@ namespace GameStore.BLL.Services.Implementation
         {
             List<Publisher> allPublishers = await _unitOfWork.PublisherRepository.GetListAsync(p => p.Games);
 
-            return _mapper.Map<List<PublisherDTO>>(allPublishers);
+            return allPublishers != null ? _mapper.Map<List<PublisherDTO>>(allPublishers) : throw new KeyNotFoundException("Publishers not found");
         }
 
         public async Task<PublisherDTO> GetPublisherAsync(int id)
         {
             Publisher searchedPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.Id == id);
 
-            return _mapper.Map<PublisherDTO>(searchedPublisher);
-        }
-
-        public async Task<bool> RemovePublisherAsync(int id)
-        {
-            bool isDeletedPublisher = await _unitOfWork.PublisherRepository.RemoveAsync(p => p.Id == id);
-            await _unitOfWork.SaveAsync();
-
-            if (isDeletedPublisher)
-            {
-                _logger.LogInformation($"Publisher with Id: {id} has been deleted");
-            }
-
-            return isDeletedPublisher;
+            return searchedPublisher != null ? _mapper.Map<PublisherDTO>(searchedPublisher) : throw new KeyNotFoundException("Publisher not found");
         }
 
         public async Task<PublisherDTO> UpdatePublisherAsync(UpdatePublisherDTO updatePublisherDTO)
@@ -71,7 +55,25 @@ namespace GameStore.BLL.Services.Implementation
             Publisher updatedPublisher = await _unitOfWork.PublisherRepository.UpdateAsync(mappedPublisher);
             await _unitOfWork.SaveAsync();
 
+            if (updatedPublisher != null)
+                _logger.LogInformation($"Publisher with Id:{updatedPublisher.Id} has been updated");
+            else
+                throw new KeyNotFoundException("Publisher has not been updated");
+
             return _mapper.Map<PublisherDTO>(updatedPublisher);
+        }
+
+        public async Task<bool> RemovePublisherAsync(int id)
+        {
+            bool isDeletedPublisher = await _unitOfWork.PublisherRepository.RemoveAsync(p => p.Id == id);
+            await _unitOfWork.SaveAsync();
+
+            if (isDeletedPublisher)
+                _logger.LogInformation($"Publisher with Id: {id} has been deleted");
+            else
+                throw new KeyNotFoundException("Publisher has not been deleted");
+
+            return isDeletedPublisher;
         }
     }
 }

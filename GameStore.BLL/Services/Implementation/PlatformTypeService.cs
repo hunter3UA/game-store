@@ -31,10 +31,7 @@ namespace GameStore.BLL.Services.Implementation
             PlatformType addedPlatform = await _unitOfWork.PlatformTypeRepository.AddAsync(mappedPlatform);
             await _unitOfWork.SaveAsync();
 
-            if (addedPlatform != null)
-            {
-                _logger.LogInformation($"Platform with Id {addedPlatform.Id} has been added");
-            }
+            _logger.LogInformation($"Platform with Id {addedPlatform.Id} has been added");
 
             return _mapper.Map<PlatformTypeDTO>(addedPlatform);
         }
@@ -43,27 +40,14 @@ namespace GameStore.BLL.Services.Implementation
         {
             var allPlatforms = await _unitOfWork.PlatformTypeRepository.GetListAsync();
 
-            return _mapper.Map<List<PlatformTypeDTO>>(allPlatforms);
+            return allPlatforms != null ? _mapper.Map<List<PlatformTypeDTO>>(allPlatforms) : throw new KeyNotFoundException("Platforms not found");
         }
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
         {
             var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id);
 
-            return _mapper.Map<PlatformTypeDTO>(searchedPlatform);
-        }
-
-        public async Task<bool> RemovePlatformAsync(int id)
-        {
-            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p => p.Id == id);
-            await _unitOfWork.SaveAsync();
-
-            if (isRemovedPlatform)
-            {
-                _logger.LogInformation($"Platform with Id {id} has been deleted");
-            }
-
-            return isRemovedPlatform;
+            return searchedPlatform != null ? _mapper.Map<PlatformTypeDTO>(searchedPlatform) : throw new KeyNotFoundException("Platform not found");
         }
 
         public async Task<PlatformTypeDTO> UpdatePlatformAsync(UpdatePlatformTypeDTO updatePlatformDTO)
@@ -73,7 +57,25 @@ namespace GameStore.BLL.Services.Implementation
             PlatformType updatedPlatform = await _unitOfWork.PlatformTypeRepository.UpdateAsync(mappedPlatform);
             await _unitOfWork.SaveAsync();
 
+            if (updatedPlatform != null)
+                _logger.LogInformation($"Platform with Id {updatedPlatform.Id} has been updated");
+            else
+                throw new KeyNotFoundException("Platform has not been updated");
+
             return _mapper.Map<PlatformTypeDTO>(updatedPlatform);
+        }
+
+        public async Task<bool> RemovePlatformAsync(int id)
+        {
+            bool isRemovedPlatform = await _unitOfWork.PlatformTypeRepository.RemoveAsync(p => p.Id == id);
+            await _unitOfWork.SaveAsync();
+
+            if (isRemovedPlatform)
+                _logger.LogInformation($"Platform with Id {id} has been deleted");
+            else
+                throw new KeyNotFoundException("Platform not found");
+
+            return isRemovedPlatform;
         }
     }
 }

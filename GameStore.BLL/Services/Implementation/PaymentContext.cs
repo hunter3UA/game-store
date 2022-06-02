@@ -1,5 +1,4 @@
 ﻿using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using System.Threading.Tasks;
 
@@ -17,8 +16,6 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<object> ExecutePay(int orderId)
         {
-
-
             object paymentResult = await _paymentStrategy.PayAsync(orderId, _unitOfWork);
 
             return paymentResult;

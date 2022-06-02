@@ -14,10 +14,8 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             Order orderById = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing);
 
             if (orderById == null)
-            {
-                throw new NullReferenceException();
-            }
-
+                throw new KeyNotFoundException("Order not found");
+            
             orderById.Status = OrderStatus.Succeeded;
             await unitOfWork.SaveAsync();
 

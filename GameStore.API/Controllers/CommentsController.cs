@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/games")]
     [ApiController]
     public class CommentsController : ControllerBase
     {
@@ -17,29 +17,25 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/games/{gameKey}/newcomment")]
+        [Route("{gameKey}/newcomment")]
         public async Task<IActionResult> AddCommentAsync([FromRoute] string gameKey, [FromBody] AddCommentDTO addCommentDTO)
         {
             var addedComment = await _commentService.AddCommentAsync(gameKey, addCommentDTO);
 
             if (addedComment == null)
-            {
                 return BadRequest();
-            }
 
             return new JsonResult(addedComment);
         }
 
         [HttpGet]
-        [Route("/games/{gameKey}/comments")]
+        [Route("{gameKey}/comments")]
         public async Task<IActionResult> GetCommentsAsync([FromRoute] string gameKey)
         {
             var commentsByGameKey = await _commentService.GetListOfCommentsAsync(gameKey);
 
             if (commentsByGameKey == null)
-            {
                 return NotFound();
-            }
 
             return new JsonResult(commentsByGameKey);
         }

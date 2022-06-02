@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
@@ -33,10 +30,7 @@ namespace GameStore.BLL.Services.Implementation
             Genre addedGenre = await _unitOfWork.GenreRepository.AddAsync(mappedGenre);
             await _unitOfWork.SaveAsync();
 
-            if (addedGenre != null)
-            {
-                _logger.LogInformation($"Genre with Id {addedGenre.Id} has been added");
-            }
+            _logger.LogInformation($"Genre with Id {addedGenre.Id} has been added");
 
             return _mapper.Map<GenreDTO>(addedGenre);
         }
@@ -45,14 +39,14 @@ namespace GameStore.BLL.Services.Implementation
         {
             var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre => genre.Id == id, g => g.SubGenres);
 
-            return _mapper.Map<GenreDTO>(searchedGenre);
+            return searchedGenre != null ? _mapper.Map<GenreDTO>(searchedGenre) : throw new KeyNotFoundException();
         }
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
             List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
 
-            return _mapper.Map<List<GenreDTO>>(allGenres);
+            return allGenres != null ? _mapper.Map<List<GenreDTO>>(allGenres) : throw new KeyNotFoundException();
         }
 
         public async Task<bool> RemoveGenreAsync(int id)
@@ -62,18 +56,14 @@ namespace GameStore.BLL.Services.Implementation
             if (genreById.SubGenres != null)
             {
                 foreach (var genre in genreById.SubGenres)
-                {
-                    genre.ParentGenreId = genreById.ParentGenreId;
-                }
+                    genre.ParentGenreId = genreById.ParentGenreId;              
             }
 
             bool isDeletedGenre = await _unitOfWork.GenreRepository.RemoveAsync(g => g.Id == id);
             await _unitOfWork.SaveAsync();
 
             if (isDeletedGenre)
-            {
                 _logger.LogInformation($"Genre with Id: {id} has been deleted");
-            }
 
             return isDeletedGenre;
         }
@@ -84,6 +74,11 @@ namespace GameStore.BLL.Services.Implementation
 
             Genre updatedGenre = await _unitOfWork.GenreRepository.UpdateAsync(mappedGenre);
             await _unitOfWork.SaveAsync();
+
+            if (updatedGenre != null)
+                _logger.LogInformation($"Genre with id {updatedGenre.Id} has been updated");
+            else
+                throw new KeyNotFoundException();
 
             return _mapper.Map<GenreDTO>(updatedGenre);
         }

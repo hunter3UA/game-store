@@ -1,4 +1,0 @@
-Order #26
-Games:
-Game: Stalker2 - Quantity: 1 - Price: 70,00;
-Total sum: 70,00

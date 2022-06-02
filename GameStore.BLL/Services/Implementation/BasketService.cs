@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Order;
@@ -28,25 +28,17 @@ namespace GameStore.BLL.Services.Implementation
         {
             Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey);
             if (gameOfDetails.UnitsInStock <= 0)
-            {
-                return null;
-            }
+                throw new Exception("Value of order details can not be less then 1");
 
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId && g.Status != OrderStatus.Succeeded);
             if (orderOfCustomer == null)
-            {
                 orderOfCustomer = await CreateOrderAsync(customerId);
-            }
             else if (orderOfCustomer.Status == OrderStatus.Processing)
-            {
-                return null;
-            }
+                throw new Exception("Order detils can not be added to order with Processing status");
 
             OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
             if (orderItemToAdd != null)
-            {
                 return _mapper.Map<OrderDetailsDTO>(orderItemToAdd);
-            }
 
             OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Id, gameOfDetails.Price);
 
@@ -58,15 +50,11 @@ namespace GameStore.BLL.Services.Implementation
             OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId, g => g.Game);
 
             if (orderDetailsToUpdate == null)
-            {
-                return null;
-            }
+                throw new KeyNotFoundException("Order details not found");
 
             orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
             if (orderDetailsToUpdate.Quantity > orderDetailsToUpdate.Game.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
-            {
-                return null;
-            }
+                throw new Exception();
 
             await _unitOfWork.SaveAsync();
 
@@ -79,9 +67,9 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             if (isDeletedOrderDetails)
-            {
-                _logger.LogInformation($"Order with id: {id} has  removed");
-            }
+                _logger.LogInformation($"Order details with id: {id} has been deleted");
+            else
+                throw new KeyNotFoundException("Order has not been deleted");
 
             return isDeletedOrderDetails;
         }
@@ -91,20 +79,17 @@ namespace GameStore.BLL.Services.Implementation
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, od => od.OrderDetails);
 
             if (orderByCustomer == null)
-            {
-                return null;
-            }
+                throw new KeyNotFoundException("Order not found");
 
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
                 if (item.Game == null)
-                {
                     await RemoveOrderDetailsAsync(item.Id);
-                }
+
             }
 
-            orderByCustomer.OrderDetails = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == orderByCustomer.Id,od=>od.Game);
+            orderByCustomer.OrderDetails = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == orderByCustomer.Id, od => od.Game);
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
@@ -119,10 +104,7 @@ namespace GameStore.BLL.Services.Implementation
             Order addedOrder = await _unitOfWork.OrderRepository.AddAsync(orderToAdd);
             await _unitOfWork.SaveAsync();
 
-            if (addedOrder != null)
-            {
-                _logger.LogInformation($"Order with id: {addedOrder.Id} has added");
-            }
+            _logger.LogInformation($"Order with id: {addedOrder.Id} has added");
 
             return addedOrder;
         }
@@ -142,9 +124,9 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             if (addedOrderDetails != null)
-            {
                 _logger.LogInformation($"OrderDetails with id: {addedOrderDetails.Id} has added");
-            }
+            else
+                throw new Exception("Order details can not be created");
 
             return addedOrderDetails;
         }

@@ -5,6 +5,7 @@ using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
@@ -31,24 +32,20 @@ namespace GameStore.BLL.Services.Implementation
                 od => od.OrderDetails);
 
             if (orderById == null || orderById.OrderDetails == null)
-            {
-                return null;
-            }
-
+                throw new KeyNotFoundException("Order not found");
+            
             bool isCompletedReserving = await ReserveGame(orderById);
 
             if (!isCompletedReserving)
-            {
-                return null;
-            }
-
+                throw new Exception("Order can to be completed");
+            
             _logger.LogInformation($"Games of order with id {orderById.Id} have been reserved");
             orderById.Status = OrderStatus.Processing;
             orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);
             await _unitOfWork.SaveAsync();
 
-            _logger.LogInformation($"Status of order with id { updatedOrder.Id} has been changed to Processing");
+            _logger.LogInformation($"Status of order with id { updatedOrder.Id } has been changed to Processing");
 
             return _mapper.Map<OrderDTO>(updatedOrder);
         }
@@ -58,15 +55,13 @@ namespace GameStore.BLL.Services.Implementation
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
 
             if (orderByCustomer == null)
-            {
-                return null;
-            }
-
+                throw new KeyNotFoundException("Order not found");
+            
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
                 if (item.Game == null)
-                    return null;
+                    throw new Exception("Order has been changed");
             }
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
@@ -77,10 +72,8 @@ namespace GameStore.BLL.Services.Implementation
             Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, od => od.OrderDetails);
 
             if (orderById == null)
-            {
-                return false;
-            }
-
+                throw new KeyNotFoundException("Order not found");
+            
             await CancelReservedGamesAsync(orderById);
             orderById.Status = OrderStatus.Canceled;
             Order canceledOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById);

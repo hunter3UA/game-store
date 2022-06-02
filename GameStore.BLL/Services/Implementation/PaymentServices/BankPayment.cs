@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
     public class BankPayment : IPaymentStrategy
     {
         private IUnitOfWork _unitOfWork;
-        private const string INVOICE_DIRECTORY = "\\Invoices";
 
         public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork)
         {
@@ -20,16 +20,14 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             Order orderToPay = await Initialize(orderId);
 
             if (orderToPay == null)
-            {
-                throw new Exception("Order for payment can not be null");
-            }
-
-            string filePath = await CreateInvoiceFileAsync(orderToPay);
+                throw new KeyNotFoundException("Order not found");
+            
+            byte[] fileStream = await CreateInvoiceFileAsync(orderToPay);
 
             orderToPay.Status = OrderStatus.Succeeded;
             await _unitOfWork.SaveAsync();
 
-            return filePath;
+            return fileStream;
         }
 
         private async Task<Order> Initialize(int orderId)
@@ -55,33 +53,21 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             return orderToPay;
         }
 
-        private async Task<string> CreateInvoiceFileAsync(Order orderToPay)
+        private async Task<byte[]> CreateInvoiceFileAsync(Order orderToPay)
         {
-            string path = Directory.GetCurrentDirectory() + INVOICE_DIRECTORY;
-
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            string name = $"{orderToPay.Id}{DateTime.UtcNow.Ticks}.txt";
-            string fullPath = Path.Combine(path, name);
-
             decimal total = orderToPay.OrderDetails.Sum(o => o.Price * o.Quantity);
-
-            using (StreamWriter writer = new StreamWriter(fullPath, false))
+            MemoryStream memoryStream = new MemoryStream();
+            using (StreamWriter writer = new StreamWriter(memoryStream))
             {
                 await writer.WriteLineAsync($"Order #{orderToPay.Id}\nGames:");
 
-                foreach (var item in orderToPay.OrderDetails)
-                {
+                foreach (var item in orderToPay.OrderDetails)              
                     await writer.WriteLineAsync($"Game: {item.Game.Name} - Quantity: {item.Quantity} - Price: {item.Price};");
-                }
-
+    
                 await writer.WriteLineAsync($"Total sum: {total}");
             }
 
-            return fullPath;
+            return memoryStream.ToArray();
         }
     }
 }

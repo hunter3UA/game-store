@@ -1,4 +1,0 @@
-Order #29
-Games:
-Game: Left 4 Dead - Quantity: 1 - Price: 100,00;
-Total sum: 100,00

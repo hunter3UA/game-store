@@ -3,12 +3,11 @@ using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/games")]
     [ApiController]
     public class GamesController : ControllerBase
     {
@@ -20,83 +19,57 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/games/new")]
+        [Route("new")]
         public async Task<IActionResult> AddGameAsync([FromBody] AddGameDTO addGameDTO)
         {
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
-
-            if (addedGame == null)
-            {
-                return BadRequest();
-            }
 
             return new JsonResult(addedGame);
         }
 
         [HttpGet]
-        [Route("/games")]
         public async Task<IActionResult> GetListOfGamesAsync()
         {
             var listOfGames = await _gameService.GetListOfGamesAsync();
-
-            if (listOfGames == null)
-            {
-                return NotFound();
-            }
 
             return new JsonResult(listOfGames);
         }
 
         [HttpGet]
-        [Route("/game/{key}")]
+        [Route("{key}")]
         public async Task<IActionResult> GetGameAsync([FromRoute] string key)
         {
             var gameByKey = await _gameService.GetGameAsync(key);
-
-            if (gameByKey == null)
-            {
-                return NotFound();
-            }
 
             return new JsonResult(gameByKey);
         }
 
         [HttpPut]
-        [Route("/games/update")]
+        [Route("update")]
         public async Task<IActionResult> UpdateGameAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
-
-            if (updatedGame == null)
-            {
-                return BadRequest();
-            }
 
             return new JsonResult(updatedGame);
         }
 
         [HttpDelete]
-        [Route("/games/remove/{id}")]
+        [Route("remove/{id}")]
         public async Task<IActionResult> RemoveGameAsync([FromRoute] int id)
         {
-            bool isRemovedGame = await _gameService.RemoveGameAsync(id);
-
-            if (!isRemovedGame)
-            {
-                return NotFound(isRemovedGame);
-            }
+            await _gameService.RemoveGameAsync(id);
 
             return Ok();
         }
 
         [HttpGet]
-        [Route("/games/{gameKey}/download")]
-        [ResponseCache(CacheProfileName = Constants.CACHING_PROFILE_NAME)]
+        [Route("{gameKey}/download")]
+        [ResponseCache(CacheProfileName = Constants.CachingProfileName)]
         public IActionResult DownloadGameFile([FromRoute] string gameKey)
         {
             string path = Directory.GetCurrentDirectory();
 
-            return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TEXT_PLAIN_CONTENT_TYPE, Constants.GAME_FILE_NAME);
+            return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TextPlainContentType, Constants.GameFileName);
         }
     }
 }

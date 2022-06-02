@@ -29,9 +29,7 @@ namespace GameStore.API
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-           
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
@@ -47,17 +45,15 @@ namespace GameStore.API
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint(Constants.SWAGGER_URL, Constants.SWAGGER_NAME);
+                    options.SwaggerEndpoint(Constants.SwaggerUrl, Constants.SwaggerName);
                 });
             }
-      
+
             app.UseRouting();
             app.UseCors("AllowOrigin");
-           
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -69,10 +65,10 @@ namespace GameStore.API
             services.AddControllers(options =>
             {
                 options.CacheProfiles.Add(
-                Constants.CACHING_PROFILE_NAME,
+                Constants.CachingProfileName,
                 new CacheProfile()
                 {
-                    Duration = Constants.RESPONSE_CACHE_DURATION
+                    Duration = Constants.ResponseCacheDuration
                 });
             });
             services.AddSwaggerGen(options =>
@@ -88,7 +84,7 @@ namespace GameStore.API
             });
             services.AddCors(options =>
             {
-                
+
                 options.AddPolicy(
                     "AllowOrigin",
                     builder => builder.AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition").SetIsOriginAllowed(origin => true).AllowCredentials()
@@ -100,8 +96,8 @@ namespace GameStore.API
 
             services.AddScoped<StoreDbContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();    
-            
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<ICommentService, CommentService>();

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/publishers")]
     [ApiController]
     public class PublishersController : ControllerBase
     {
@@ -17,73 +17,47 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("/publishers/new")]
+        [Route("new")]
         public async Task<IActionResult> AddPublisherAsync([FromBody] AddPublisherDTO addPublisherDTO)
         {
             var addedPublisher = await _publisherService.AddPublisherAsync(addPublisherDTO);
-
-            if (addedPublisher == null)
-            {
-                return BadRequest();
-            }
 
             return new JsonResult(addedPublisher);
         } 
 
         [HttpGet]
-        [Route("/publishers/{id}")]
+        [Route("{id}")]
         public async Task<IActionResult> GetPublisherAsync([FromRoute] int id)
         {
             var searchedPublisher = await _publisherService.GetPublisherAsync(id);
-
-            if (searchedPublisher == null)
-            {
-                return NotFound();
-            }
 
             return new JsonResult(searchedPublisher);
         }
 
         [HttpGet]
-        [Route("/publishers")]
         public async Task<IActionResult> GetListOfPublishersAsync()
         {
             var allPublishers = await _publisherService.GetListOfPublishersAsync();
 
-            if (allPublishers == null)
-            {
-                return NotFound();
-            }
-
             return new JsonResult(allPublishers);
         }
 
-        [HttpDelete]
-        [Route("/publishers/remove/{id}")]
-        public async Task<IActionResult> RemovePublisherAsync([FromRoute] int id)
-        {
-            bool isDeletedPublisher = await _publisherService.RemovePublisherAsync(id);
-
-            if (!isDeletedPublisher)
-            {
-                return NotFound();
-            }
-
-            return Ok();
-        }
-
         [HttpPut]
-        [Route("/publishers/update")]
+        [Route("update")]
         public async Task<IActionResult> UpdatePublisherAsync([FromBody] UpdatePublisherDTO updatePublisherDTO)
         {
             var updatedPublisher = await _publisherService.UpdatePublisherAsync(updatePublisherDTO);
 
-            if (updatedPublisher == null)
-            {
-                return BadRequest();
-            }
-
             return new JsonResult(updatedPublisher);
+        }
+
+        [HttpDelete]
+        [Route("remove/{id}")]
+        public async Task<IActionResult> RemovePublisherAsync([FromRoute] int id)
+        {
+            await _publisherService.RemovePublisherAsync(id);
+
+            return Ok();
         }
     }
 }
