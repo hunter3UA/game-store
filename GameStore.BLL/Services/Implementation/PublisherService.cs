@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Publisher;
@@ -38,7 +39,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             List<Publisher> allPublishers = await _unitOfWork.PublisherRepository.GetListAsync(p => p.Games);
 
-            return allPublishers != null ? _mapper.Map<List<PublisherDTO>>(allPublishers) : throw new KeyNotFoundException("Publishers not found");
+            return _mapper.Map<List<PublisherDTO>>(allPublishers);
         }
 
         public async Task<PublisherDTO> GetPublisherAsync(int id)
@@ -58,7 +59,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedPublisher != null)
                 _logger.LogInformation($"Publisher with Id:{updatedPublisher.Id} has been updated");
             else
-                throw new KeyNotFoundException("Publisher has not been updated");
+                throw new ArgumentException("Publisher has not been updated");
 
             return _mapper.Map<PublisherDTO>(updatedPublisher);
         }
@@ -71,7 +72,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedPublisher)
                 _logger.LogInformation($"Publisher with Id: {id} has been deleted");
             else
-                throw new KeyNotFoundException("Publisher has not been deleted");
+                throw new ArgumentException("Publisher has not been deleted");
 
             return isDeletedPublisher;
         }

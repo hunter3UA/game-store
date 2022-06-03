@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO;
@@ -40,7 +41,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             var allPlatforms = await _unitOfWork.PlatformTypeRepository.GetListAsync();
 
-            return allPlatforms != null ? _mapper.Map<List<PlatformTypeDTO>>(allPlatforms) : throw new KeyNotFoundException("Platforms not found");
+            return _mapper.Map<List<PlatformTypeDTO>>(allPlatforms);
         }
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
@@ -60,7 +61,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedPlatform != null)
                 _logger.LogInformation($"Platform with Id {updatedPlatform.Id} has been updated");
             else
-                throw new KeyNotFoundException("Platform has not been updated");
+                throw new ArgumentException();
 
             return _mapper.Map<PlatformTypeDTO>(updatedPlatform);
         }
@@ -73,7 +74,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedPlatform)
                 _logger.LogInformation($"Platform with Id {id} has been deleted");
             else
-                throw new KeyNotFoundException("Platform not found");
+                throw new ArgumentException();
 
             return isRemovedPlatform;
         }

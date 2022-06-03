@@ -39,23 +39,6 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task AddGenreAsync_GivenGenreIsInValid_ReturnBadRequestResult(
-           [Frozen] Mock<IGenreService> mockGenreService,
-           [NoAutoProperties] GenresController genresController)
-        {      
-            mockGenreService.Setup(m => m.AddGenreAsync(It.IsAny<AddGenreDTO>()))
-                .ReturnsAsync(() =>
-                {
-                    
-                    return null;
-                });
-
-            var result = await genresController.AddGenreAsync(null);
-
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory, AutoDomainData]
         public async Task GetListOfGenresAsync_RequestedGenreExist_ReturnJsonResult(
             [Frozen] Mock<IGenreService> mockGenreService,
             [NoAutoProperties] GenresController genresController)
@@ -67,32 +50,7 @@ namespace GameStore.Tests.Controllers
             result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public async Task GetListOfGenresAsync_RequestedGenresNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<IGenreService> mockGenreService,
-            [NoAutoProperties] GenresController genresController)
-        {
-            mockGenreService.Setup(m => m.GetListOfGenresAsync()).ReturnsAsync(()=> {
-                return null;
-            });
 
-            var result = await genresController.GetAllGenresAsync();
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task GetGenreAsync_RequestedGenreNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<IGenreService> mockGenreService, 
-            [NoAutoProperties] GenresController genresController)
-        {
-            mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<int>()))
-                .ReturnsAsync(() => { return null; });
-
-            var result = await genresController.GetGenreAsync(100);
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
 
         [Theory, AutoDomainData]
         public async Task GetGenreAsync_RequestedGenreExist_ReturnJsonResult(
@@ -134,17 +92,5 @@ namespace GameStore.Tests.Controllers
             result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public async Task UpdateGenreAsync_GivenGenreIsInValid_ReturnBadRequestResult(UpdateGenreDTO updateGenreDTO, [Frozen] Mock<IGenreService> mockGenreService,
-            [NoAutoProperties] GenresController genresController)
-        {
-            mockGenreService.Setup(m => m.UpdateGenreAsync(It.IsAny<UpdateGenreDTO>())).ReturnsAsync(() => {
-                return null;
-            });
-
-            var result = await genresController.UpdateGenreAsync(updateGenreDTO);
-
-            result.Should().BeOfType<BadRequestResult>();
-        }
     }
 }

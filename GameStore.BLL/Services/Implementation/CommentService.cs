@@ -53,9 +53,10 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             if (isRemovedComment)
-            {
                 _logger.LogInformation($"Comment with Id {id} has been deleted");
-            }
+            else
+                throw new ArgumentException();
+            
 
             return isRemovedComment;
         }

@@ -27,14 +27,14 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
         {
             Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey);
-            if (gameOfDetails.UnitsInStock <= 0)
-                throw new Exception("Value of order details can not be less then 1");
+            if (gameOfDetails.UnitsInStock <= 0 || gameOfDetails==null)
+                throw new ArgumentException("Value of order details can not be less then 1");
 
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId && g.Status != OrderStatus.Succeeded);
             if (orderOfCustomer == null)
                 orderOfCustomer = await CreateOrderAsync(customerId);
             else if (orderOfCustomer.Status == OrderStatus.Processing)
-                throw new Exception("Order detils can not be added to order with Processing status");
+                throw new ArgumentException("Order detils can not be added to order with Processing status");
 
             OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
             if (orderItemToAdd != null)
@@ -54,7 +54,7 @@ namespace GameStore.BLL.Services.Implementation
 
             orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
             if (orderDetailsToUpdate.Quantity > orderDetailsToUpdate.Game.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
-                throw new Exception();
+                throw new ArgumentException("Quantity is invalid");
 
             await _unitOfWork.SaveAsync();
 
@@ -69,7 +69,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedOrderDetails)
                 _logger.LogInformation($"Order details with id: {id} has been deleted");
             else
-                throw new KeyNotFoundException("Order has not been deleted");
+                throw new ArgumentException("Order has not been deleted");
 
             return isDeletedOrderDetails;
         }

@@ -46,7 +46,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
 
-            return allGenres != null ? _mapper.Map<List<GenreDTO>>(allGenres) : throw new KeyNotFoundException();
+            return _mapper.Map<List<GenreDTO>>(allGenres);
         }
 
         public async Task<bool> RemoveGenreAsync(int id)
@@ -64,6 +64,8 @@ namespace GameStore.BLL.Services.Implementation
 
             if (isDeletedGenre)
                 _logger.LogInformation($"Genre with Id: {id} has been deleted");
+            else
+                throw new ArgumentException();
 
             return isDeletedGenre;
         }
@@ -78,7 +80,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedGenre != null)
                 _logger.LogInformation($"Genre with id {updatedGenre.Id} has been updated");
             else
-                throw new KeyNotFoundException();
+                throw new ArgumentException();
 
             return _mapper.Map<GenreDTO>(updatedGenre);
         }

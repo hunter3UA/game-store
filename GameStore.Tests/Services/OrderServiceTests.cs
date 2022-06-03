@@ -63,7 +63,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task MakeOrderAsync_GivenInValidOrder_ReturnNull([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService)
+        public async Task MakeOrderAsync_GivenInValidOrder_ReturnKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService)
         {
             Order orderToUpdate = new Order()
             {
@@ -72,35 +72,6 @@ namespace GameStore.Tests.Services
                 OrderDetails = null,
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Opened
-            };
-
-            mockUnitOfWOrk.Setup(m => m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() =>
-            {
-                return orderToUpdate;
-            });
-            mockUnitOfWOrk.Setup(m => m.OrderRepository.UpdateAsync(
-                It.IsAny<Order>(),
-                It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() =>
-                {
-
-                    return orderToUpdate;
-                });
-
-            var result = await orderService.MakeOrderAsync(1);
-
-            result.Should().BeNull();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task MakeOrderAsync_GivenOrderWithInvalidStatus_ReturnNull([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService, IEnumerable<Game> games)
-        {
-            Order orderToUpdate = new Order()
-            {
-                OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
-                OrderDetails = new List<OrderDetails>(),
-                Expiration = DateTime.UtcNow.AddMinutes(60),
-                Status = OrderStatus.Succeeded
             };
 
             mockUnitOfWOrk.Setup(m => m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() =>
@@ -115,9 +86,9 @@ namespace GameStore.Tests.Services
                     return orderToUpdate;
                 });
 
-            var result = await orderService.MakeOrderAsync(1);
+            Exception result = await Record.ExceptionAsync(() => orderService.MakeOrderAsync(1));
 
-            result.Should().BeNull();
+            result.Should().BeOfType<KeyNotFoundException>();
         }
 
         [Theory, AutoDomainData]
@@ -131,13 +102,13 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_GivenInValidCustomerId_ReturnNull([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
+        public async Task GetOrderAsync_GivenInValidCustomerId_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
         {
             mockUnitOfWork.Setup(m => m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() => { return null; });
 
-            var result = await orderService.GetOrderAsync(1);
+            Exception result = await Record.ExceptionAsync(() => orderService.GetOrderAsync(1));
 
-            result.Should().BeNull();
+            result.Should().BeOfType<KeyNotFoundException>();
         }
 
         [Theory, AutoDomainData]
@@ -175,13 +146,13 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task CancelOrderAsync_GivenInValidOrder_ReturnTrue([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
+        public async Task CancelOrderAsync_GivenInValidOrder_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
         {
             mockUnitOfWork.Setup(m => m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() => { return null; });
 
-            var result = await orderService.CancelOrderAsync(1);
+            Exception result = await Record.ExceptionAsync(() => orderService.CancelOrderAsync(1));
 
-            result.Should().BeFalse();
+            result.Should().BeOfType<KeyNotFoundException>();
         }
     }
 }

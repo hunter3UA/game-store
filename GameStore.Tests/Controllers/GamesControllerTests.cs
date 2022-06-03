@@ -49,20 +49,6 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task GetListOfGamesAsync_RequestedListNonExist_ReturnNotFoundResult(
-            [Frozen] Mock<IGameService> mockGameService,
-            [NoAutoProperties] GamesController gamesController)
-        {
-            mockGameService.Setup(m => m.GetListOfGamesAsync()).ReturnsAsync(()=> {
-                return null;
-            });
-
-            var result = await gamesController.GetListOfGamesAsync();
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
-
-        [Theory, AutoDomainData]
         public async Task GetGameAsync_RequestedGameExist_ReturnJsonResult(
             Game game,
             IMapper mapper,
@@ -78,18 +64,6 @@ namespace GameStore.Tests.Controllers
             var result = await gamesController.GetGameAsync(game.Key);
 
             result.Should().BeOfType<JsonResult>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task GetGameAsync_RequestedGameNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<IGameService> mockGameService, [NoAutoProperties] GamesController gamesController)
-        {
-            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<string>()))
-                .ReturnsAsync(() => { return null; });
-
-            var result = await gamesController.GetGameAsync("testKey");
-
-            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory, AutoDomainData]
@@ -116,21 +90,6 @@ namespace GameStore.Tests.Controllers
             var result = await gamesController.UpdateGameAsync(updateGameDTO);
 
             result.Should().BeOfType<JsonResult>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task UpdateGameAsync_GivenGameIsInValid_ReturnBadRequest(
-            UpdateGameDTO updateGameDTO,
-          [Frozen] Mock<IGameService> mockGameService,
-          [NoAutoProperties] GamesController gamesController)
-        {
-            mockGameService.Setup(m => m.UpdateGameAsync(It.IsAny<UpdateGameDTO>())).ReturnsAsync(()=> {
-                return null;
-            });
-
-            var result = await gamesController.UpdateGameAsync(updateGameDTO);
-
-            result.Should().BeOfType<BadRequestResult>();
         }
 
         [Theory, AutoDomainData]

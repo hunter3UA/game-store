@@ -1,15 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -43,16 +44,16 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService gameService)
         {
-            AddGameDTO gameToAddDTO = null;
-            mockUnitOfWork.Setup(m => m.GameRepository.AddAsync(It.IsAny<Game>())).ThrowsAsync(new Exception());
+      
+            mockUnitOfWork.Setup(m => m.GameRepository.AddAsync(It.IsAny<Game>())).ThrowsAsync(new DbUpdateException());
 
-            Exception shouldBeNotNull = await Record.ExceptionAsync(() => gameService.AddGameAsync(gameToAddDTO));
+            Exception shouldBeNotNull = await Record.ExceptionAsync(() => gameService.AddGameAsync(new AddGameDTO()));
 
-            shouldBeNotNull.Should().BeOfType<NullReferenceException>();
+            shouldBeNotNull.Should().BeOfType<DbUpdateException>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetListOfGamesAsync_ListExist_ReturnListOfGames(
+        public async Task GetListOfGamesAsync_RequestListExist_ReturnListOfGames(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService gameService)
         {
@@ -81,7 +82,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetGameAsync_GivenInvalidKey_ReturnNull(
+        public async Task GetGameAsync_GivenInvalidKey_ReturnKeyNotFoundException(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
              GameService gameService)
         {
@@ -89,9 +90,9 @@ namespace GameStore.Tests.Services
                 It.IsAny<Expression<Func<Game, bool>>>(),
                 It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() => { return null; });
 
-            var result = await gameService.GetGameAsync(null);
+            Exception result = await Record.ExceptionAsync(() => gameService.GetGameAsync("key"));
 
-            result.Should().BeNull();
+            result.Should().BeOfType<KeyNotFoundException>();
         }
 
         [Theory, AutoDomainData]
@@ -108,15 +109,15 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveGameAsync_GivenInvalidKey_ReturnFalse(
+        public async Task RemoveGameAsync_GivenInvalidKey_ThrowArgumentException(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService gameService)
         {
             mockUnitOfWork.Setup(m => m.GameRepository.RemoveAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(false);
 
-            var isDeletedGame = await gameService.RemoveGameAsync(1);
+            Exception result = await Record.ExceptionAsync(() => gameService.RemoveGameAsync(1));
 
-            isDeletedGame.Should().BeFalse();
+            result.Should().BeOfType<ArgumentException>();
         }
 
         [Theory, AutoDomainData]
@@ -135,17 +136,17 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task UpdateGameAsync_GivenInValidGameToBeUpdated_ThrowException(
+        public async Task UpdateGameAsync_GivenInValidGameToBeUpdated_ThrowArgumentException(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService gameService)
         {
             mockUnitOfWork.Setup(m => m.GameRepository.UpdateAsync(
                 It.IsAny<Game>(),
-                It.IsAny<Expression<Func<Game, object>>[]>())).ThrowsAsync(new Exception());
+                It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(()=> { return null; });
 
-            var result = await Record.ExceptionAsync(() => gameService.UpdateGameAsync(null));
+            var result = await Record.ExceptionAsync(() => gameService.UpdateGameAsync(new UpdateGameDTO()));
 
-            result.Should().BeOfType<NullReferenceException>();
+            result.Should().BeOfType<ArgumentException>();
         }
     }
 }

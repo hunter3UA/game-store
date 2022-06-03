@@ -42,22 +42,6 @@ namespace GameStore.Tests.Controllers
             result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public async Task AddPlatformTypeAsync_GivenPlatformIsInValid_ReturnBadRequestResult(
-            [Frozen] Mock<IPlatformTypeService> mockPlatformService,
-            [NoAutoProperties] PlatformTypesController platformController)
-        {
-      
-            mockPlatformService.Setup(m => m.AddPlatformAsync(It.IsAny<AddPlatformTypeDTO>()))
-                .ReturnsAsync(() =>
-                {
-                    return null;
-                });
-
-            var result = await platformController.AddPlatformTypeAsync(null);
-
-            result.Should().BeOfType<BadRequestResult>();
-        }
 
         [Theory, AutoDomainData]
         public async Task GetListOfPlatformsAsync_RequestedListExist_ReturnJsonResult(
@@ -69,20 +53,6 @@ namespace GameStore.Tests.Controllers
             var result = await platformController.GetListOfPlatformsAsync();
 
             result.Should().BeOfType<JsonResult>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task GetListOfPlatformsAsync_RequestedListNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<IPlatformTypeService> mockPlatformService,
-            [NoAutoProperties] PlatformTypesController platformController)
-        {
-            mockPlatformService.Setup(m => m.GetListOfPlatformsAsync()).ReturnsAsync(()=> {
-                return null;
-            });
-
-            var result = await platformController.GetListOfPlatformsAsync();
-
-            result.Should().BeOfType<NotFoundResult>();
         }
 
         [Theory, AutoDomainData]
@@ -125,20 +95,6 @@ namespace GameStore.Tests.Controllers
             var result = await platformTypesController.UpdatePlatformAsync(updatePlatformTypeDTO);
 
             result.Should().BeOfType<JsonResult>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task UpdatePlatformTypeAsync_PlatformNotUpdated_ReturnBadRequest(UpdatePlatformTypeDTO updatePlatformTypeDTO, [Frozen] Mock<IPlatformTypeService> mockPlatformService,
-          [NoAutoProperties] PlatformTypesController platformTypesController
-            )
-        {
-            mockPlatformService.Setup(m => m.UpdatePlatformAsync(It.IsAny<UpdatePlatformTypeDTO>())).ReturnsAsync(()=> {
-                return null;
-            });
-
-            var result = await platformTypesController.UpdatePlatformAsync(updatePlatformTypeDTO);
-
-            result.Should().BeOfType<BadRequestResult>();
         }
     }
 }

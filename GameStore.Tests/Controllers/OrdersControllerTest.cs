@@ -26,16 +26,6 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task MakeOrderAsync_GivenInValidOrderId_ReturnBadRequestResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
-        {
-            mockOrderService.Setup(m => m.MakeOrderAsync(It.IsAny<int>())).ReturnsAsync(() => { return null; });
-
-            var result = await ordersController.MakeOrderAsync(1);
-
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory, AutoDomainData]
         public async Task GetOrderAsync_GivenValidOrder_ReturnJsonResult([Frozen] Mock<IOrderService> mockOrderService, Mock<ICustomerGenerator> mockCustomerGenerator, [NoAutoProperties] OrdersController ordersController)
         {
             mockCustomerGenerator.Setup(m => m.GetCookies(It.IsAny<HttpContext>())).Returns(1);
@@ -65,17 +55,7 @@ namespace GameStore.Tests.Controllers
 
             result.Should().BeOfType<OkResult>();
         }
-
-        [Theory, AutoDomainData]
-        public async Task CancelOrderAsync_GivenInvalidOrder_ReturnBadRequest([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
-        {
-            mockOrderService.Setup(m => m.CancelOrderAsync(It.IsAny<int>())).ReturnsAsync(false);
-
-            var result = await ordersController.CancelOrderAsync(1);
-
-            result.Should().BeOfType<BadRequestResult>();
-        }
-    
+  
         [Theory,AutoDomainData]
         public async Task PayAsync_GivenValidVisaPaymentOrder_ReturnOkResult([Frozen]Mock<IPaymentContext> mockPaymentContext,[NoAutoProperties] OrdersController ordersController)
         {
@@ -97,14 +77,5 @@ namespace GameStore.Tests.Controllers
            
         }
 
-        [Theory, AutoDomainData]
-        public async Task PayAsync_GivenValidBankPaymentOrder_ReturnOkResult([Frozen] Mock<IPaymentContext> mockPaymentContext, [NoAutoProperties] OrdersController ordersController)
-        {
-            mockPaymentContext.Setup(m => m.ExecutePay(It.IsAny<int>())).ReturnsAsync(new object());
-
-            var result = await ordersController.PayAsync(new OrderPaymentDTO() { OrderId = 1, PaymentType = BLL.Enum.PaymentType.BankPayment });
-
-            result.Should().BeOfType<PhysicalFileResult>();
-        }
     }
 }

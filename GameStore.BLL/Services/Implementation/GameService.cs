@@ -30,8 +30,7 @@ namespace GameStore.BLL.Services.Implementation
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
-
-            if (string.IsNullOrEmpty(mappedGame.Key))
+            if (string.IsNullOrEmpty(gameToAddDTO.Key) && !string.IsNullOrEmpty(gameToAddDTO.Name))
                 mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
@@ -46,7 +45,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p => p.PlatformTypes, pb => pb.Publisher);
 
-            return allGames != null ? _mapper.Map<List<GameDTO>>(allGames) : throw new KeyNotFoundException();
+            return _mapper.Map<List<GameDTO>>(allGames);
         }
 
         public async Task<GameDTO> GetGameAsync(string gameKey)
@@ -64,7 +63,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedGame)
                 _logger.LogInformation($"Game with Key {id} has been deleted");
             else
-                throw new KeyNotFoundException();
+                throw new ArgumentException();
 
             return isRemovedGame;
         }
@@ -74,18 +73,17 @@ namespace GameStore.BLL.Services.Implementation
             Game mappedGame = _mapper.Map<Game>(updateGameDTO);
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.Genres.Contains(g.Id));
-
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.Platforms.Contains(p.Id));
-
-            if (string.IsNullOrEmpty(updateGameDTO.Key))
-            {
+            if (string.IsNullOrEmpty(updateGameDTO.Key) && !string.IsNullOrEmpty(updateGameDTO.Name))
                 mappedGame.Key = CreateGameKey(updateGameDTO.Name);
-            }
 
             Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
             await _unitOfWork.SaveAsync();
 
-            _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
+            if (updatedGame != null)
+                _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
+            else
+                throw new ArgumentException();
 
             return _mapper.Map<GameDTO>(updatedGame);
         }
@@ -95,6 +93,5 @@ namespace GameStore.BLL.Services.Implementation
             var key = name.Trim().ToLower().Replace(" ", "-");
             return key;
         }
-
     }
 }

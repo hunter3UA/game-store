@@ -6,6 +6,7 @@ using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,21 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
+        public async Task AddPublisherAsync_GivenInValidPublisherToBeAdded_ThrowDbUpdateException(
+    
+          [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+          PublisherService publisherService)
+        {
+
+            mockUnitOfWork.Setup(m => m.PublisherRepository.AddAsync(It.IsAny<Publisher>())).ThrowsAsync(new DbUpdateException());
+                
+            Exception result = await Record.ExceptionAsync(() => publisherService.AddPublisherAsync(new AddPublisherDTO()));
+
+            result.Should().BeOfType<DbUpdateException>();
+    
+        }
+
+        [Theory, AutoDomainData]
         public async Task GetListOfPublishersAsync_ListExist_ReturnListOfPublishers(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PublisherService publisherService
             )
@@ -63,16 +79,16 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetPublisherAsync_GivenInValidPublisherId_ReturnPublisher([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
+        public async Task GetPublisherAsync_GivenInValidPublisherId_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
         {
             mockUnitOfWOrk.Setup(m => m.PublisherRepository.GetAsync(It.IsAny<Expression<Func<Publisher, bool>>>())).ReturnsAsync(() =>
             {
                 return null;
             });
 
-            var result = await publisherService.GetPublisherAsync(1);
+            Exception result = await Record.ExceptionAsync(() => publisherService.GetPublisherAsync(1));
 
-            result.Should().BeNull();
+            result.Should().BeOfType<KeyNotFoundException>();
         }
 
         [Theory, AutoDomainData]
@@ -89,20 +105,19 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task RemovePublisherAsync_GivenInValidPublisherId_ReturnFalse([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
+        public async Task RemovePublisherAsync_GivenInValidPublisherId_ThrowArgumentException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
         {
             mockUnitOfWOrk.Setup(m => m.PublisherRepository.RemoveAsync(It.IsAny<Expression<Func<Publisher, bool>>>())).ReturnsAsync(() =>
             {
                 return false;
             });
-
-            var result = await publisherService.RemovePublisherAsync(1);
-
-            result.Should().BeFalse();
+            Exception result = await Record.ExceptionAsync(() => publisherService.RemovePublisherAsync(1));
+       
+            result.Should().BeOfType<ArgumentException>();
         }
 
         [Theory, AutoDomainData]
-        public async Task UpdatePublisherAsync_GivenInValidPublisherId_ReturnPublisher(UpdatePublisherDTO updatePublisherDTO,[Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
+        public async Task UpdatePublisherAsync_GivenValidPublisherId_ReturnPublisher(UpdatePublisherDTO updatePublisherDTO,[Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
         {
             mockUnitOfWOrk.Setup(m => m.PublisherRepository.UpdateAsync(It.IsAny<Publisher>(),
                 It.IsAny<Expression<Func<Publisher, object>>[]>()));
@@ -112,5 +127,15 @@ namespace GameStore.Tests.Services
             result.Should().NotBeNull().And.BeOfType<PublisherDTO>();
         }
 
+        [Theory, AutoDomainData]
+        public async Task UpdatePublisherAsync_GivenInValidPublisherId_ThrowArgumentException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
+        {
+            mockUnitOfWOrk.Setup(m => m.PublisherRepository.UpdateAsync(It.IsAny<Publisher>(),
+                It.IsAny<Expression<Func<Publisher, object>>[]>())).ReturnsAsync(()=> { return null; });
+
+            Exception result = await Record.ExceptionAsync(() => publisherService.UpdatePublisherAsync(new UpdatePublisherDTO()));
+
+            result.Should().BeOfType<ArgumentException>();
+        }
     }
 }
