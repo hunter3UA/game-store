@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
@@ -55,8 +53,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedComment)
                 _logger.LogInformation($"Comment with Id {id} has been deleted");
             else
-                throw new ArgumentException();
-            
+                throw new ArgumentException("Comment can not deleted");            
 
             return isRemovedComment;
         }

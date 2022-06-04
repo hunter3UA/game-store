@@ -59,7 +59,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedPublisher != null)
                 _logger.LogInformation($"Publisher with Id:{updatedPublisher.Id} has been updated");
             else
-                throw new ArgumentException("Publisher has not been updated");
+                throw new ArgumentException("Publisher can not be updated");
 
             return _mapper.Map<PublisherDTO>(updatedPublisher);
         }
@@ -72,7 +72,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedPublisher)
                 _logger.LogInformation($"Publisher with Id: {id} has been deleted");
             else
-                throw new ArgumentException("Publisher has not been deleted");
+                throw new ArgumentException("Publisher can not be deleted");
 
             return isDeletedPublisher;
         }

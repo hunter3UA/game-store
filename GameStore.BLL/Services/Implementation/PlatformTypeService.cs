@@ -61,7 +61,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedPlatform != null)
                 _logger.LogInformation($"Platform with Id {updatedPlatform.Id} has been updated");
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Platform can not be updated");
 
             return _mapper.Map<PlatformTypeDTO>(updatedPlatform);
         }
@@ -74,7 +74,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedPlatform)
                 _logger.LogInformation($"Platform with Id {id} has been deleted");
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Platform can not be deleted");
 
             return isRemovedPlatform;
         }

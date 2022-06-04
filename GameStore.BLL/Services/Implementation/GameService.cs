@@ -63,7 +63,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedGame)
                 _logger.LogInformation($"Game with Key {id} has been deleted");
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Game can not be deleted");
 
             return isRemovedGame;
         }
@@ -83,7 +83,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedGame != null)
                 _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Game can not be updated");
 
             return _mapper.Map<GameDTO>(updatedGame);
         }

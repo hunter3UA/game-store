@@ -37,16 +37,6 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_GivenInValidOrder_ReturnNotFoudResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
-        {
-            mockOrderService.Setup(m => m.GetOrderAsync(It.IsAny<int>())).ReturnsAsync(() => { return null; });
-
-            var result = await ordersController.GetOrderAsync();
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
-
-        [Theory, AutoDomainData]
         public async Task CancelOrderAsync_GivenValidOrder_ReturnOkResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
             mockOrderService.Setup(m => m.CancelOrderAsync(It.IsAny<int>())).ReturnsAsync(true);

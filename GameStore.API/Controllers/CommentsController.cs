@@ -17,13 +17,10 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPost]
-        [Route("{gameKey}/newcomment")]
+        [Route("{gameKey}/new-comment")]
         public async Task<IActionResult> AddCommentAsync([FromRoute] string gameKey, [FromBody] AddCommentDTO addCommentDTO)
         {
             var addedComment = await _commentService.AddCommentAsync(gameKey, addCommentDTO);
-
-            if (addedComment == null)
-                return BadRequest();
 
             return new JsonResult(addedComment);
         }
@@ -33,9 +30,6 @@ namespace GameStore.API.Controllers
         public async Task<IActionResult> GetCommentsAsync([FromRoute] string gameKey)
         {
             var commentsByGameKey = await _commentService.GetListOfCommentsAsync(gameKey);
-
-            if (commentsByGameKey == null)
-                return NotFound();
 
             return new JsonResult(commentsByGameKey);
         }

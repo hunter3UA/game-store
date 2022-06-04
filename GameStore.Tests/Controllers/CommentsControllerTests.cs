@@ -33,20 +33,6 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task AddCommentAsync_GivenCommentIsNotValid_ReturnBadRequestResult(
-        [Frozen] Mock<ICommentService> mockCommentService,
-        [NoAutoProperties] CommentsController commentsController)
-        {
-           
-            mockCommentService.Setup(m => m.AddCommentAsync(It.IsAny<string>(), It.IsAny<AddCommentDTO>()))
-                .ReturnsAsync(() => { return null; });
-
-            var result = await commentsController.AddCommentAsync("myKey", null);
-
-            result.Should().BeOfType<BadRequestResult>();
-        }
-
-        [Theory, AutoDomainData]
         public async Task GetCommentAsync_RequestedCommentExist_ReturnJsonResult(
              List<Comment> comments,
             [Frozen] Mock<ICommentService> mockCommentService,
@@ -64,20 +50,5 @@ namespace GameStore.Tests.Controllers
             result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public async Task GetCommentAsync_RequestedCommentNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<ICommentService> mockCommentService,
-            [NoAutoProperties] CommentsController commentsController)
-        {
-            mockCommentService.Setup(m => m.GetListOfCommentsAsync(It.IsAny<string>()))
-                .ReturnsAsync(() =>
-                {
-                    return null;
-                });
-
-            var result = await commentsController.GetCommentsAsync("gameKey");
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
     }
 }

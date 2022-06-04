@@ -73,9 +73,6 @@ namespace GameStore.API.Controllers
             var customerId = _customerGenerator.GetCookies(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
-            if (orderByCustomer == null)
-                return NotFound();
-
             return new JsonResult(orderByCustomer);
         }
     }

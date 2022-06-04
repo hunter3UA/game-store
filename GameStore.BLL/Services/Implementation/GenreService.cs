@@ -65,7 +65,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedGenre)
                 _logger.LogInformation($"Genre with Id: {id} has been deleted");
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Genre can not be deleted");
 
             return isDeletedGenre;
         }
@@ -80,7 +80,7 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedGenre != null)
                 _logger.LogInformation($"Genre with id {updatedGenre.Id} has been updated");
             else
-                throw new ArgumentException();
+                throw new ArgumentException("Genre can not be updated");
 
             return _mapper.Map<GenreDTO>(updatedGenre);
         }
