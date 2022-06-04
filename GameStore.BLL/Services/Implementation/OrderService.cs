@@ -33,12 +33,12 @@ namespace GameStore.BLL.Services.Implementation
 
             if (orderById == null || orderById.OrderDetails == null)
                 throw new KeyNotFoundException("Order not found");
-            
+
             bool isCompletedReserving = await ReserveGame(orderById);
 
             if (!isCompletedReserving)
-                throw new Exception("Order can to be completed");
-            
+                throw new ArgumentException("Order can to be completed");
+
             _logger.LogInformation($"Games of order with id {orderById.Id} have been reserved");
             orderById.Status = OrderStatus.Processing;
             orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
@@ -54,14 +54,14 @@ namespace GameStore.BLL.Services.Implementation
         {
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
 
-            if (orderByCustomer == null)
+            if (orderByCustomer == null || orderByCustomer.OrderDetails == null)
                 throw new KeyNotFoundException("Order not found");
-            
+
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
-                if (item.Game == null)
-                    throw new Exception("Order has been changed");
+                if (item.Game == null)              
+                    throw new KeyNotFoundException($"Games of order with id:{orderByCustomer.Id} not found");         
             }
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
@@ -73,7 +73,7 @@ namespace GameStore.BLL.Services.Implementation
 
             if (orderById == null)
                 throw new KeyNotFoundException("Order not found");
-            
+
             await CancelReservedGamesAsync(orderById);
             orderById.Status = OrderStatus.Canceled;
             Order canceledOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById);

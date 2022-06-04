@@ -27,8 +27,12 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
         {
             Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey);
-            if (gameOfDetails.UnitsInStock <= 0 || gameOfDetails==null)
-                throw new ArgumentException("Value of order details can not be less then 1");
+
+            if (gameOfDetails == null)
+                throw new KeyNotFoundException("Game does not exist");
+
+            if (gameOfDetails.UnitsInStock <= 0)
+                throw new ArgumentException("Value of order details can not be less then 1");  
 
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId && g.Status != OrderStatus.Succeeded);
             if (orderOfCustomer == null)
@@ -86,7 +90,6 @@ namespace GameStore.BLL.Services.Implementation
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
                 if (item.Game == null)
                     await RemoveOrderDetailsAsync(item.Id);
-
             }
 
             orderByCustomer.OrderDetails = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == orderByCustomer.Id, od => od.Game);
@@ -126,7 +129,7 @@ namespace GameStore.BLL.Services.Implementation
             if (addedOrderDetails != null)
                 _logger.LogInformation($"OrderDetails with id: {addedOrderDetails.Id} has added");
             else
-                throw new Exception("Order details can not be created");
+                throw new ArgumentException("Order details can not be created");
 
             return addedOrderDetails;
         }

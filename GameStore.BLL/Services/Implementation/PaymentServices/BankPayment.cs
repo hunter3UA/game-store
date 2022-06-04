@@ -18,9 +18,6 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             _unitOfWork = unitOfWork;
 
             Order orderToPay = await Initialize(orderId);
-
-            if (orderToPay == null)
-                throw new KeyNotFoundException("Order not found");
             
             byte[] fileStream = await CreateInvoiceFileAsync(orderToPay);
 
@@ -35,9 +32,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             Order orderToPay = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, od => od.OrderDetails);
 
             if (orderToPay == null)
-            {
-                return null;
-            }
+                throw new KeyNotFoundException("Order not found");
 
             foreach (var item in orderToPay.OrderDetails)
             {
@@ -46,7 +41,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
                 {
                     orderToPay.Status = OrderStatus.Canceled;
                     await _unitOfWork.SaveAsync();
-                    throw new Exception("Some games have been deleted");
+                    throw new KeyNotFoundException($"Games with id {item.GameId} not found");
                 }
             }
 
