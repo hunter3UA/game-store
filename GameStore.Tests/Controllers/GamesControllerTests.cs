@@ -15,10 +15,10 @@ using Xunit;
 
 namespace GameStore.Tests.Controllers
 {
-    public class GameControllerTests
+    public class GamesControllerTests
     {
         [Theory, AutoDomainData]
-        public async Task AddGameAsync_GivenValidGame_ReturnGame(
+        public async Task AddGameAsync_GivenValidGame_ReturnJsonResult(
             AddGameDTO addGameDTO,
             IMapper mapper,
         [Frozen] Mock<IGameService> mockGameService,
@@ -33,11 +33,11 @@ namespace GameStore.Tests.Controllers
 
             var result = await gameController.AddGameAsync(addGameDTO);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetListOfGamesAsync_RequestedListExist_ReturnOkResult(
+        public async Task GetListOfGamesAsync_RequestedListExist_ReturnJsonResult(
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
         {
@@ -45,11 +45,11 @@ namespace GameStore.Tests.Controllers
 
             var result = await gamesController.GetListOfGamesAsync();
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetGameAsync_GameExist_ReturnOkResult(
+        public async Task GetGameAsync_RequestedGameExist_ReturnJsonResult(
             Game game,
             IMapper mapper,
             [Frozen] Mock<IGameService> mockGameService,
@@ -63,23 +63,11 @@ namespace GameStore.Tests.Controllers
 
             var result = await gamesController.GetGameAsync(game.Key);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetGameAsync_GameNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<IGameService> mockGameService, [NoAutoProperties] GamesController gamesController)
-        {
-            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<string>()))
-                .ReturnsAsync(() => { return null; });
-
-            var result = await gamesController.GetGameAsync("testKey");
-
-            result.Should().BeOfType<Microsoft.AspNetCore.Mvc.NotFoundResult>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task RemoveGameAsync_GameRemoved_ReturnJsonResult(
+        public async Task RemoveGameAsync_RequestedGameRemoved_ReturnOkResult(
             int id,
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
@@ -88,11 +76,11 @@ namespace GameStore.Tests.Controllers
 
             var result = await gamesController.RemoveGameAsync(id);
 
-            result.Should().BeOfType<JsonResult>();
+            result.Should().BeOfType<OkResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task UpdateGameAsync_GivenGameIsValid_ReturnOkResult(
+        public async Task UpdateGameAsync_GivenGameIsValid_ReturnJsonResult(
             UpdateGameDTO updateGameDTO,
           [Frozen] Mock<IGameService> mockGameService,
           [NoAutoProperties] GamesController gamesController)
@@ -101,7 +89,7 @@ namespace GameStore.Tests.Controllers
 
             var result = await gamesController.UpdateGameAsync(updateGameDTO);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]

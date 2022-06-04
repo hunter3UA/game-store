@@ -1,4 +1,3 @@
-using AutoMapper;
 using GameStore.API.Middleware;
 using GameStore.API.Static;
 using GameStore.BLL.Mapper;
@@ -17,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
 using GameStore.API.Helpers;
+using GameStore.BLL.BackgroundServices;
 
 namespace GameStore.API
 {
@@ -30,7 +30,6 @@ namespace GameStore.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
@@ -46,17 +45,15 @@ namespace GameStore.API
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint(Constants.SWAGGER_URL, Constants.SWAGGER_NAME);
+                    options.SwaggerEndpoint(Constants.SwaggerUrl, Constants.SwaggerName);
                 });
             }
-      
+
             app.UseRouting();
             app.UseCors("AllowOrigin");
-           
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -68,10 +65,10 @@ namespace GameStore.API
             services.AddControllers(options =>
             {
                 options.CacheProfiles.Add(
-                Constants.CACHING_PROFILE_NAME,
+                Constants.CachingProfileName,
                 new CacheProfile()
                 {
-                    Duration = Constants.RESPONSE_CACHE_DURATION
+                    Duration = Constants.ResponseCacheDuration
                 });
             });
             services.AddSwaggerGen(options =>
@@ -87,26 +84,30 @@ namespace GameStore.API
             });
             services.AddCors(options =>
             {
+
                 options.AddPolicy(
                     "AllowOrigin",
-                    builder => builder.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(origin=>true).AllowCredentials()
+                    builder => builder.AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition").SetIsOriginAllowed(origin => true).AllowCredentials()
                     );
             });
 
-            services.AddSingleton<Serilog.ILogger>(Log.Logger);
+            services.AddSingleton(Log.Logger);
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
             services.AddScoped<StoreDbContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<IUnitOfWork, UnitOfWork>();    
-            
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddScoped<IGameService, GameService>();
             services.AddScoped<IGenreService, GenreService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddScoped<IPublisherService, PublisherService>();
-            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICustomerGenerator, CustomerGenerator>();
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddHostedService<OrderExpirationService>();
+            services.AddScoped<IPaymentContext, PaymentContext>();
         }
     }
 }

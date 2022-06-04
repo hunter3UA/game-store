@@ -1,131 +1,130 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using GameStore.BLL.DTO.Order;
-using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
 {
     public class OrderService : IOrderService
     {
-        private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<OrderService> logger)
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<OrderService> logger)
         {
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
             _logger = logger;
         }
 
-        public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
+        public async Task<OrderDTO> MakeOrderAsync(int orderId)
         {
-            Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey);
-            if (gameOfDetails.UnitsInStock <= 0)
-            {
-                return null;
-            }
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(
+                o => o.Id == orderId &&
+                o.Status != OrderStatus.Processing &&
+                o.Status != OrderStatus.Succeeded,
+                od => od.OrderDetails);
 
-            Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId);
-            if (orderOfCustomer == null)
-            {
-                orderOfCustomer = await CreateOrderAsync(customerId);
-            }
+            if (orderById == null || orderById.OrderDetails == null)
+                throw new KeyNotFoundException("Order not found");
 
-            OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
-            if (orderItemToAdd != null)
-            {
-                return _mapper.Map<OrderDetailsDTO>(orderItemToAdd);
-            }
+            bool isCompletedReserving = await ReserveGame(orderById);
 
-            OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Id, gameOfDetails.Price);
+            if (!isCompletedReserving)
+                throw new ArgumentException("Order can to be completed");
 
-            return _mapper.Map<OrderDetailsDTO>(addedOrderDetails);
-        }
-
-        public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
-        {
-            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId, g => g.Game);
-            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
-
-            if (orderDetailsToUpdate.Quantity > orderDetailsToUpdate.Game.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
-            {
-                return null;
-            }
-
+            _logger.LogInformation($"Games of order with id {orderById.Id} have been reserved");
+            orderById.Status = OrderStatus.Processing;
+            orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
+            Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);
             await _unitOfWork.SaveAsync();
 
-            return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);
-        }
+            _logger.LogInformation($"Status of order with id { updatedOrder.Id } has been changed to Processing");
 
-        public async Task<bool> RemoveOrderDetailsAsync(int id)
-        {
-            bool isDeletedOrderDetails = await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == id);
-            await _unitOfWork.SaveAsync();
-
-            return isDeletedOrderDetails;
+            return _mapper.Map<OrderDTO>(updatedOrder);
         }
 
         public async Task<OrderDTO> GetOrderAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId, details => details.OrderDetails);
-          
-            if(orderByCustomer==null)
-            {
-                return null;
-            }
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
+
+            if (orderByCustomer == null || orderByCustomer.OrderDetails == null)
+                throw new KeyNotFoundException("Order not found");
 
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                if (item.Game == null)              
+                    throw new KeyNotFoundException($"Games of order with id:{orderByCustomer.Id} not found");         
             }
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
 
-        private async Task<Order> CreateOrderAsync(int customerId)
+        public async Task<bool> CancelOrderAsync(int orderId)
         {
-            Order orderToAdd = new Order()
-            {
-                CustomerId = customerId
-            };
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, od => od.OrderDetails);
 
-            Order addedOrder = await _unitOfWork.OrderRepository.AddAsync(orderToAdd);
+            if (orderById == null)
+                throw new KeyNotFoundException("Order not found");
+
+            await CancelReservedGamesAsync(orderById);
+            orderById.Status = OrderStatus.Canceled;
+            Order canceledOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById);
             await _unitOfWork.SaveAsync();
 
-            if (addedOrder != null)
-            {
-                _logger.LogInformation($"Order with id: {addedOrder.Id} has been added");
-            }
+            _logger.LogInformation($"Order with id {canceledOrder.Id} has been canceled");
 
-            return addedOrder;
+            return true;
         }
 
-        private async Task<OrderDetails> CreateOrderDetailsAsync(int orderId, int gameId, decimal price)
+        private async Task<bool> ReserveGame(Order orderToReserve)
         {
-            OrderDetails orderDetailsToAdd = new OrderDetails()
+            bool isCompletedReserving = true;
+            foreach (var item in orderToReserve.OrderDetails)
             {
-                Price = price,
-                OrderId = orderId,
-                Quantity = 1,
-                GameId = gameId,
-                Discount = 0
-            };
+                Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId, g => g.Genres, g => g.PlatformTypes);
 
-            OrderDetails addedOrderDetails = await _unitOfWork.OrderDetailsRepository.AddAsync(orderDetailsToAdd);
-            await _unitOfWork.SaveAsync();
+                if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
+                {
+                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+                    isCompletedReserving = false;
 
-            if (addedOrderDetails != null)
-            {
-                _logger.LogInformation($"OrderDetails with id: {addedOrderDetails.Id} has been added");
+                    await _unitOfWork.SaveAsync();
+                }
+                else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
+                {
+                    item.Quantity = gameToReserve.UnitsInStock;
+                    isCompletedReserving = false;
+
+                    await _unitOfWork.SaveAsync();
+                }
+                else
+                {
+                    gameToReserve.UnitsInStock -= item.Quantity;
+                    await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
+                }
             }
 
-            return addedOrderDetails;
+            return isCompletedReserving;
+        }
+
+        private async Task CancelReservedGamesAsync(Order orderToCancel)
+        {
+            foreach (var item in orderToCancel.OrderDetails)
+            {
+                Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                if (gameOfItem == null)
+                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+                else
+                    gameOfItem.UnitsInStock += item.Quantity;
+            }
         }
     }
 }

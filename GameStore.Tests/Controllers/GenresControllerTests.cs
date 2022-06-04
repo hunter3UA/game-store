@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
@@ -20,7 +17,7 @@ namespace GameStore.Tests.Controllers
     public class GenresControllerTests
     {
         [Theory, AutoDomainData]
-        public async Task AddGenreAsync_GivenGenreIsValid_ReturnGenre(
+        public async Task AddGenreAsync_GivenGenreIsValid_ReturnJsonResult(
             IMapper mapper, 
             AddGenreDTO addGenreDTO,
             [Frozen] Mock<IGenreService> mockGenreService,
@@ -38,11 +35,11 @@ namespace GameStore.Tests.Controllers
 
             var result = await genresController.AddGenreAsync(addGenreDTO);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetListOfGenresAsync_RequestedGenreExist_ReturnOkResult(
+        public async Task GetListOfGenresAsync_RequestedGenreExist_ReturnJsonResult(
             [Frozen] Mock<IGenreService> mockGenreService,
             [NoAutoProperties] GenresController genresController)
         {
@@ -50,24 +47,13 @@ namespace GameStore.Tests.Controllers
 
             var result = await genresController.GetAllGenresAsync();
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public async Task GetGenreAsync_GenreNotExist_ReturnNotFoundResult(
-            [Frozen] Mock<IGenreService> mockGenreService, 
-            [NoAutoProperties] GenresController genresController)
-        {
-            mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<int>()))
-                .ReturnsAsync(() => { return null; });
 
-            var result = await genresController.GetGenreAsync(100);
-
-            result.Should().BeOfType<NotFoundResult>();
-        }
 
         [Theory, AutoDomainData]
-        public async Task GetGenreAsync_GenreExist_ReturnOkResult(
+        public async Task GetGenreAsync_RequestedGenreExist_ReturnJsonResult(
             Genre genre, 
             IMapper mapper,
             [Frozen] Mock<IGenreService> mockGenreService,
@@ -77,11 +63,11 @@ namespace GameStore.Tests.Controllers
                 .ReturnsAsync(() => { return mapper.Map<GenreDTO>(genre); });
             var result = await genresController.GetGenreAsync(genre.Id);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveGenreAsync_GenreRemoved_ReturnJsonResult(
+        public async Task RemoveGenreAsync_RequestedGenreRemoved_ReturnOkResult(
             int id,
             [Frozen] Mock<IGenreService> mockGenreService,
             [NoAutoProperties] GenresController genresController)
@@ -90,7 +76,21 @@ namespace GameStore.Tests.Controllers
 
             var result = await genresController.RemoveGenreAsync(id);
 
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory,AutoDomainData]
+        public async Task UpdateGenreAsync_GivenGenreIsValid_ReturnJsonResult(UpdateGenreDTO updateGenreDTO, [Frozen] Mock<IGenreService> mockGenreService,
+            [NoAutoProperties] GenresController genresController)
+        {
+            mockGenreService.Setup(m => m.UpdateGenreAsync(It.IsAny<UpdateGenreDTO>())).ReturnsAsync(()=> {
+                return new GenreDTO();
+            });
+
+            var result = await genresController.UpdateGenreAsync(updateGenreDTO);
+
             result.Should().BeOfType<JsonResult>();
         }
+
     }
 }

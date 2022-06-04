@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
@@ -20,7 +17,7 @@ namespace GameStore.Tests.Controllers
     public class CommentsControllerTests
     {
         [Theory, AutoDomainData]
-        public async Task AddCommentAsync_GivenCommentIsValid_ReturnOkResult(
+        public async Task AddCommentAsync_GivenCommentIsValid_ReturnJsonResult(
             AddCommentDTO addCommentDTO,
             IMapper mapper,
         [Frozen] Mock<ICommentService> mockCommentService,
@@ -32,11 +29,11 @@ namespace GameStore.Tests.Controllers
 
             var result = await commentsController.AddCommentAsync("myKey", addCommentDTO);
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetCommentAsync_CommentExist_ReturnOkResult(
+        public async Task GetCommentAsync_RequestedCommentExist_ReturnJsonResult(
              List<Comment> comments,
             [Frozen] Mock<ICommentService> mockCommentService,
             IMapper mapper,
@@ -50,18 +47,8 @@ namespace GameStore.Tests.Controllers
 
             var result = await commentsController.GetCommentsAsync("gameKey");
 
-            result.Should().BeOfType<OkObjectResult>();
+            result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public async Task RemoveCommentAsync_CommentRemoved_ReturnOkResult(
-            [Frozen] Mock<ICommentService> mockCommentService, [NoAutoProperties] CommentsController commentsController)
-        {
-            mockCommentService.Setup(m => m.RemoveCommentAsync(It.IsAny<int>())).ReturnsAsync(true);
-
-            var result = await commentsController.RemoveCommentAsync(10);
-
-            result.Should().BeOfType<OkObjectResult>();
-        }
     }
 }

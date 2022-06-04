@@ -66,14 +66,15 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task RemoveCommentAsync_CommentIsNotRemoved_ReturnFalse(
+        public async Task RemoveCommentAsync_CommentIsNotRemoved_ReturnArgumentException(
            [Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentService)
         {
             mockUnitOfWork.Setup(m => m.CommentRepository.RemoveAsync(It.IsAny<Expression<Func<Comment, bool>>>())).ReturnsAsync(false);
 
-            var result = await commentService.RemoveCommentAsync(4);
+            Exception result = await Record.ExceptionAsync(() => commentService.RemoveCommentAsync(4));
+            
 
-            result.Should().BeFalse();
+            result.Should().BeOfType<ArgumentException>();
         }
 
         [Theory, AutoDomainData]

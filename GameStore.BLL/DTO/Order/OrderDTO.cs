@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using GameStore.BLL.DTO.OrderDetails;
+using GameStore.BLL.Enum;
+using GameStore.DAL.Entities;
 
 namespace GameStore.BLL.DTO.Order
 {
@@ -12,6 +14,11 @@ namespace GameStore.BLL.DTO.Order
         public int CustomerId { get; set; }
 
         public DateTime OrderDate { get; set; }
+
+        public DateTime Expiration { get; set; }
+
+        
+        public OrderStatus Status { get; set; }
 
         public List<OrderDetailsDTO> OrderDetails { get; set; }
 

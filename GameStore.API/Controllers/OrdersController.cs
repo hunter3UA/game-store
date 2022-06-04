@@ -1,82 +1,79 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
-using GameStore.BLL.DTO.OrderDetails;
-using GameStore.BLL.Services.Abstract;
+﻿using System;
+using System.Threading.Tasks;
 using GameStore.API.Helpers;
+using GameStore.API.Static;
+using GameStore.BLL.DTO.Order;
+using GameStore.BLL.Enum;
+using GameStore.BLL.Services.Abstract;
+using GameStore.BLL.Services.Implementation.PaymentServices;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace GameStore.API.Controllers
 {
-    [EnableCors("AllowOrigin")]
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
         private readonly ICustomerGenerator _customerGenerator;
+        private readonly IPaymentContext _paymentContext;
 
-        public OrdersController(IOrderService orderService,ICustomerGenerator customerGenerator)
+        public OrdersController(IOrderService orderService,ICustomerGenerator customerGenerator,IPaymentContext paymentContext)
         {
             _orderService = orderService;
             _customerGenerator = customerGenerator;
+            _paymentContext = paymentContext;
+        }
+
+        [HttpPost]
+        [Route("pay")]
+        public async Task<IActionResult> PayAsync([FromBody] OrderPaymentDTO orderPayment)
+        {       
+            switch (orderPayment.PaymentType)
+            {
+                case PaymentType.BankPayment:
+                    _paymentContext.SetStrategy(new BankPayment());
+                    object stream = await _paymentContext.ExecutePay(orderPayment.OrderId);                 
+                    return File((byte[])stream, Constants.TextPlainContentType,$"{orderPayment.OrderId}{DateTime.Now.Ticks}");
+                case PaymentType.IBoxPayment:
+                    _paymentContext.SetStrategy(new IBoxPayment());
+                    await _paymentContext.ExecutePay(orderPayment.OrderId);
+                    return Ok();
+                case PaymentType.VisaPayment:
+                    _paymentContext.SetStrategy(new VisaPayment());
+                    await _paymentContext.ExecutePay(orderPayment.OrderId);
+                    break;
+            }
+            return Ok();
         }
 
         [HttpGet]
-        [Route("/basket")]
+        [Route("{orderId}")]
+        public async Task<IActionResult> MakeOrderAsync([FromRoute] int orderId)
+        {
+            var createdOrder = await _orderService.MakeOrderAsync(orderId);
+
+            return new JsonResult(createdOrder);
+        }
+
+        [HttpDelete]
+        [Route("{orderId}")]
+        public async Task<IActionResult> CancelOrderAsync([FromRoute] int orderId)
+        {
+            await _orderService.CancelOrderAsync(orderId);
+
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("/api/order")]
         public async Task<IActionResult> GetOrderAsync()
         {
             var customerId = _customerGenerator.GetCookies(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
-            if (orderByCustomer == null)
-            {
-                return NotFound();
-            }
-
             return new JsonResult(orderByCustomer);
-        }
-
-        [HttpGet]
-        [Route("/games/{gamekey}/buy")]
-        public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey)
-        {
-            var customerId = _customerGenerator.GetCookies(HttpContext);
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
-
-            if (addedOrderDetails == null)
-            {
-                return BadRequest();
-            }
-
-            return new JsonResult(addedOrderDetails);
-        }
-
-        [HttpPut]
-        [Route("/basket/details/update")]
-        public async Task<IActionResult> ChangeQuantityOfOrderDetailsAsync([FromBody] ChangeQuantityDTO changeQuantityDTO)
-        {
-            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
-
-            if (updatedOrderDetails == null)
-            {
-                return BadRequest();
-            }
-
-            return new JsonResult(updatedOrderDetails);           
-        }
-
-        [HttpDelete]
-        [Route("/basket/details/remove/{id}")]
-        public async Task<IActionResult> RemoveOrderDetailsAsync([FromRoute] int id) 
-        {
-            var deletedOrderDetails = await _orderService.RemoveOrderDetailsAsync(id);
-
-            if (!deletedOrderDetails)
-            {
-                return BadRequest();
-            }
-
-            return Ok();
         }
     }
 }

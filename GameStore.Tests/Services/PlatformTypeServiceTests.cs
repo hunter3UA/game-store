@@ -12,6 +12,7 @@ using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -41,15 +42,14 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task AddPlatformAsync_GivenInvalidPlatform_ReturnNull([Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformTypeService)
+        public async Task AddPlatformAsync_GivenInvalidPlatform_ThrowDbUpdateException([Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformTypeService)
         {
-            AddPlatformTypeDTO platform = new AddPlatformTypeDTO();
-            platform.Type = null;
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.AddAsync(It.IsAny<PlatformType>())).ThrowsAsync(new Exception());
+   
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.AddAsync(It.IsAny<PlatformType>())).ThrowsAsync(new DbUpdateException());
 
-            Exception result = await Record.ExceptionAsync(() => platformTypeService.AddPlatformAsync(platform));
+            Exception result = await Record.ExceptionAsync(() => platformTypeService.AddPlatformAsync(new AddPlatformTypeDTO()));
 
-            result.Should().BeOfType<Exception>();
+            result.Should().BeOfType<DbUpdateException>();
         }
 
         [Theory, AutoDomainData]
@@ -61,18 +61,7 @@ namespace GameStore.Tests.Services
             var listOfPlatforms = await platformTypeService.GetListOfPlatformsAsync();
 
             listOfPlatforms.Should().BeOfType<List<PlatformTypeDTO>>();
-        }
-
-        [Theory, AutoDomainData]
-        public async Task RemovePlatformTypeAsync_PlatformIsNotRemoved_ShouldReturnFalse(
-           [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
-        {
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.RemoveAsync(It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(false);
-
-            var result = await platformService.RemovePlatformAsync(4);
-
-            result.Should().BeFalse();
-        }
+        }    
 
         [Theory, AutoDomainData]
         public async Task GetPlatformAsync_GivenValidId_ReturnPlatform(
@@ -87,7 +76,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetPlatformAsync_GivenInvalidId_ReturnNull([Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
+        public async Task GetPlatformAsync_GivenInvalidPlatformId_ReturnKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
         {
             mockUnitOfWork.Setup(m => m.PlatformTypeRepository.GetAsync(
                   It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(() =>
@@ -95,9 +84,9 @@ namespace GameStore.Tests.Services
                       return null;
                   });
 
-            var result = await platformService.GetPlatformAsync(1);
+            Exception result = await Record.ExceptionAsync(() => platformService.GetPlatformAsync(1));
 
-            result.Should().BeNull();
+            result.Should().BeOfType<KeyNotFoundException>();
         }
 
         [Theory, AutoDomainData]
@@ -115,28 +104,39 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task UpdatePlatformAsync_GivenInvalidPlatformToUpdate_ReturnNull(
+        public async Task UpdatePlatformAsync_GivenInvalidPlatformToUpdate_ReturnArgumentException(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformTypeService)        
         {
-            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.UpdateAsync(It.IsAny<PlatformType>())).ThrowsAsync(new Exception());
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.UpdateAsync(It.IsAny<PlatformType>())).ReturnsAsync(()=> { return null; });
 
-            Exception result = await Record.ExceptionAsync(() => platformTypeService.UpdatePlatformAsync(null));
+            Exception result = await Record.ExceptionAsync(() => platformTypeService.UpdatePlatformAsync(new UpdatePlatformTypeDTO()));
 
-            result.Should().BeOfType<Exception>();
+            result.Should().BeOfType<ArgumentException>();
         }
 
         [Theory, AutoDomainData]
-        public async Task RemovePlatformAsync_GivenNotExistingPlatformToRemove_ReturnNull(
+        public async Task RemovePlatformAsync_RemoveExistingPlatform_ReturnTrue(
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
         {
             mockUnitOfWork.Setup(m => m.PlatformTypeRepository.RemoveAsync(It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(() =>
             {
-                return false;
+                return true;
             });
 
             var result = await platformService.RemovePlatformAsync(1);
 
-            result.Should().BeFalse();
+            result.Should().BeTrue();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task RemovePlatformTypeAsync_PlatformNotRemoved_ThrowArgumentException(
+         [Frozen] Mock<IUnitOfWork> mockUnitOfWork, PlatformTypeService platformService)
+        {
+            mockUnitOfWork.Setup(m => m.PlatformTypeRepository.RemoveAsync(It.IsAny<Expression<Func<PlatformType, bool>>>())).ReturnsAsync(false);
+
+            Exception result = await Record.ExceptionAsync(() => platformService.RemovePlatformAsync(1));
+
+            result.Should().BeOfType<ArgumentException>();
         }
     }
 }

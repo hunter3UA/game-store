@@ -29,18 +29,14 @@ namespace GameStore.BLL.Services.Implementation
             Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
-
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
-
-            mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
+            if (string.IsNullOrEmpty(gameToAddDTO.Key) && !string.IsNullOrEmpty(gameToAddDTO.Name))
+                mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
             await _unitOfWork.SaveAsync();
 
-            if (addedGame != null)
-            {
-                _logger.LogInformation($"Game has been added with Id: {addedGame.Id}");
-            }
+            _logger.LogInformation($"Game has been added with Id: {addedGame.Id}");
 
             return _mapper.Map<GameDTO>(addedGame);
         }
@@ -56,7 +52,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres, pub => pub.Publisher);
 
-            return _mapper.Map<GameDTO>(searchedGame);
+            return searchedGame != null ? _mapper.Map<GameDTO>(searchedGame) : throw new KeyNotFoundException();
         }
 
         public async Task<bool> RemoveGameAsync(int id)
@@ -65,9 +61,9 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             if (isRemovedGame)
-            {
                 _logger.LogInformation($"Game with Key {id} has been deleted");
-            }
+            else
+                throw new ArgumentException("Game can not be deleted");
 
             return isRemovedGame;
         }
@@ -77,13 +73,17 @@ namespace GameStore.BLL.Services.Implementation
             Game mappedGame = _mapper.Map<Game>(updateGameDTO);
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.Genres.Contains(g.Id));
-
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.Platforms.Contains(p.Id));
+            if (string.IsNullOrEmpty(updateGameDTO.Key) && !string.IsNullOrEmpty(updateGameDTO.Name))
+                mappedGame.Key = CreateGameKey(updateGameDTO.Name);
 
             Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
             await _unitOfWork.SaveAsync();
 
-            _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
+            if (updatedGame != null)
+                _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
+            else
+                throw new ArgumentException("Game can not be updated");
 
             return _mapper.Map<GameDTO>(updatedGame);
         }
