@@ -7,10 +7,10 @@ namespace GameStore.DAL.Entities
 {
     public class Comment : BaseEntity
     {
-        [Required,MinLength(1), MaxLength(150)]
+        [Required, MaxLength(150)]
         public string Name { get; set; }
 
-        [Required,MinLength(1), MaxLength(10000)]
+        [Required, MaxLength(10000)]
         public string Body { get; set; }
 
         public int? ParentCommentId { get; set; }
@@ -24,7 +24,7 @@ namespace GameStore.DAL.Entities
         [ForeignKey("GameId")]
         public Game Game { get; set; }
 
-        [Required,DefaultValue(false)]
+        [Required, DefaultValue(false)]
         public bool IsQuote { get; set; }
     }
 }

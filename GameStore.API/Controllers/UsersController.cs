@@ -15,7 +15,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("/comments/ban")]
+        [Route("ban")]
         public IActionResult BanUser()
         {
             _userService.BanUser();
