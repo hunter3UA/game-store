@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GameStore.BLL.DTO.Comment
+﻿namespace GameStore.BLL.DTO.Comment
 {
     public class AddCommentDTO
     {   
@@ -9,5 +7,7 @@ namespace GameStore.BLL.DTO.Comment
         public string Body { get; set; }
 
         public int? ParentCommentId { get; set; }
+
+        public bool IsQuote { get; set; }
     }
 }

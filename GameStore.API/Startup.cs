@@ -108,6 +108,7 @@ namespace GameStore.API
             services.AddScoped<IOrderService, OrderService>();
             services.AddHostedService<OrderExpirationService>();
             services.AddScoped<IPaymentContext, PaymentContext>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

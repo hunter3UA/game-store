@@ -10,6 +10,7 @@ using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -86,6 +87,45 @@ namespace GameStore.Tests.Services
             var result = await commentService.RemoveCommentAsync(commentToBeRemoved.Id);
 
             result.Should().BeTrue();
+        }
+
+        [Theory,AutoDomainData]
+        public async Task UpdateCommentAsync_CommentIsUpdated_ReturnComment([Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentService)
+        {
+            mockUnitOfWork.Setup(m => m.CommentRepository.GetAsync(
+                It.IsAny<Expression<Func<Comment, bool>>>())).ReturnsAsync(new Comment());
+            mockUnitOfWork.Setup(m => m.CommentRepository.UpdateAsync(It.IsAny<Comment>(),
+                It.IsAny<Expression<Func<Comment, object>>[]>())).ReturnsAsync(new Comment());
+
+            var result = await commentService.UpdateCommentAsync(new UpdateCommentDTO());
+
+            result.Should().BeOfType<CommentDTO>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateCommentAsync_CommentNotUpdated_ThrowArgumentException([Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentService)
+        {
+            mockUnitOfWork.Setup(m => m.CommentRepository.UpdateAsync(It.IsAny<Comment>(),
+                It.IsAny<Expression<Func<Comment, object>>[]>())).ReturnsAsync(()=> { return null; });
+
+            Exception result = await Record.ExceptionAsync(() => commentService.UpdateCommentAsync(new UpdateCommentDTO()));
+
+            result.Should().BeOfType<ArgumentException>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateCommentAsync_CommentNotExist_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWork, CommentService commentService)
+        {
+
+            mockUnitOfWork.Setup(m => m.CommentRepository.GetAsync(
+                It.IsAny<Expression<Func<Comment, bool>>>())).ReturnsAsync(()=> { return null; });
+
+            mockUnitOfWork.Setup(m => m.CommentRepository.UpdateAsync(It.IsAny<Comment>(),
+                It.IsAny<Expression<Func<Comment, object>>[]>())).ThrowsAsync(new DbUpdateException());
+
+            Exception result = await Record.ExceptionAsync(() => commentService.UpdateCommentAsync(new UpdateCommentDTO()));
+
+            result.Should().BeOfType<KeyNotFoundException>();
         }
     }
 }

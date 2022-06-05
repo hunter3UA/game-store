@@ -50,5 +50,31 @@ namespace GameStore.Tests.Controllers
             result.Should().BeOfType<JsonResult>();
         }
 
+        [Theory,AutoDomainData]
+        public async Task RemoveCommentAsync_CommentIsDeleted_ReturnOkResult([NoAutoProperties]CommentsController commentController)
+        {
+            var result = await commentController.RemoveCommentAsync(1);
+
+            result.Should().BeOfType<OkResult>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateCommentAsync_CommentIsUpdated_ReturnJsonResult([Frozen] Mock<ICommentService> mockCommentService, [NoAutoProperties] CommentsController commentController)
+        {
+            mockCommentService.Setup(m => m.UpdateCommentAsync(It.IsAny<UpdateCommentDTO>())).ReturnsAsync(new CommentDTO());
+
+            var result = await commentController.UpdateCommentAsync(new UpdateCommentDTO());
+
+            result.Should().BeOfType<JsonResult>();
+        }
+
+        [Theory, AutoDomainData]
+        public void RemoveComment_UserIsBanned_ReturnOkResult([NoAutoProperties] CommentsController commentController)
+        {
+            var result = commentController.BanUser();
+
+            result.Should().BeOfType<OkResult>();
+        }
+
     }
 }

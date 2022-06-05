@@ -37,7 +37,6 @@ namespace GameStore.DAL.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Game>(GamesConfigure);
-            modelBuilder.Entity<Comment>().HasQueryFilter(c => !c.IsDeleted);
             modelBuilder.Entity<Genre>().HasQueryFilter(g => !g.IsDeleted);
             modelBuilder.Entity<PlatformType>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Publisher>().HasQueryFilter(p => !p.IsDeleted);

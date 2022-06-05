@@ -10,10 +10,12 @@ namespace GameStore.API.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly ICommentService _commentService;
+        private readonly IUserService _userService;
 
-        public CommentsController(ICommentService commentService)
+        public CommentsController(ICommentService commentService,IUserService userService)
         {
             _commentService = commentService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -32,6 +34,33 @@ namespace GameStore.API.Controllers
             var commentsByGameKey = await _commentService.GetListOfCommentsAsync(gameKey);
 
             return new JsonResult(commentsByGameKey);
+        }
+
+        [HttpPut]
+        [Route("comments/update")]
+        public async Task<IActionResult> UpdateCommentAsync([FromBody] UpdateCommentDTO updateCommentDTO)
+        {
+            var updatedComment = await _commentService.UpdateCommentAsync(updateCommentDTO);
+
+            return new JsonResult(updatedComment);
+        }
+
+        [HttpDelete]
+        [Route("comments/remove/{id}")]
+        public async Task<IActionResult> RemoveCommentAsync([FromRoute] int id)
+        {
+            await _commentService.RemoveCommentAsync(id);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("/comments/ban")]
+        public IActionResult BanUser()
+        {
+            _userService.BanUser();
+
+            return Ok();
         }
     }
 }
