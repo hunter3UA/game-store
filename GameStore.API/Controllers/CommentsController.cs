@@ -53,14 +53,5 @@ namespace GameStore.API.Controllers
 
             return Ok();
         }
-
-        [HttpDelete]
-        [Route("/comments/ban")]
-        public IActionResult BanUser()
-        {
-            _userService.BanUser();
-
-            return Ok();
-        }
     }
 }

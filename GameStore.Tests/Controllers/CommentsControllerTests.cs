@@ -68,13 +68,6 @@ namespace GameStore.Tests.Controllers
             result.Should().BeOfType<JsonResult>();
         }
 
-        [Theory, AutoDomainData]
-        public void RemoveComment_UserIsBanned_ReturnOkResult([NoAutoProperties] CommentsController commentController)
-        {
-            var result = commentController.BanUser();
-
-            result.Should().BeOfType<OkResult>();
-        }
-
+       
     }
 }
