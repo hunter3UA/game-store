@@ -73,8 +73,11 @@ namespace GameStore.DAL.Context
         private void Initialize(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Publisher>().HasData(
-              new Publisher { Id = 1, CompanyName = "DeepSiler", Description = "Desc of Publisher 1 ", HomePage = "Home" },
-              new Publisher { Id = 2, CompanyName = "GSC", Description = "Desc of Publisher 2 ", HomePage = "Home2" });
+                new Publisher { Id = 1, CompanyName = "DeepSiler", Description = "Desc of Publisher 1 ", HomePage = "Home" },
+                new Publisher { Id = 2, CompanyName = "GSC", Description = "Desc of Publisher 2 ", HomePage = "Home2" },
+                new Publisher { Id = 3, CompanyName = "Activision", Description = "Desc of Activision", HomePage = "Activision page" },
+                new Publisher { Id = 4, CompanyName = "Firaxis", Description = "Desc of Firaxis", HomePage = "Firaxis page" },
+                new Publisher { Id = 5, CompanyName = "Bohemia Interactive", Description = "Desc of bohemia", HomePage = "Bohemia page" });
             modelBuilder.Entity<Genre>().HasData(
                 new Genre { Id = 1, Name = "Strategy" },
                 new Genre { Id = 2, Name = "RTS", ParentGenreId = 1 },
@@ -100,16 +103,46 @@ namespace GameStore.DAL.Context
             modelBuilder.Entity<Game>().HasData(
                 new Game { Id = 1, Name = "Stalker2", Key = "stalker-2", Description = "New part of Stalker", PublisherId = 2, UnitsInStock = 10, Price = 70 },
                 new Game { Id = 2, Name = "Dying light", Key = "dying-light", Description = "Best part", PublisherId = 1, UnitsInStock = 0, Price = 50 },
-                new Game { Id = 3, Name = "Left 4 Dead", Key = "left-4-dead", Description = "Action ", PublisherId = 2, UnitsInStock = 3, Price = 100 });
+                new Game { Id = 3, Name = "Left 4 Dead", Key = "left-4-dead", Description = "Action ", PublisherId = 2, UnitsInStock = 3, Price = 100 },
+                new Game { Id = 4, Name = "Call of Duty:MV", Key = "call-of-duty-mv", Description = "Description of cmv", PublisherId = 3, UnitsInStock = 5, Price = 30 },
+                new Game { Id = 5, Name = "Sid Meier`s Civilization VI", Key = "civiization-VI", Description = "Description of civ", PublisherId = 4, UnitsInStock = 5, Price = 60 },
+                new Game { Id = 6, Name = "Arma 3", Key = "arma-3", Description = "Description of arma", PublisherId = 5, UnitsInStock = 5, Price = 80 },
+                new Game { Id = 7, Name = "Need for speed", Key = "nfs", Description = "Description of nfs", PublisherId = 2, UnitsInStock = 5, Price = 100 },
+                new Game { Id = 8, Name = "Serious Sam 4", Key = "serious-sam-4", Description = "Description of Sam", PublisherId = 3, UnitsInStock = 5, Price = 45 },
+                new Game { Id = 9, Name = "Sea of Thieves", Key = "sea-of-thieves", Description = "Description of Sea", PublisherId = 2, UnitsInStock = 5, Price = 90 },
+                new Game { Id = 10, Name = "Battlefield 4", Key = "battlefield-4", Description = "Description of Battlefield", PublisherId = 4, UnitsInStock = 5, Price = 100 },
+                new Game { Id = 11, Name = "Mass effect 1", Key = "mass-effect-1", Description = "Description of Mass effect 1", PublisherId = 1, UnitsInStock = 5, Price = 50 },
+                new Game { Id = 12, Name = "Command and conqurer", Key = "command-and-conqurer", Description = "Description of Command and conqurer", PublisherId = 3, UnitsInStock = 5, Price = 150 }
+                );
             modelBuilder.Entity<GenresInGames>().HasData(
                 new GenresInGames { GameId = 1, GenreId = 1 },
                 new GenresInGames { GameId = 2, GenreId = 3 },
-                new GenresInGames { GameId = 3, GenreId = 5 });
+                new GenresInGames { GameId = 3, GenreId = 5 },
+                new GenresInGames { GameId = 4, GenreId = 11 },
+                new GenresInGames { GameId = 5, GenreId = 3 },
+                new GenresInGames { GameId = 6, GenreId = 11 },
+                new GenresInGames { GameId = 7, GenreId = 6 },
+                new GenresInGames { GameId = 8, GenreId = 12 },
+                new GenresInGames { GameId = 9, GenreId = 14 },
+                new GenresInGames { GameId = 10, GenreId = 7 },
+                new GenresInGames { GameId = 11, GenreId = 8 },           
+                new GenresInGames { GameId = 12, GenreId = 8 }       
+                );
             modelBuilder.Entity<PlatformsInGames>().HasData(
                 new PlatformsInGames { GameId = 1, PlatformTypeId = 1 },
                 new PlatformsInGames { GameId = 1, PlatformTypeId = 2 },
                 new PlatformsInGames { GameId = 2, PlatformTypeId = 2 },
-                new PlatformsInGames { GameId = 3, PlatformTypeId = 4 });
+                new PlatformsInGames { GameId = 3, PlatformTypeId = 4 },
+                new PlatformsInGames { GameId = 4, PlatformTypeId = 3 },
+                new PlatformsInGames { GameId = 5, PlatformTypeId = 3 },
+                new PlatformsInGames { GameId = 6, PlatformTypeId = 3 },
+                new PlatformsInGames { GameId = 7, PlatformTypeId = 1 },          
+                new PlatformsInGames { GameId = 8, PlatformTypeId = 4 },              
+                new PlatformsInGames { GameId = 9, PlatformTypeId = 4 },
+                new PlatformsInGames { GameId = 10, PlatformTypeId = 2 },
+                new PlatformsInGames { GameId = 11, PlatformTypeId = 1 },           
+                new PlatformsInGames { GameId = 12, PlatformTypeId = 2 }           
+                );              
             modelBuilder.Entity<Comment>().HasData(
                 new Comment { Id = 1, Name = "Oleksandr", Body = "This is my favourite game", GameId = 1, },
                 new Comment { Id = 2, Name = "Oleg", Body = "And my too", GameId = 1, ParentCommentId = 1 });

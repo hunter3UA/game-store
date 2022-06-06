@@ -41,5 +41,15 @@ namespace GameStore.DAL.Entities
 
         [ForeignKey("PublisherId")]
         public Publisher Publisher { get; set; }
+        
+        [Required,DefaultValue(0)]
+        public int NumberOfViews { get; set; }
+
+        public DateTime AddedAt { get; set; }
+
+        public Game()
+        {
+            AddedAt = DateTime.UtcNow;
+        }
     }
 }

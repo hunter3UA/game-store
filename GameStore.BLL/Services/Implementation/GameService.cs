@@ -52,7 +52,15 @@ namespace GameStore.BLL.Services.Implementation
         {
             Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres, pub => pub.Publisher);
 
-            return searchedGame != null ? _mapper.Map<GameDTO>(searchedGame) : throw new KeyNotFoundException();
+            if (searchedGame != null)
+            {
+                searchedGame.NumberOfViews += 1;
+                await _unitOfWork.SaveAsync();
+            }
+            else
+                throw new KeyNotFoundException();
+
+            return _mapper.Map<GameDTO>(searchedGame);
         }
 
         public async Task<bool> RemoveGameAsync(int id)

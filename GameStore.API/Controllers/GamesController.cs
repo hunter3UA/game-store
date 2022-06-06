@@ -39,6 +39,7 @@ namespace GameStore.API.Controllers
         [Route("{key}")]
         public async Task<IActionResult> GetGameAsync([FromRoute] string key)
         {
+            //TODO:Change adding views
             var gameByKey = await _gameService.GetGameAsync(key);
 
             return new JsonResult(gameByKey);
