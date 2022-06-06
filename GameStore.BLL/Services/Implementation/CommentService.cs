@@ -49,7 +49,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             Comment commentById = await _unitOfWork.CommentRepository.GetAsync(c => c.Id == updateCommentDTO.Id && !c.IsDeleted);
 
-            if (commentById == null || commentById.IsDeleted)
+            if (commentById == null)
                 throw new KeyNotFoundException($"Comment with id {updateCommentDTO.Id} not found");
 
             Comment mappedComment = _mapper.Map<Comment>(updateCommentDTO);
