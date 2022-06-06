@@ -45,6 +45,25 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<List<CommentDTO>>(commentsByGameKey);
         }
 
+        public async Task<CommentDTO> UpdateCommentAsync(UpdateCommentDTO updateCommentDTO)
+        {
+            Comment commentById = await _unitOfWork.CommentRepository.GetAsync(c => c.Id == updateCommentDTO.Id && !c.IsDeleted);
+
+            if (commentById == null)
+                throw new KeyNotFoundException($"Comment with id {updateCommentDTO.Id} not found");
+
+            Comment mappedComment = _mapper.Map<Comment>(updateCommentDTO);
+            Comment updatedComment = await _unitOfWork.CommentRepository.UpdateAsync(mappedComment);
+            await _unitOfWork.SaveAsync();
+
+            if (updatedComment != null)
+                _logger.LogInformation($"Comment with Id {updatedComment.Id} has been updated");
+            else
+                throw new ArgumentException("Comment can not be updated");
+
+            return _mapper.Map<CommentDTO>(updatedComment);
+        }
+
         public async Task<bool> RemoveCommentAsync(int id)
         {
             bool isRemovedComment = await _unitOfWork.CommentRepository.RemoveAsync(c => c.Id == id);
@@ -53,7 +72,7 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedComment)
                 _logger.LogInformation($"Comment with Id {id} has been deleted");
             else
-                throw new ArgumentException("Comment can not deleted");            
+                throw new ArgumentException("Comment can not deleted");
 
             return isRemovedComment;
         }

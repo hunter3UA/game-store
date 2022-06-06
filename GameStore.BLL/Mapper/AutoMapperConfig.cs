@@ -23,6 +23,7 @@ namespace GameStore.BLL.Mapper
 
             CreateMap<AddCommentDTO, Comment>();
             CreateMap<Comment, CommentDTO>();
+            CreateMap<UpdateCommentDTO, Comment>();
 
             CreateMap<PlatformType, PlatformTypeDTO>();
             CreateMap<AddPlatformTypeDTO, PlatformType>();
