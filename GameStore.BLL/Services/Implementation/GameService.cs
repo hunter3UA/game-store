@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Game;
+using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
@@ -48,19 +49,53 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<List<GameDTO>>(allGames);
         }
 
-        public async Task<GameDTO> GetGameAsync(string gameKey)
+        public async Task<GamePageDTO> GetRangeOfGamesAsync(GameFilterDTO gameFilterDTO)
+        {
+            List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p => p.PlatformTypes, pb => pb.Publisher);
+
+            if (!string.IsNullOrEmpty(gameFilterDTO.Name))
+                allGames = allGames.Where(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower())).ToList();
+
+            if (gameFilterDTO.Genres != null)
+            {
+                gameFilterDTO.Genres = await GetAllGenresByFilter(gameFilterDTO.Genres);
+                allGames = allGames.Where(g => g.Genres.Any(gf => gameFilterDTO.Genres.Any(filter => filter == gf.Id))).ToList();
+            }
+
+            if (gameFilterDTO.Platforms != null)
+                allGames = allGames.Where(g => g.PlatformTypes.Any(gf => gameFilterDTO.Platforms.Any(filter => filter == gf.Id))).ToList();
+
+            if (gameFilterDTO.Publishers != null)
+                allGames = allGames.Where(g => gameFilterDTO.Publishers.Contains((int)g.PublisherId)).ToList();
+
+            if (gameFilterDTO.MinPrice != null)
+                allGames = allGames.Where(g => g.Price >= gameFilterDTO.MinPrice).ToList();
+
+            if (gameFilterDTO.MaxPrice != null)
+                allGames = allGames.Where(g => g.Price <= gameFilterDTO.MaxPrice).ToList();
+
+            if (gameFilterDTO.SortingType != null)
+                allGames = Sort(gameFilterDTO.SortingType, allGames);
+
+            if (gameFilterDTO.PublishingDate != null)
+                allGames = DateFilter(gameFilterDTO.PublishingDate, allGames);
+
+            GamePageDTO gamePage = GetGamePage(allGames, gameFilterDTO);
+
+            return gamePage;
+        }
+
+        public async Task<GameDTO> GetGameAsync(string gameKey, bool isView)
         {
             Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres, pub => pub.Publisher);
 
-            if (searchedGame != null)
+            if (searchedGame != null && isView)
             {
                 searchedGame.NumberOfViews += 1;
                 await _unitOfWork.SaveAsync();
             }
-            else
-                throw new KeyNotFoundException();
 
-            return _mapper.Map<GameDTO>(searchedGame);
+            return searchedGame != null ? _mapper.Map<GameDTO>(searchedGame) : throw new KeyNotFoundException();
         }
 
         public async Task<bool> RemoveGameAsync(int id)
@@ -100,6 +135,104 @@ namespace GameStore.BLL.Services.Implementation
         {
             var key = name.Trim().ToLower().Replace(" ", "-");
             return key;
+        } 
+
+        private GamePageDTO GetGamePage(List<Game> filteredGames, GameFilterDTO gameFilterDTO)
+        {
+            List<Game> gamesByPage = filteredGames.Skip((gameFilterDTO.CurrentPageNumber - 1) * gameFilterDTO.ElementsOnPage).Take(gameFilterDTO.ElementsOnPage).ToList();
+
+            GamePageDTO gamePage = new GamePageDTO
+            {
+                Games = _mapper.Map<List<GameDTO>>(gamesByPage),
+                PageInfo = new PageInfoDTO() { ElementsOnPage = gameFilterDTO.ElementsOnPage, CurrentPageNumber = gameFilterDTO.CurrentPageNumber, TotalItems = filteredGames.Count() }
+            };
+
+            return gamePage;
+        }
+
+        private async Task<List<int>> GetAllGenresByFilter(List<int> defaultGenres)
+        {
+            List<int> resultGenres = new List<int>();
+            foreach (var genre in defaultGenres)
+            {
+                Genre byId = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == genre, g => g.SubGenres);
+                if (!resultGenres.Any(res => res == byId.Id))
+                    resultGenres.Add(byId.Id);
+
+                if (byId.SubGenres.Any())
+                {
+                    var result = await GetAllGenresByFilter(byId.SubGenres.Select(g => g.Id).ToList());
+                    resultGenres.AddRange(result);
+                }
+            }
+            return resultGenres;
+        }
+
+        private List<Game> Sort(SortingType? sortingType, List<Game> gamesList)
+        {
+            switch (sortingType)
+            {
+                case SortingType.Popularity:
+                    {
+                        gamesList = gamesList.OrderByDescending(g => g.NumberOfViews).ToList();
+                        break;
+                    }
+                case SortingType.Commented:
+                    {
+                        gamesList = gamesList.OrderByDescending(g => g.Comments.Where(c => !c.IsDeleted).Count()).ToList();
+                        break;
+                    }
+                case SortingType.PriceAsc:
+                    {
+                        gamesList = gamesList.OrderBy(g => g.Price).ToList();
+                        break;
+                    }
+                case SortingType.PriceDesc:
+                    {
+                        gamesList = gamesList.OrderByDescending(g => g.Price).ToList();
+                        break;
+                    }
+                case SortingType.Publishing:
+                    {
+                        gamesList = gamesList.OrderBy(g => g.AddedAt).ToList();
+                        break;
+                    }
+            }
+
+            return gamesList;
+        }
+
+        private List<Game> DateFilter(PublishingDate? publishingDate, List<Game> gameList)
+        {
+            switch (publishingDate)
+            {
+                case PublishingDate.Week:
+                    {
+                        gameList = gameList.Where(g => g.AddedAt > DateTime.UtcNow.AddDays(-7)).ToList();
+                        break;
+                    }
+                case PublishingDate.Month:
+                    {
+                        gameList = gameList.Where(g => g.AddedAt > DateTime.UtcNow.AddMonths(-1)).ToList();
+                        break;
+                    }
+                case PublishingDate.Year:
+                    {
+                        gameList = gameList.Where(g => g.AddedAt > DateTime.UtcNow.AddYears(-1)).ToList();
+                        break;
+                    }
+                case PublishingDate.TwoYears:
+                    {
+                        gameList = gameList.Where(g => g.AddedAt > DateTime.UtcNow.AddYears(-2)).ToList();
+                        break;
+                    }
+                case PublishingDate.ThreeYears:
+                    {
+                        gameList = gameList.Where(g => g.AddedAt > DateTime.UtcNow.AddYears(-3)).ToList();
+                        break;
+                    }
+            }
+            return gameList;
         }
     }
 }

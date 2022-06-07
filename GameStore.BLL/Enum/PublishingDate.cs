@@ -2,7 +2,7 @@
 {
     public enum PublishingDate
     {
-        Week=1,
+        Week = 1,
         Month,
         Year,
         TwoYears,

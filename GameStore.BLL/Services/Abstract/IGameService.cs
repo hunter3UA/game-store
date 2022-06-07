@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Game;
 
 namespace GameStore.BLL.Services.Abstract
@@ -11,10 +10,12 @@ namespace GameStore.BLL.Services.Abstract
         
         Task<List<GameDTO>> GetListOfGamesAsync();
 
-        Task<GameDTO> GetGameAsync(string gameKey);
+        Task<GameDTO> GetGameAsync(string gameKey,bool isView);
 
         Task<bool> RemoveGameAsync(int id);
 
-        Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO); 
+        Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO);
+
+        Task<GamePageDTO> GetRangeOfGamesAsync(GameFilterDTO gameFilterDTO);
     }
 }

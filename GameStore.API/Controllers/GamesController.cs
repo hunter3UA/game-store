@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
@@ -36,11 +37,19 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        [Route("{key}")]
-        public async Task<IActionResult> GetGameAsync([FromRoute] string key)
+        [Route("range")]
+        public async Task<IActionResult> GetRangeOfGamesAsync([FromQuery] GameFilterDTO gameFilterDTO)
         {
-            //TODO:Change adding views
-            var gameByKey = await _gameService.GetGameAsync(key);
+            var listOfGames = await _gameService.GetRangeOfGamesAsync(gameFilterDTO);
+
+            return new JsonResult(listOfGames);
+        }
+
+        [HttpGet]
+        [Route("{key}")]
+        public async Task<IActionResult> GetGameAsync([FromRoute] string key,[FromQuery] bool isView)
+        {    
+            var gameByKey = await _gameService.GetGameAsync(key,isView);
 
             return new JsonResult(gameByKey);
         }
@@ -63,14 +72,14 @@ namespace GameStore.API.Controllers
             return Ok();
         }
 
-        [HttpGet]
-        [Route("{gameKey}/download")]
-        [ResponseCache(CacheProfileName = Constants.CachingProfileName)]
-        public IActionResult DownloadGameFile([FromRoute] string gameKey)
-        {
-            string path = Directory.GetCurrentDirectory();
+        //[HttpGet]
+        //[Route("{gameKey}/download")]
+        //[ResponseCache(CacheProfileName = Constants.CachingProfileName)]
+        //public IActionResult DownloadGameFile([FromRoute] string gameKey)
+        //{
+        //    string path = Directory.GetCurrentDirectory();
 
-            return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TextPlainContentType, Constants.GameFileName);
-        }
+        //    return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TextPlainContentType, Constants.GameFileName);
+        //}
     }
 }
