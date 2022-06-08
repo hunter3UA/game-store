@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GameStore.DAL.Entities;
@@ -8,6 +9,7 @@ using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Linq.Dynamic.Core;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
@@ -52,6 +54,23 @@ namespace GameStore.DAL.Repositories.Implementation
             var rangeOfEntities = await query.Where(predicate).ToListAsync();
 
             return rangeOfEntities;
+        }
+
+        public async Task<List<TEntity>> GetFilteredList(List<Expression<Func<TEntity,bool>>> filters,int skip, int take,bool desc,Expression<Func<TEntity,object>> order, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = Include(includeProperties);
+            foreach(var filter in filters)
+            {
+                query = query.Where(filter);
+            }
+
+            List<TEntity> filteredList = new List<TEntity>();
+            if (order == null)
+                filteredList = await query.Skip(skip).Take(take).ToListAsync();
+            else
+                filteredList = !desc ? await query.OrderByDescending(order).Skip(skip).Take(take).ToListAsync() : await query.OrderBy(order).Skip(skip).Take(take).ToListAsync();
+
+            return filteredList;
         }
 
         public async Task<bool> RemoveAsync(Expression<Func<TEntity, bool>> predicate)

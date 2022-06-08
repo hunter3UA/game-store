@@ -19,9 +19,9 @@ namespace GameStore.BLL.DTO.Game
 
         public int? MaxPrice { get; set; }
 
-        public int CurrentPageNumber { get; set; }
+        public int Page { get; set; } = 1;
 
-        public int ElementsOnPage { get; set; }
+        public int ElementsOnPage { get; set; } = 10;
 
         public SortingType? SortingType { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameStore.BLL.DTO.Game
+namespace GameStore.BLL.DTO.Common
 {
     public class PageInfoDTO
     {
@@ -14,5 +14,6 @@ namespace GameStore.BLL.DTO.Game
         {
             get { return (int)Math.Ceiling((decimal)TotalItems / ElementsOnPage); }
         }
+
     }
 }

@@ -29,15 +29,6 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListOfGamesAsync()
-        {
-            var listOfGames = await _gameService.GetListOfGamesAsync();
-
-            return new JsonResult(listOfGames);
-        }
-
-        [HttpGet]
-        [Route("range")]
         public async Task<IActionResult> GetRangeOfGamesAsync([FromQuery] GameFilterDTO gameFilterDTO)
         {
             var listOfGames = await _gameService.GetRangeOfGamesAsync(gameFilterDTO);
@@ -72,14 +63,14 @@ namespace GameStore.API.Controllers
             return Ok();
         }
 
-        //[HttpGet]
-        //[Route("{gameKey}/download")]
-        //[ResponseCache(CacheProfileName = Constants.CachingProfileName)]
-        //public IActionResult DownloadGameFile([FromRoute] string gameKey)
-        //{
-        //    string path = Directory.GetCurrentDirectory();
+        [HttpGet]
+        [Route("{gameKey}/download")]
+        [ResponseCache(CacheProfileName = Constants.CachingProfileName)]
+        public IActionResult DownloadGameFile([FromRoute] string gameKey)
+        {
+            string path = Directory.GetCurrentDirectory();
 
-        //    return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TextPlainContentType, Constants.GameFileName);
-        //}
+            return PhysicalFile($"{path}\\wwwroot\\Game.txt", Constants.TextPlainContentType, Constants.GameFileName);
+        }
     }
 }
