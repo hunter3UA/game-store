@@ -22,6 +22,7 @@ namespace GameStore.BLL.DTO.Game
         public int Page { get; set; } = 1;
 
         public int ElementsOnPage { get; set; } = 10;
+       
 
         public SortingType? SortingType { get; set; }
 

@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
+using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
-using GameStore.BLL.Services.Implementation;
+using GameStore.BLL.Services.Implementation.Games;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
@@ -44,12 +45,34 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService gameService)
         {
-      
+
             mockUnitOfWork.Setup(m => m.GameRepository.AddAsync(It.IsAny<Game>())).ThrowsAsync(new DbUpdateException());
 
             Exception shouldBeNotNull = await Record.ExceptionAsync(() => gameService.AddGameAsync(new AddGameDTO()));
 
             shouldBeNotNull.Should().BeOfType<DbUpdateException>();
+        }
+
+
+        [Theory, AutoDomainData]
+        public async Task GetRangeOfGamesAsync_GivenValidFilter_ReturnListOfGames([Frozen] Mock<IUnitOfWork> mockUnitOfWork,List<Game> testList, GameService gameService)
+        {
+            mockUnitOfWork.Setup(m => m.GameRepository.CountListAsync(It.IsAny<List<Expression<Func<Game, bool>>>>())).ReturnsAsync(3);
+
+            var result = await gameService.GetRangeOfGamesAsync(new GameFilterDTO { ElementsOnPage = 10 });
+
+            result.Should().BeOfType<ItemPageDTO<GameDTO>>();
+            result.PageInfo.TotalPages.Should().Be(1);
+        }
+
+        [Theory, AutoDomainData]
+        public async Task GetCountAsync_RequestedListExist_ReturnNumberOfElements([Frozen] Mock<IUnitOfWork> mockUnitOfWork, GameService gameService)
+        {
+            mockUnitOfWork.Setup(m => m.GameRepository.CountListAsync(It.IsAny<List<Expression<Func<Game, bool>>>>())).ReturnsAsync(3);
+
+            var result = await gameService.GetCountAsync();
+
+            result.Should().Be(3);
         }
 
         [Theory, AutoDomainData]
@@ -76,7 +99,7 @@ namespace GameStore.Tests.Services
                 It.IsAny<Expression<Func<Game, bool>>>(),
                 It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(game);
 
-            var actualGame = await gameService.GetGameAsync(key);
+            var actualGame = await gameService.GetGameAsync(key, false);
 
             Assert.Equal(key, actualGame.Key);
         }
@@ -90,7 +113,7 @@ namespace GameStore.Tests.Services
                 It.IsAny<Expression<Func<Game, bool>>>(),
                 It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() => { return null; });
 
-            Exception result = await Record.ExceptionAsync(() => gameService.GetGameAsync("key"));
+            Exception result = await Record.ExceptionAsync(() => gameService.GetGameAsync("key", false));
 
             result.Should().BeOfType<KeyNotFoundException>();
         }
@@ -142,7 +165,7 @@ namespace GameStore.Tests.Services
         {
             mockUnitOfWork.Setup(m => m.GameRepository.UpdateAsync(
                 It.IsAny<Game>(),
-                It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(()=> { return null; });
+                It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() => { return null; });
 
             var result = await Record.ExceptionAsync(() => gameService.UpdateGameAsync(new UpdateGameDTO()));
 

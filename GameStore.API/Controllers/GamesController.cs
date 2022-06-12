@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
-using GameStore.BLL.Services.Abstract;
+using GameStore.BLL.Services.Abstract.Games;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -29,6 +28,15 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
+        [Route("count")]
+        public async Task<IActionResult> GetCountAsync()
+        {
+            var countOfGames = await _gameService.GetCountAsync();
+
+            return Ok(countOfGames);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetRangeOfGamesAsync([FromQuery] GameFilterDTO gameFilterDTO)
         {
             var listOfGames = await _gameService.GetRangeOfGamesAsync(gameFilterDTO);
@@ -38,9 +46,9 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{key}")]
-        public async Task<IActionResult> GetGameAsync([FromRoute] string key,[FromQuery] bool isView)
-        {    
-            var gameByKey = await _gameService.GetGameAsync(key,isView);
+        public async Task<IActionResult> GetGameAsync([FromRoute] string key, [FromQuery] bool isView)
+        {
+            var gameByKey = await _gameService.GetGameAsync(key, isView);
 
             return new JsonResult(gameByKey);
         }

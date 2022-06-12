@@ -1,24 +1,21 @@
-﻿using AutoMapper;
-using GameStore.BLL.DTO.Common;
-using GameStore.BLL.DTO.Game;
-using GameStore.BLL.Enum;
-using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Entities;
-using GameStore.DAL.UoW.Abstract;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using GameStore.BLL.DTO.Game;
+using GameStore.BLL.Enum;
+using GameStore.BLL.Services.Abstract.Games;
+using GameStore.DAL.Entities;
+using GameStore.DAL.UoW.Abstract;
 
-namespace GameStore.BLL.Services.Implementation
+namespace GameStore.BLL.Services.Implementation.Games
 {
-    public class GameFilterService:IGameFilterService
+    public class GameFilterService : IGameFilterService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public GameFilterService(IUnitOfWork unitOfWork,IMapper _mapper)
+        public GameFilterService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -27,9 +24,9 @@ namespace GameStore.BLL.Services.Implementation
         {
             List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
 
-            if (!string.IsNullOrEmpty(gameFilterDTO.Name))
+            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length>3)
                 filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
-            
+
             if (gameFilterDTO.Genres != null)
             {
                 gameFilterDTO.Genres = await GetAllGenresByFilter(gameFilterDTO.Genres);
@@ -38,19 +35,19 @@ namespace GameStore.BLL.Services.Implementation
 
             if (gameFilterDTO.Platforms != null)
                 filters.Add(g => g.PlatformTypes.Any(gf => gameFilterDTO.Platforms.Any(filter => filter == gf.Id)));
-            
+
             if (gameFilterDTO.Publishers != null)
                 filters.Add(g => gameFilterDTO.Publishers.Contains((int)g.PublisherId));
-            
+
             if (gameFilterDTO.MinPrice != null)
                 filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
-            
+
             if (gameFilterDTO.MaxPrice != null)
                 filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
-            
-            if (gameFilterDTO.PublishingDate != null)          
+
+            if (gameFilterDTO.PublishingDate != null)
                 filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
-            
+
             return filters;
         }
 
@@ -89,26 +86,12 @@ namespace GameStore.BLL.Services.Implementation
             return expression;
         }
 
-        public ItemPageDTO<GameDTO> GetGamePage(List<Game> filteredGames, GameFilterDTO gameFilterDTO)
-        {
-        
-            List<Game> gamesByPage = filteredGames.Skip(((gameFilterDTO.Page - 1) * gameFilterDTO.ElementsOnPage)).Take(gameFilterDTO.ElementsOnPage).ToList();
-
-            ItemPageDTO<GameDTO> gamePage = new ItemPageDTO<GameDTO>
-            {
-                Items = _mapper.Map<List<GameDTO>>(gamesByPage),
-                PageInfo = new PageInfoDTO() { ElementsOnPage = gameFilterDTO.ElementsOnPage, CurrentPageNumber = gameFilterDTO.Page, TotalItems = filteredGames.Count() }
-            };
-
-            return gamePage;
-        }
-
         private async Task<List<int>> GetAllGenresByFilter(List<int> defaultGenres)
         {
             List<int> resultGenres = new List<int>();
             foreach (var genre in defaultGenres)
             {
-                Genre byId = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == genre, g => g.SubGenres);
+                Genre byId = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == genre && !g.IsDeleted, g => g.SubGenres);
                 if (!resultGenres.Any(res => res == byId.Id))
                     resultGenres.Add(byId.Id);
 
@@ -119,7 +102,7 @@ namespace GameStore.BLL.Services.Implementation
                 }
             }
             return resultGenres;
-        }    
+        }
 
         private Expression<Func<Game, bool>> DateFilter(PublishingDate publishingDate)
         {

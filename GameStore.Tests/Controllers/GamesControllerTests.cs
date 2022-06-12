@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
 using GameStore.API.Controllers;
-using GameStore.BLL.DTO;
+using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
-using GameStore.BLL.Services.Abstract;
+using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Entities;
 using GameStore.Tests.Attributes;
 using Microsoft.AspNetCore.Mvc;
@@ -41,11 +40,19 @@ namespace GameStore.Tests.Controllers
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
         {
-            mockGameService.Setup(m => m.GetListOfGamesAsync()).ReturnsAsync(new List<GameDTO>());
+            mockGameService.Setup(m => m.GetRangeOfGamesAsync(It.IsAny<GameFilterDTO>())).ReturnsAsync(new ItemPageDTO<GameDTO>());
 
-            var result = await gamesController.GetListOfGamesAsync();
+            var result = await gamesController.GetRangeOfGamesAsync(new GameFilterDTO());
 
             result.Should().BeOfType<JsonResult>();
+        }
+
+        [Theory,AutoDomainData]
+        public async Task GetCountAsync_RequestedListExist_ReturnOkResult([NoAutoProperties] GamesController gamesController)
+        {
+            var result = await gamesController.GetCountAsync();
+
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [Theory, AutoDomainData]
@@ -55,13 +62,13 @@ namespace GameStore.Tests.Controllers
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
         {
-            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<string>()))
+            mockGameService.Setup(m => m.GetGameAsync(It.IsAny<string>(),It.IsAny<bool>()))
                 .ReturnsAsync(() =>
                 {
                     return mapper.Map<GameDTO>(game);
                 });
 
-            var result = await gamesController.GetGameAsync(game.Key);
+            var result = await gamesController.GetGameAsync(game.Key,false);
 
             result.Should().BeOfType<JsonResult>();
         }

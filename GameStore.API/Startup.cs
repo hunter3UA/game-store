@@ -17,6 +17,8 @@ using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
 using GameStore.API.Helpers;
 using GameStore.BLL.BackgroundServices;
+using GameStore.BLL.Services.Abstract.Games;
+using GameStore.BLL.Services.Implementation.Games;
 
 namespace GameStore.API
 {
@@ -106,7 +108,7 @@ namespace GameStore.API
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICustomerGenerator, CustomerGenerator>();
             services.AddScoped<IOrderService, OrderService>();
-     //       services.AddHostedService<OrderExpirationService>();
+            services.AddHostedService<OrderExpirationService>();
             services.AddScoped<IPaymentContext, PaymentContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameFilterService, GameFilterService>();

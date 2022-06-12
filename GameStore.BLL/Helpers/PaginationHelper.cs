@@ -1,7 +1,5 @@
 ﻿using GameStore.BLL.DTO.Common;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace GameStore.BLL.Helpers
 {
@@ -22,6 +20,15 @@ namespace GameStore.BLL.Helpers
 
             return itemPageDTO;
 
+        }
+
+        public static int CheckCurrentPage(int currentPage, int elementsOnPage,int totalItemss)
+        {
+            PageInfoDTO pageInfo = new PageInfoDTO { CurrentPageNumber = currentPage, ElementsOnPage = elementsOnPage, TotalItems = totalItemss };
+
+            currentPage = currentPage > pageInfo.TotalPages || currentPage <= 0 ? 1 : currentPage;
+
+            return currentPage;
         }
     }
 }

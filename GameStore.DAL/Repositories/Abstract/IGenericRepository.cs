@@ -21,5 +21,6 @@ namespace GameStore.DAL.Repositories.Abstract
 
         Task<List<TEntity>> GetFilteredList(List<Expression<Func<TEntity, bool>>> filters, int skip, int take, bool desc, Expression<Func<TEntity, object>> order, params Expression<Func<TEntity, object>>[] includeProperties);
 
+        Task<int> CountListAsync(List<Expression<Func<TEntity, bool>>> filters);
     }
 }

@@ -56,15 +56,34 @@ namespace GameStore.DAL.Repositories.Implementation
             return rangeOfEntities;
         }
 
-        public async Task<List<TEntity>> GetFilteredList(List<Expression<Func<TEntity,bool>>> filters,int skip, int take,bool desc,Expression<Func<TEntity,object>> order, params Expression<Func<TEntity, object>>[] includeProperties)
+        public async Task<int> CountListAsync(List<Expression<Func<TEntity, bool>>> filters)
+        {
+            IQueryable<TEntity> query = _dbSet;
+            foreach (var filter in filters)
+            {
+                query = query.Where(filter);
+            }
+
+            int count = await query.CountAsync();
+
+            return count;
+        }
+
+        public async Task<List<TEntity>> GetFilteredList(List<Expression<Func<TEntity, bool>>> filters,
+            int skip,
+            int take,
+            bool desc,
+            Expression<Func<TEntity, object>> order,
+            params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
-            foreach(var filter in filters)
+            foreach (var filter in filters)
             {
                 query = query.Where(filter);
             }
 
             List<TEntity> filteredList = new List<TEntity>();
+
             if (order == null)
                 filteredList = await query.Skip(skip).Take(take).ToListAsync();
             else
