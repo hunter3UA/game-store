@@ -4,14 +4,16 @@ using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220606170859_ViwesOfGame")]
+    partial class ViwesOfGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,9 +88,6 @@ namespace GameStore.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("AddedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(5000)
@@ -138,7 +137,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(2470),
                             Description = "New part of Stalker",
                             Discontinued = false,
                             IsDeleted = false,
@@ -152,7 +150,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3655),
                             Description = "Best part",
                             Discontinued = false,
                             IsDeleted = false,
@@ -166,7 +163,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 3,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3713),
                             Description = "Action ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -180,7 +176,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 4,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3715),
                             Description = "Description of cmv",
                             Discontinued = false,
                             IsDeleted = false,
@@ -194,7 +189,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 5,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3716),
                             Description = "Description of civ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -208,7 +202,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 6,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3717),
                             Description = "Description of arma",
                             Discontinued = false,
                             IsDeleted = false,
@@ -222,7 +215,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3718),
                             Description = "Description of nfs",
                             Discontinued = false,
                             IsDeleted = false,
@@ -236,7 +228,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 8,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3720),
                             Description = "Description of Sam",
                             Discontinued = false,
                             IsDeleted = false,
@@ -250,7 +241,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 9,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3721),
                             Description = "Description of Sea",
                             Discontinued = false,
                             IsDeleted = false,
@@ -264,7 +254,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 10,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3724),
                             Description = "Description of Battlefield",
                             Discontinued = false,
                             IsDeleted = false,
@@ -278,7 +267,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 11,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3725),
                             Description = "Description of Mass effect 1",
                             Discontinued = false,
                             IsDeleted = false,
@@ -292,7 +280,6 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 12,
-                            AddedAt = new DateTime(2022, 6, 6, 17, 23, 13, 625, DateTimeKind.Utc).AddTicks(3726),
                             Description = "Description of Command and conqurer",
                             Discontinued = false,
                             IsDeleted = false,
