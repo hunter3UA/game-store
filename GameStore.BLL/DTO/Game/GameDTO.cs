@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.DTO.Publisher;
 
@@ -25,5 +26,7 @@ namespace GameStore.BLL.DTO.Game
         public bool Discontinued { get; set; }
 
         public short UnitsInStock { get; set; }
+
+        public DateTime PublishedAt { get; set; }
     }
 }

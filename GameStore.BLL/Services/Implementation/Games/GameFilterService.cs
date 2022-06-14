@@ -24,7 +24,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         {
             List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
 
-            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length>3)
+            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length>=3)
                 filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
 
             if (gameFilterDTO.Genres != null)
@@ -92,10 +92,10 @@ namespace GameStore.BLL.Services.Implementation.Games
             foreach (var genre in defaultGenres)
             {
                 Genre byId = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == genre && !g.IsDeleted, g => g.SubGenres);
-                if (!resultGenres.Any(res => res == byId.Id))
+                if (byId!=null && !resultGenres.Any(res => res == byId.Id))
                     resultGenres.Add(byId.Id);
 
-                if (byId.SubGenres.Any())
+                if (byId!=null && byId.SubGenres.Any())
                 {
                     var result = await GetAllGenresByFilter(byId.SubGenres.Select(g => g.Id).ToList());
                     resultGenres.AddRange(result);
@@ -111,27 +111,27 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 case PublishingDate.Week:
                     {
-                        filter = g => g.AddedAt > DateTime.UtcNow.AddDays(-7);
+                        filter = g => g.PublishedAt > DateTime.UtcNow.AddDays(-7);
                         return filter;
                     }
                 case PublishingDate.Month:
                     {
-                        filter = g => g.AddedAt > DateTime.UtcNow.AddMonths(-1);
+                        filter = g => g.PublishedAt > DateTime.UtcNow.AddMonths(-1);
                         return filter;
                     }
                 case PublishingDate.Year:
                     {
-                        filter = g => g.AddedAt > DateTime.UtcNow.AddYears(-1);
+                        filter = g => g.PublishedAt > DateTime.UtcNow.AddYears(-1);
                         return filter;
                     }
                 case PublishingDate.TwoYears:
                     {
-                        filter = g => g.AddedAt > DateTime.UtcNow.AddYears(-2);
+                        filter = g => g.PublishedAt > DateTime.UtcNow.AddYears(-2);
                         return filter;
                     }
                 case PublishingDate.ThreeYears:
                     {
-                        filter = g => g.AddedAt > DateTime.UtcNow.AddYears(-3);
+                        filter = g => g.PublishedAt > DateTime.UtcNow.AddYears(-3);
                         return filter;
                     }
             }

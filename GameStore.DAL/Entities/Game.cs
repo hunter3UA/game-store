@@ -47,6 +47,8 @@ namespace GameStore.DAL.Entities
 
         public DateTime AddedAt { get; set; }
 
+        public DateTime PublishedAt { get; set; }
+
         public Game()
         {
             AddedAt = DateTime.UtcNow;

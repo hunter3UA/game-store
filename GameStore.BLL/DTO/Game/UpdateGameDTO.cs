@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.BLL.DTO.Game
 {
@@ -23,5 +24,7 @@ namespace GameStore.BLL.DTO.Game
         public int? PublisherId { get; set; }
 
         public decimal Price { get; set; }
+
+        public DateTime? PublishedAt { get; set; }
     }
 }
