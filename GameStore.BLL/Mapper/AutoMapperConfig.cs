@@ -9,6 +9,8 @@ using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.DAL.Entities;
+using System;
+using System.Linq;
 
 namespace GameStore.BLL.Mapper
 {
@@ -17,9 +19,9 @@ namespace GameStore.BLL.Mapper
         public AutoMapperConfig()
         {
             CreateMap<Game, GameDTO>();
-            CreateMap<AddGameDTO, Game>();
+            CreateMap<AddGameDTO, Game>().ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));        
             CreateMap<Game, AddGameDTO>();
-            CreateMap<UpdateGameDTO, Game>().ForMember((m) => m.Genres, mapper => mapper.Ignore());
+            CreateMap<UpdateGameDTO, Game>().ForMember((m) => m.Genres, mapper => mapper.Ignore()).ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
 
             CreateMap<AddCommentDTO, Comment>();
             CreateMap<Comment, CommentDTO>();

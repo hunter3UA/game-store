@@ -49,6 +49,14 @@ namespace GameStore.DAL.Entities
 
         public DateTime PublishedAt { get; set; }
 
+        [DefaultValue(0)]
+        public int UnitsOnOrder { get; set; }
+        
+        [DefaultValue(0)]
+        public int ReorderLevel { get; set; }
+
+        public string QuantityPerUnit { get; set; }
+
         public Game()
         {
             AddedAt = DateTime.UtcNow;

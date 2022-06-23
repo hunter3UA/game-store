@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GameStore.DAL.Entities;
@@ -27,6 +26,8 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<TEntity> AddAsync(TEntity entityToAdd)
         {
+
+           
             var addedEntity = await _dbSet.AddAsync(entityToAdd);
 
             return addedEntity.Entity;
@@ -130,8 +131,7 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             IQueryable<TEntity> query = _dbSet;
 
-            return includeProperties
-                .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            return includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));              
         }
 
         private async Task CheckEntity(NavigationEntry navEntity, TEntity entity)

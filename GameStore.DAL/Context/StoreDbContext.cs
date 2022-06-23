@@ -30,9 +30,9 @@ namespace GameStore.DAL.Context
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             IConfiguration dbConfig = new ConfigurationBuilder()
-                .AddJsonFile(Constants.JSON_CONFIG_FILE, false, true).Build();
+                .AddJsonFile(Constants.JsonConfigFile, false, true).Build();
             optionsBuilder.UseSqlServer(
-                dbConfig.GetConnectionString(Constants.DB_NAME));
+                dbConfig.GetConnectionString(Constants.GameStoreDb));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

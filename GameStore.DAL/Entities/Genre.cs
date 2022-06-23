@@ -18,5 +18,8 @@ namespace GameStore.DAL.Entities
 
         [ForeignKey("ParentGenreId")]
         public IEnumerable<Genre> SubGenres { get; set; }
+
+        [MaxLength(200)]
+        public string Description { get; set; }
     }
 }

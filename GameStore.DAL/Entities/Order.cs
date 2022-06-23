@@ -6,12 +6,7 @@ using System.ComponentModel.DataAnnotations;
 namespace GameStore.DAL.Entities
 {
     public class Order : BaseEntity
-    {
-        public Order()
-        {
-            OrderDate = DateTime.UtcNow;
-        }
-        
+    {     
         [Required]
         public int CustomerId { get; set; }
 
@@ -25,5 +20,30 @@ namespace GameStore.DAL.Entities
         public OrderStatus Status { get; set; }
 
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
+
+        public double? Freight { get; set; }
+
+        public string ShipAddress { get; set; }
+
+        public string ShipCity { get; set; }
+
+        public string ShipCountry { get; set; }
+
+        public string ShipName { get; set; }
+
+        public string ShippedDate { get; set; }
+       
+        public int? ShipPostalCode { get; set; }
+
+        public string ShipRegion { get; set; }
+
+        public int? ShipVia { get; set; }
+
+        public DateTime? RequiredDate { get; set; }
+        
+        public Order()
+        {
+            OrderDate = DateTime.UtcNow;
+        }
     }
 }

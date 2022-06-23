@@ -25,6 +25,6 @@ namespace GameStore.BLL.DTO.Game
 
         public decimal Price { get; set; }
 
-        public DateTime? PublishedAt { get; set; }
+        public string PublishedAt { get; set; }
     }
 }

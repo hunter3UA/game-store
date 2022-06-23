@@ -65,8 +65,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         {
             List<Expression<Func<Game, bool>>> filters = await _gameFilterService.GetFilteredGames(gameFilterDTO);
             Expression<Func<Game, object>> order = null;
-            if (gameFilterDTO.SortingType != null)
-                order = _gameFilterService.Sort((SortingType)gameFilterDTO.SortingType);
+            order = _gameFilterService.Sort(gameFilterDTO.SortingType);
 
             bool orderDesc = gameFilterDTO.SortingType != SortingType.PriceAsc ? false : true;
             int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);

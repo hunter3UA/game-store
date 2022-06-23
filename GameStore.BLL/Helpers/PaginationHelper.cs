@@ -7,7 +7,7 @@ namespace GameStore.BLL.Helpers
     {
         public static ItemPageDTO<T> CreatePage(int currentPage, int elementsOnPage, int totalItems, List<T> items)
         {
-            ItemPageDTO<T> itemPageDTO = new ItemPageDTO<T>()
+            return new ItemPageDTO<T>()
             {
                 Items = items,
                 PageInfo = new PageInfoDTO
@@ -16,10 +16,7 @@ namespace GameStore.BLL.Helpers
                     ElementsOnPage = elementsOnPage,
                     TotalItems = totalItems
                 }
-            };
-
-            return itemPageDTO;
-
+            };    
         }
 
         public static int CheckCurrentPage(int currentPage, int elementsOnPage,int totalItemss)

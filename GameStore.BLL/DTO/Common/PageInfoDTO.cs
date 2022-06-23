@@ -4,11 +4,7 @@ namespace GameStore.BLL.DTO.Common
 {
     public class PageInfoDTO
     {
-        public int CurrentPageNumber
-        {
-            get; set;
-
-        }
+        public int CurrentPageNumber { get; set; }
 
         public int ElementsOnPage { get; set; }
 
@@ -19,8 +15,6 @@ namespace GameStore.BLL.DTO.Common
             get
             {
                 return (int)Math.Ceiling((decimal)TotalItems / ElementsOnPage);
-
-
             }
         }
 

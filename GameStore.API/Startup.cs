@@ -97,7 +97,9 @@ namespace GameStore.API
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
             services.AddScoped<StoreDbContext>();
+            services.AddScoped<NorthwindDbContext>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped(typeof(INorthwindGenericRepository<>), typeof(NorthwindGenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IGameService, GameService>();
