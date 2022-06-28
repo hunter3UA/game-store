@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GameStore.DAL.Attributes;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameStore.DAL.Entities
 {
+    [MongoCollection("products")]
+    [BsonIgnoreExtraElements]
     [Index("Name", IsUnique = true)]
     [Index("Key", IsUnique = true)]
     public class Game : BaseEntity
@@ -14,7 +18,7 @@ namespace GameStore.DAL.Entities
         [Required, MaxLength(500)]
         public string Key { get; set; }
 
-        [Required, MaxLength(150)]
+        [Required, MaxLength(150),BsonElement("ProductName")]
         public string Name { get; set; }
 
         [Required, MaxLength(5000)]
@@ -56,6 +60,9 @@ namespace GameStore.DAL.Entities
         public int ReorderLevel { get; set; }
 
         public string QuantityPerUnit { get; set; }
+
+        [DefaultValue(false)]
+        public bool IsNorthwindGame { get; set; }
 
         public Game()
         {

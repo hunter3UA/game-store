@@ -27,5 +27,6 @@ namespace GameStore.BLL.Helpers
 
             return currentPage;
         }
+
     }
 }

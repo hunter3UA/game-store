@@ -73,6 +73,7 @@ namespace GameStore.DAL.Context
 
         private void Initialize(ModelBuilder modelBuilder)
         {
+            
             modelBuilder.Entity<Publisher>().HasData(
                 new Publisher { Id = 1, CompanyName = "DeepSiler", Description = "Desc of Publisher 1 ", HomePage = "Home" },
                 new Publisher { Id = 2, CompanyName = "GSC", Description = "Desc of Publisher 2 ", HomePage = "Home2" },

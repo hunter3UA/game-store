@@ -1,9 +1,9 @@
 ﻿using GameStore.DAL.Context;
+using GameStore.DAL.Context.Abstract;
+using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using MongoDB.Driver;
 
 namespace GameStore.API.Controllers
 {
@@ -12,12 +12,23 @@ namespace GameStore.API.Controllers
     public class NorthwindController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWOrk;
-        private readonly NorthwindDbContext _northwindDbContext;
+        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly IMongoCollection<Game> products;
 
-        public NorthwindController(NorthwindDbContext northwindDbContext,IUnitOfWork unitOfWork)
-        {
-            _unitOfWOrk = unitOfWork;
-            _northwindDbContext = northwindDbContext;
-        }
+        //public NorthwindController(NorthwindDbContext northwindDbContext,IUnitOfWork unitOfWork)
+        //{
+        //    _unitOfWOrk = unitOfWork;
+        //    _northwindDbContext = northwindDbContext;
+        //}
+
+        //[HttpGet]
+        //public async Task<IActionResult> Get()
+        //{
+     
+        //    var res = await _northwindDbContext.Orders.GetListAsync();
+        //  //  _northwindDbContext.UpdateDb();
+
+        //    return new JsonResult(res);
+        //}
     }
 }

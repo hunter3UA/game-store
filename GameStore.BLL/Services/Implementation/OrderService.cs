@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Abstract;
+using GameStore.DAL.Context;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -60,8 +61,8 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderByCustomer.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
-                if (item.Game == null)              
-                    throw new KeyNotFoundException($"Games of order with id:{orderByCustomer.Id} not found");         
+                if (item.Game == null)
+                    throw new KeyNotFoundException($"Games of order with id:{orderByCustomer.Id} not found");
             }
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
@@ -82,6 +83,12 @@ namespace GameStore.BLL.Services.Implementation
             _logger.LogInformation($"Order with id {canceledOrder.Id} has been canceled");
 
             return true;
+        }
+
+        public async Task<List<OrderDTO>> GetListOfOrdersAsync(OrderHistoryDTO orderHistoryDTO)
+        {
+            List<Order> ordersByDate = await _unitOfWork.OrderRepository.GetRangeAsync(o => o.OrderDate >= orderHistoryDTO.From && o.OrderDate <= orderHistoryDTO.To);
+            return null;
         }
 
         private async Task<bool> ReserveGame(Order orderToReserve)
@@ -126,5 +133,6 @@ namespace GameStore.BLL.Services.Implementation
                     gameOfItem.UnitsInStock += item.Quantity;
             }
         }
+
     }
 }

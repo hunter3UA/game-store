@@ -19,50 +19,22 @@ using GameStore.API.Helpers;
 using GameStore.BLL.BackgroundServices;
 using GameStore.BLL.Services.Abstract.Games;
 using GameStore.BLL.Services.Implementation.Games;
+using MongoDB.Driver;
+using Microsoft.Extensions.Configuration;
+using GameStore.DAL.Context.Abstract;
 
 namespace GameStore.API
 {
     public class Startup
     {
+        private readonly IConfiguration _config;
+
+        public Startup(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public void ConfigureServices(IServiceCollection services)
-        {
-            ServiceRegister(services);
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
-        {
-            app.UseMiddleware<ErrorHandlingMiddleware>();
-            app.UseSerilogRequestLogging(options =>
-            {
-                options.MessageTemplate =
-                " [{RemoteIpAddress}] {RequestScheme} {RequestHost} {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
-                options.EnrichDiagnosticContext = (diagnosticContext,
-                 httpContext) =>
-                 {
-                     diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-                     diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
-                     diagnosticContext.Set("RemoteIpAddress", httpContext.Connection.RemoteIpAddress);
-                 };
-            });
-
-            if (env.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    options.SwaggerEndpoint(Constants.SwaggerUrl, Constants.SwaggerName);
-                });
-            }
-
-            app.UseRouting();
-            app.UseCors("AllowOrigin");
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
-
-        private void ServiceRegister(IServiceCollection services)
         {
             services.AddControllers(options =>
             {
@@ -97,9 +69,10 @@ namespace GameStore.API
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
             services.AddScoped<StoreDbContext>();
-            services.AddScoped<NorthwindDbContext>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddSingleton<IMongoClient, MongoClient>(m => new MongoClient(_config.GetConnectionString("NorthwindDb")));
+            services.AddScoped<INorthwindDbContext, NorthwindDbContext>();
             services.AddScoped(typeof(INorthwindGenericRepository<>), typeof(NorthwindGenericRepository<>));
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IGameService, GameService>();
@@ -114,6 +87,39 @@ namespace GameStore.API
             services.AddScoped<IPaymentContext, PaymentContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameFilterService, GameFilterService>();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        {
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseSerilogRequestLogging(options =>
+            {
+                options.MessageTemplate =
+                " [{RemoteIpAddress}] {RequestScheme} {RequestHost} {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+                options.EnrichDiagnosticContext = (diagnosticContext,
+                 httpContext) =>
+                 {
+                     diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+                     diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+                     diagnosticContext.Set("RemoteIpAddress", httpContext.Connection.RemoteIpAddress);
+                 };
+            });
+
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint(Constants.SwaggerUrl, Constants.SwaggerName);
+                });
+            }
+
+            app.UseRouting();
+            app.UseCors("AllowOrigin");
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

@@ -1,35 +1,26 @@
-﻿using GameStore.DAL.Entities;
-using GameStore.DAL.Static;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
-using MongoDB.Driver;
-using System.Collections.Generic;
-using System.Linq;
+﻿using GameStore.DAL.Context.Abstract;
+using GameStore.DAL.Entities;
+using GameStore.DAL.Repositories.Abstract;
 
 namespace GameStore.DAL.Context
 {
-    public class NorthwindDbContext
+    public class NorthwindDbContext : INorthwindDbContext
     {
-        private readonly IMongoDatabase _database;
-
-        private const string NorthwindDbName = "Northwind";
-
-        public NorthwindDbContext()
+        public NorthwindDbContext(
+            INorthwindGenericRepository<Game> products,
+            INorthwindGenericRepository<Genre> categories,
+            INorthwindGenericRepository<Order> orders
+            )
         {
-            IConfiguration config = new ConfigurationBuilder().AddJsonFile(Constants.JsonConfigFile, false).Build();
-
-            string connectionString = config.GetConnectionString(Constants.NorthwindDb);
-
-            MongoClient client = new MongoClient(connectionString);
-
-            _database = client.GetDatabase(NorthwindDbName);
+            Products = products;
+            Categories = categories;
+            Orders = orders;
         }
 
-        public List<BsonDocument> GetAsync()
-        {
-           
-            return null;
-        }
+        public INorthwindGenericRepository<Game> Products { get; }
 
+        public INorthwindGenericRepository<Genre> Categories { get; }
+
+        public INorthwindGenericRepository<Order> Orders { get; }
     }
 }

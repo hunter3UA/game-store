@@ -7,8 +7,10 @@ using AutoMapper;
 using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Enum;
+using GameStore.BLL.Extensions;
 using GameStore.BLL.Helpers;
 using GameStore.BLL.Services.Abstract.Games;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -21,13 +23,16 @@ namespace GameStore.BLL.Services.Implementation.Games
         private readonly IGameFilterService _gameFilterService;
         private readonly ILogger<GameService> _logger;
         private readonly IMapper _mapper;
+        private readonly INorthwindDbContext _northwindDbContext;
 
-        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService)
+        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService,INorthwindDbContext northwindDbContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
             _gameFilterService = gameFilterService;
+            _northwindDbContext = northwindDbContext;
+
         }
 
         public async Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO)
@@ -64,20 +69,19 @@ namespace GameStore.BLL.Services.Implementation.Games
         public async Task<ItemPageDTO<GameDTO>> GetRangeOfGamesAsync(GameFilterDTO gameFilterDTO)
         {
             List<Expression<Func<Game, bool>>> filters = await _gameFilterService.GetFilteredGames(gameFilterDTO);
-            Expression<Func<Game, object>> order = null;
-            order = _gameFilterService.Sort(gameFilterDTO.SortingType);
+            Expression<Func<Game, object>> order = _gameFilterService.Sort(gameFilterDTO.SortingType);
 
             bool orderDesc = gameFilterDTO.SortingType != SortingType.PriceAsc ? false : true;
-            int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);
+            int totalGames = await GetTotalCount(filters);         
             gameFilterDTO.Page = PaginationHelper<Game>.CheckCurrentPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames);
 
-            var gamesOnPage = await _unitOfWork.GameRepository.GetFilteredList(
+            var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
                  filters,
-                 (gameFilterDTO.Page - 1) * gameFilterDTO.ElementsOnPage,
-                 gameFilterDTO.ElementsOnPage,
-                 orderDesc,
-                 order,
-                 g => g.Genres, g => g.Publisher, g => g.PlatformTypes);
+                 g => g.Genres, g => g.Publisher, g => g.PlatformTypes, g => g.Comments);
+
+            var northwindGames = await _northwindDbContext.Products.GetRangeAsync(filters);
+            filteredGames.AddRange(northwindGames);
+            var gamesOnPage = filteredGames.SortByParameter(order, orderDesc).GetPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage);
 
             var mappedGames = _mapper.Map<List<GameDTO>>(gamesOnPage);
             ItemPageDTO<GameDTO> gamePage = PaginationHelper<GameDTO>.CreatePage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames, mappedGames);
@@ -85,9 +89,17 @@ namespace GameStore.BLL.Services.Implementation.Games
             return gamePage;
         }
 
+        private async Task<int> GetTotalCount(List<Expression<Func<Game, bool>>> filters)
+        {
+            int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);
+            totalGames += await _northwindDbContext.Products.GetCountAsync(filters);
+            return totalGames;
+        }
+
         public async Task<GameDTO> GetGameAsync(string gameKey, bool isView)
         {
             Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres, pub => pub.Publisher);
+
 
             if (searchedGame != null && isView)
             {
