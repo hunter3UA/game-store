@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GameStore.DAL.Attributes;
@@ -13,7 +14,7 @@ namespace GameStore.DAL.Entities
     [BsonIgnoreExtraElements]
     public class Genre : BaseEntity
     {
-        [Required, MaxLength(150),BsonElement("CategoryName")]
+        [Required, MaxLength(150), BsonElement("CategoryName")]
         public string Name { get; set; }
 
         public IEnumerable<Game> Games { get; set; }
@@ -25,5 +26,8 @@ namespace GameStore.DAL.Entities
 
         [MaxLength(200)]
         public string Description { get; set; }
+
+        [BsonElement("CategoryId"), DefaultValue(null)]
+        public int? CategoryId { get; set; }
     }
 }

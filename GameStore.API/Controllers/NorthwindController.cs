@@ -4,6 +4,7 @@ using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Threading.Tasks;
 
 namespace GameStore.API.Controllers
 {
@@ -15,20 +16,20 @@ namespace GameStore.API.Controllers
         private readonly INorthwindDbContext _northwindDbContext;
         private readonly IMongoCollection<Game> products;
 
-        //public NorthwindController(NorthwindDbContext northwindDbContext,IUnitOfWork unitOfWork)
-        //{
-        //    _unitOfWOrk = unitOfWork;
-        //    _northwindDbContext = northwindDbContext;
-        //}
+        public NorthwindController(INorthwindDbContext northwindDbContext, IUnitOfWork unitOfWork)
+        {
+            _unitOfWOrk = unitOfWork;
+            _northwindDbContext = northwindDbContext;
+        }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Get()
-        //{
-     
-        //    var res = await _northwindDbContext.Orders.GetListAsync();
-        //  //  _northwindDbContext.UpdateDb();
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
 
-        //    return new JsonResult(res);
-        //}
+            var res = await _northwindDbContext.Orders.GetListAsync();
+            //  _northwindDbContext.UpdateDb();
+
+            return new JsonResult(res);
+        }
     }
 }

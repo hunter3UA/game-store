@@ -2,7 +2,7 @@
 
 namespace GameStore.DAL.Attributes
 {
-    class MongoCollectionAttribute:Attribute
+    class MongoCollectionAttribute : Attribute
     {
         public string CollectionName { get; set; }
 

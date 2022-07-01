@@ -25,7 +25,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         private readonly IMapper _mapper;
         private readonly INorthwindDbContext _northwindDbContext;
 
-        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService,INorthwindDbContext northwindDbContext)
+        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService, INorthwindDbContext northwindDbContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -59,9 +59,11 @@ namespace GameStore.BLL.Services.Implementation.Games
             return _mapper.Map<List<GameDTO>>(allGames);
         }
 
-        public async Task<int> GetCountAsync()
+        public async Task<int> GetCountAsync(List<Expression<Func<Game, bool>>> filters)
         {
-            int totalGames = await _unitOfWork.GameRepository.CountListAsync(new List<Expression<Func<Game, bool>>>());
+            filters = filters == null ? new List<Expression<Func<Game, bool>>>() : filters;
+            int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);
+            totalGames += await _northwindDbContext.Products.GetCountAsync(filters);
 
             return totalGames;
         }
@@ -72,15 +74,17 @@ namespace GameStore.BLL.Services.Implementation.Games
             Expression<Func<Game, object>> order = _gameFilterService.Sort(gameFilterDTO.SortingType);
 
             bool orderDesc = gameFilterDTO.SortingType != SortingType.PriceAsc ? false : true;
-            int totalGames = await GetTotalCount(filters);         
+            int totalGames = await GetCountAsync(filters);
             gameFilterDTO.Page = PaginationHelper<Game>.CheckCurrentPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames);
 
             var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
                  filters,
                  g => g.Genres, g => g.Publisher, g => g.PlatformTypes, g => g.Comments);
 
-            var northwindGames = await _northwindDbContext.Products.GetRangeAsync(filters);
+            var northwindGames = await GetNorthwindGames(filters);
+
             filteredGames.AddRange(northwindGames);
+
             var gamesOnPage = filteredGames.SortByParameter(order, orderDesc).GetPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage);
 
             var mappedGames = _mapper.Map<List<GameDTO>>(gamesOnPage);
@@ -89,11 +93,19 @@ namespace GameStore.BLL.Services.Implementation.Games
             return gamePage;
         }
 
-        private async Task<int> GetTotalCount(List<Expression<Func<Game, bool>>> filters)
+        private async Task<List<Game>> GetNorthwindGames(List<Expression<Func<Game, bool>>> filters)
         {
-            int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);
-            totalGames += await _northwindDbContext.Products.GetCountAsync(filters);
-            return totalGames;
+            var northwindGames = await _northwindDbContext.Products.GetRangeAsync(filters);
+            foreach (var item in northwindGames)
+            {
+                if (item.Key == null)
+                {
+                    item.Key = CreateGameKey(item.Name);
+                    await _northwindDbContext.Products.UpdateAsync(item);
+
+                }
+            }
+            return northwindGames;
         }
 
         public async Task<GameDTO> GetGameAsync(string gameKey, bool isView)
@@ -105,6 +117,14 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 searchedGame.NumberOfViews += 1;
                 await _unitOfWork.SaveAsync();
+            }else if (searchedGame == null)
+            {
+                searchedGame = await _northwindDbContext.Products.GetAsync(g => g.Key == gameKey);
+                if (searchedGame != null)
+                {
+                    searchedGame.NumberOfViews += 1;
+                    await _northwindDbContext.Products.UpdateAsync(searchedGame);
+                }
             }
 
             return searchedGame != null ? _mapper.Map<GameDTO>(searchedGame) : throw new KeyNotFoundException();

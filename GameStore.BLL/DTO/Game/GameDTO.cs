@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.DTO.Publisher;
+using MongoDB.Bson;
 
 namespace GameStore.BLL.DTO.Game
 {
     public class GameDTO
     {
         public int Id { get; set; }
+
+        public string ObjectId { get; set; }
 
         public string Name { get; set; }
 

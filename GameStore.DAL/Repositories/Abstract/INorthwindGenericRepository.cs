@@ -9,9 +9,13 @@ namespace GameStore.DAL.Repositories.Abstract
     {
         Task<List<TDocument>> GetListAsync();
 
+        Task<TDocument> GetAsync(Expression<Func<TDocument, bool>> expression);
+
         Task<List<TDocument>> GetRangeAsync(List<Expression<Func<TDocument, bool>>> expression);
 
         Task<int> GetCountAsync(List<Expression<Func<TDocument, bool>>> filters);
+
+        Task UpdateAsync(TDocument entityToUpdate);
 
     }
 }
