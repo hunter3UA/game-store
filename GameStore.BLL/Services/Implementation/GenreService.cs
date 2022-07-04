@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -15,12 +16,14 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<GenreService> _logger;
+        private readonly INorthwindDbContext _northwindDbContext;
 
-        public GenreService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GenreService> logger)
+        public GenreService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GenreService> logger,INorthwindDbContext northwindDbContext)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _northwindDbContext = northwindDbContext;
         }
 
         public async Task<GenreDTO> AddGenreAsync(AddGenreDTO addGenreDTO)
@@ -44,9 +47,9 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
-            List<Genre> allGenres = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
+            List<Genre> genresFromStore = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
 
-            return _mapper.Map<List<GenreDTO>>(allGenres);
+            return _mapper.Map<List<GenreDTO>>(genresFromStore);
         }
 
         public async Task<bool> RemoveGenreAsync(int id)

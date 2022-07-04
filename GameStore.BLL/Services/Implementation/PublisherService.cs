@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Services.Abstract;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -15,12 +16,14 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PublisherService> _logger;
+        private readonly INorthwindDbContext _northwindDbContext;
 
-        public PublisherService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PublisherService> logger)
+        public PublisherService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PublisherService> logger, INorthwindDbContext northwindDbContext)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _northwindDbContext = northwindDbContext;
         }
 
         public async Task<PublisherDTO> AddPublisherAsync(AddPublisherDTO addPublisherDTO)
@@ -37,9 +40,11 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<PublisherDTO>> GetListOfPublishersAsync()
         {
-            List<Publisher> allPublishers = await _unitOfWork.PublisherRepository.GetListAsync(p => p.Games);
+            List<Publisher> publishersFromStore = await _unitOfWork.PublisherRepository.GetListAsync(p => p.Games);
+            List<Publisher> publishersFromNorthwind = await _northwindDbContext.Suppliers.GetListAsync();
+            publishersFromStore.AddRange(publishersFromNorthwind);
 
-            return _mapper.Map<List<PublisherDTO>>(allPublishers);
+            return _mapper.Map<List<PublisherDTO>>(publishersFromStore);
         }
 
         public async Task<PublisherDTO> GetPublisherAsync(int id)

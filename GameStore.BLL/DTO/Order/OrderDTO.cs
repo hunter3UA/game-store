@@ -16,8 +16,7 @@ namespace GameStore.BLL.DTO.Order
         public DateTime OrderDate { get; set; }
 
         public DateTime Expiration { get; set; }
-
-        
+   
         public OrderStatus Status { get; set; }
 
         public List<OrderDetailsDTO> OrderDetails { get; set; }

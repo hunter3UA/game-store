@@ -13,7 +13,7 @@ namespace GameStore.BLL.DTO.Game
 
         public List<int> Platforms { get; set; }
 
-        public List<int> Publishers { get; set; }
+        public List<string> Publishers { get; set; }
 
         public int? MinPrice { get; set; }
 

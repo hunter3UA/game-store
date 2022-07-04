@@ -9,12 +9,14 @@ namespace GameStore.DAL.Context
         public NorthwindDbContext(
             INorthwindGenericRepository<Game> products,
             INorthwindGenericRepository<Genre> categories,
-            INorthwindGenericRepository<Order> orders
+            INorthwindGenericRepository<Order> orders,
+            INorthwindGenericRepository<Publisher> suppliers
             )
         {
             Products = products;
             Categories = categories;
             Orders = orders;
+            Suppliers = suppliers;
         }
 
         public INorthwindGenericRepository<Game> Products { get; }
@@ -22,5 +24,7 @@ namespace GameStore.DAL.Context
         public INorthwindGenericRepository<Genre> Categories { get; }
 
         public INorthwindGenericRepository<Order> Orders { get; }
+
+        public INorthwindGenericRepository<Publisher> Suppliers { get; }
     }
 }

@@ -11,7 +11,9 @@ namespace GameStore.DAL.Repositories.Abstract
 
         Task<TDocument> GetAsync(Expression<Func<TDocument, bool>> expression);
 
-        Task<List<TDocument>> GetRangeAsync(List<Expression<Func<TDocument, bool>>> expression);
+        Task<List<TDocument>> GetFilteredListAsync(List<Expression<Func<TDocument, bool>>> expression);
+
+        Task<List<TDocument>> GetRangeAsync(Expression<Func<TDocument, bool>> expression);
 
         Task<int> GetCountAsync(List<Expression<Func<TDocument, bool>>> filters);
 

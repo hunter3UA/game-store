@@ -2,11 +2,13 @@
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
@@ -14,14 +16,16 @@ namespace GameStore.BLL.Services.Implementation
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INorthwindDbContext _northwindDbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<OrderService> logger)
+        public OrderService(IUnitOfWork unitOfWork,INorthwindDbContext northwindDbContext ,IMapper mapper, ILogger<OrderService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _northwindDbContext = northwindDbContext;
         }
 
         public async Task<OrderDTO> MakeOrderAsync(int orderId)
@@ -87,8 +91,11 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<OrderDTO>> GetListOfOrdersAsync(OrderHistoryDTO orderHistoryDTO)
         {
-            List<Order> ordersByDate = await _unitOfWork.OrderRepository.GetRangeAsync(o => o.OrderDate >= orderHistoryDTO.From && o.OrderDate <= orderHistoryDTO.To);
-            return null;
+            Expression<Func<Order, bool>> expression = o => o.OrderDate >= orderHistoryDTO.From && o.OrderDate <= orderHistoryDTO.To;
+            List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(expression);
+            List<Order> ordersFromNorthwind = await _northwindDbContext.Orders.GetRangeAsync(expression);
+            ordersFromStore.AddRange(ordersFromNorthwind);
+            return _mapper.Map<List<OrderDTO>>(ordersFromStore);
         }
 
         private async Task<bool> ReserveGame(Order orderToReserve)

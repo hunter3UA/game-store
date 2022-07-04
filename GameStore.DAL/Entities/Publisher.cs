@@ -1,13 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GameStore.DAL.Attributes;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameStore.DAL.Entities
 {
     [Index("CompanyName", IsUnique = true)]
+    [MongoCollection("suppliers")]
+    [BsonIgnoreExtraElements]
     public class Publisher : BaseEntity
     {
+        [NotMapped]
+        public int SupplierID { get; set; }
+
         [Required, MaxLength(40)]
         public string CompanyName { get; set; }
 
@@ -22,15 +30,19 @@ namespace GameStore.DAL.Entities
         public string City { get; set; }
 
         public string ContactName { get; set; }
-
+ 
         public string ContactTitle { get; set; }
 
+        [BsonIgnore]
         public string Country { get; set; }
 
+        [BsonIgnore]
         public string Fax { get; set; }
 
+        [BsonIgnore]
         public string Phone { get; set; }
 
+        [BsonIgnore]
         public string PostalCode { get; set; }
 
         public IEnumerable<Game> Games { get; set; }

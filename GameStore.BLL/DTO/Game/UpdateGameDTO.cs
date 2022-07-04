@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameStore.DAL.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.BLL.DTO.Game
@@ -26,5 +27,7 @@ namespace GameStore.BLL.DTO.Game
         public decimal Price { get; set; }
 
         public string PublishedAt { get; set; }
+
+        public TypeOfBase TypeOfBase { get; set; }
     }
 }

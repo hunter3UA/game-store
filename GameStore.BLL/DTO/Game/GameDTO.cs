@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.DTO.Publisher;
+using GameStore.DAL.Entities;
 using MongoDB.Bson;
 
 namespace GameStore.BLL.DTO.Game
@@ -31,5 +32,9 @@ namespace GameStore.BLL.DTO.Game
         public short UnitsInStock { get; set; }
 
         public DateTime PublishedAt { get; set; }
+
+        public int ReorderLevel { get; set; }
+
+        public string QuantityPerUnit { get; set; }
     }
 }

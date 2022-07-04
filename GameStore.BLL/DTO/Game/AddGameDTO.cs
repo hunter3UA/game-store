@@ -21,7 +21,7 @@ namespace GameStore.BLL.DTO.Game
 
         public short UnitsInStock { get; set; }
 
-        public int? PublisherId { get; set; }
+        public string PublisherName { get; set; }
 
         public string PublishedAt { get; set; }
     }

@@ -23,7 +23,7 @@ namespace GameStore.DAL.Entities
         [Required, MaxLength(150), BsonElement("ProductName")]
         public string Name { get; set; }
 
-        [Required, MaxLength(5000)]
+        [Required, MaxLength(5000), BsonIgnore]
         public string Description { get; set; }
 
         [BsonIgnore]
@@ -46,7 +46,7 @@ namespace GameStore.DAL.Entities
 
         [Required, Range(0, short.MaxValue)]
         public short UnitsInStock { get; set; }
-        
+
         [BsonIgnore]
         public int? PublisherId { get; set; }
 
@@ -70,9 +70,22 @@ namespace GameStore.DAL.Entities
 
         public string QuantityPerUnit { get; set; }
 
+        [BsonDefaultValue(TypeOfBase.Northwind)]
+        public TypeOfBase TypeOfBase { get; set; }
+
+        [NotMapped, BsonRepresentation(BsonType.Int32), BsonElement("CategoryID")]
+        public int CategoryID { get; set; }
+
+        [NotMapped]
+        public int SupplierID { get; set; }
+
+        public string PublisherName { get; set; }
+
         public Game()
         {
             AddedAt = DateTime.UtcNow;
+            Comments = new List<Comment>();
+            
         }
     }
 }

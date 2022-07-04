@@ -10,5 +10,7 @@ namespace GameStore.DAL.Context.Abstract
         INorthwindGenericRepository<Genre> Categories { get; }
 
         INorthwindGenericRepository<Order> Orders { get; }
+
+        INorthwindGenericRepository<Publisher> Suppliers { get; }
     }
 }

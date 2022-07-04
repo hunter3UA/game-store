@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract.Games;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 
@@ -14,18 +15,45 @@ namespace GameStore.BLL.Services.Implementation.Games
     public class GameFilterService : IGameFilterService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INorthwindDbContext _northwindDbContext;
 
-        public GameFilterService(IUnitOfWork unitOfWork)
+        public GameFilterService(IUnitOfWork unitOfWork,INorthwindDbContext northwindDbContext)
         {
             _unitOfWork = unitOfWork;
+            _northwindDbContext = northwindDbContext;
         }
 
-        public async Task<List<Expression<Func<Game, bool>>>> GetFilteredGames(GameFilterDTO gameFilterDTO)
+        public async Task<List<Expression<Func<Game, bool>>>> GetFiltersForNorthwind(GameFilterDTO gameFilterDTO)
         {
             List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
+            filters.AddRange(GetCommonFilters(gameFilterDTO));
 
-            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
-                filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
+            if (gameFilterDTO.Genres != null)
+            {
+                var categories = await _unitOfWork.GenreRepository.GetRangeAsync(c => gameFilterDTO.Genres.Contains(c.Id));
+                var categoryIds = categories.Where(c => c.CategoryId != null).Select(c => (int)c.CategoryId).ToList();
+                if (categories != null)
+                {
+                    filters.Add(c => categoryIds.Contains(c.CategoryID));
+                }
+            }
+
+            if (gameFilterDTO.Publishers != null)
+            {
+                var publishers = await _northwindDbContext.Suppliers.GetRangeAsync(s => gameFilterDTO.Publishers.Contains(s.CompanyName));
+                var publisherIds = publishers.Select(s => s.SupplierID).ToList();
+                if (publisherIds != null)
+                {
+                    filters.Add(p => publisherIds.Contains(p.SupplierID));
+                }
+            }
+            return filters;
+        }
+
+        public async Task<List<Expression<Func<Game, bool>>>> GetFiltersForGameStore(GameFilterDTO gameFilterDTO)
+        {
+            List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
+            filters.AddRange(GetCommonFilters(gameFilterDTO));
 
             if (gameFilterDTO.Genres != null)
             {
@@ -37,16 +65,12 @@ namespace GameStore.BLL.Services.Implementation.Games
                 filters.Add(g => g.PlatformTypes.Any(gf => gameFilterDTO.Platforms.Any(filter => filter == gf.Id)));
 
             if (gameFilterDTO.Publishers != null)
-                filters.Add(g => gameFilterDTO.Publishers.Contains((int)g.PublisherId));
-
-            if (gameFilterDTO.MinPrice != null)
-                filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
-
-            if (gameFilterDTO.MaxPrice != null)
-                filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
-
-            if (gameFilterDTO.PublishingDate != null)
-                filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
+            {
+                var publishers = await _unitOfWork.PublisherRepository.GetRangeAsync(p => gameFilterDTO.Publishers.Contains(p.CompanyName));
+   
+                filters.Add(g => gameFilterDTO.Publishers.Contains(g.Publisher.CompanyName));
+            }
+                
 
             return filters;
         }
@@ -63,7 +87,7 @@ namespace GameStore.BLL.Services.Implementation.Games
                     }
                 case SortingType.Commented:
                     {
-                        expression = g => g.Comments.Where(c => !c.IsDeleted).Count();
+                        expression = g => g.Comments.Where(c =>!c.IsDeleted ).Count();
                         break;
                     }
                 case SortingType.PriceAsc:
@@ -137,6 +161,24 @@ namespace GameStore.BLL.Services.Implementation.Games
             }
 
             return filter;
+        }
+
+        private List<Expression<Func<Game, bool>>> GetCommonFilters(GameFilterDTO gameFilterDTO)
+        {
+            List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
+            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
+                filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
+
+            if (gameFilterDTO.MinPrice != null)
+                filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
+
+            if (gameFilterDTO.MaxPrice != null)
+                filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
+
+            if (gameFilterDTO.PublishingDate != null)
+                filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
+
+            return filters;
         }
     }
 }

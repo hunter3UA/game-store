@@ -18,10 +18,11 @@ namespace GameStore.BLL.Mapper
     {
         public AutoMapperConfig()
         {
-            CreateMap<Game, GameDTO>().ForMember(m=>m.ObjectId, mapper =>mapper.MapFrom(p=>p.ObjectId.ToString()));
-            CreateMap<AddGameDTO, Game>().ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));        
+            CreateMap<Game, GameDTO>().ForMember(m => m.ObjectId, mapper => mapper.MapFrom(p => p.ObjectId.ToString()));
+            CreateMap<AddGameDTO, Game>().ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
             CreateMap<Game, AddGameDTO>();
             CreateMap<UpdateGameDTO, Game>().ForMember((m) => m.Genres, mapper => mapper.Ignore()).ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
+            CreateMap<UpdateGameDTO, AddGameDTO>();
 
             CreateMap<AddCommentDTO, Comment>();
             CreateMap<Comment, CommentDTO>();
@@ -36,7 +37,7 @@ namespace GameStore.BLL.Mapper
             CreateMap<UpdateGenreDTO, Genre>();
 
             CreateMap<AddPublisherDTO, Publisher>();
-            CreateMap<Publisher, PublisherDTO>();
+            CreateMap<Publisher, PublisherDTO>().ForMember(p => p.ObjectId, mapper => mapper.MapFrom(p => p.ObjectId.ToString()));
             CreateMap<UpdatePublisherDTO, Publisher>();
 
             CreateMap<AddOrderDetailsDTO, OrderDetails>();
