@@ -68,10 +68,10 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task UpdateAsync(TDocument entityToUpdate)
         {
-            var filter = Builders<TDocument>.Filter.Eq(o => o.ObjectId, entityToUpdate.ObjectId);
+
             var list = GetUpdateDefinition(entityToUpdate);
             var update = Builders<TDocument>.Update.Combine(list);
-            var result = await _collection.UpdateOneAsync(x => x.ObjectId == entityToUpdate.ObjectId, update);
+            await _collection.UpdateOneAsync(g => g.ObjectId == entityToUpdate.ObjectId, update);
         }
 
         private IMongoQueryable<TDocument> GetQuery(List<Expression<Func<TDocument, bool>>> filters)

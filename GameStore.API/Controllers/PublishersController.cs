@@ -26,10 +26,10 @@ namespace GameStore.API.Controllers
         } 
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetPublisherAsync([FromRoute] int id)
+        [Route("{name}")]
+        public async Task<IActionResult> GetPublisherAsync([FromRoute] string name)
         {
-            var searchedPublisher = await _publisherService.GetPublisherAsync(id);
+            var searchedPublisher = await _publisherService.GetPublisherAsync(name);
 
             return new JsonResult(searchedPublisher);
         }

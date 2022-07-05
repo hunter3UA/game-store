@@ -24,6 +24,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         private readonly ILogger<GameService> _logger;
         private readonly IMapper _mapper;
         private readonly INorthwindDbContext _northwindDbContext;
+        private const string AddedToStoreDate = "June 2, 2022";
 
         public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService, INorthwindDbContext northwindDbContext)
         {
@@ -81,7 +82,7 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
                  filtersFromStore,
-                 g => g.Genres, g => g.Publisher, g => g.PlatformTypes, g => g.Comments);
+                 g => g.Genres, g => g.PlatformTypes, g => g.Comments);
 
             var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
             filteredGames.AddRange(northwindGames);
@@ -104,17 +105,14 @@ namespace GameStore.BLL.Services.Implementation.Games
                     item.Key = CreateGameKey(item.Name);
                     await _northwindDbContext.Products.UpdateAsync(item);
                 }
+                item.AddedAt = DateTime.Parse(AddedToStoreDate);
             }
             return northwindGames;
         }
 
         public async Task<GameDTO> GetGameAsync(string gameKey, bool isView)
         {
-            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres, pub => pub.Publisher);
-            searchedGame = searchedGame == null ? await _northwindDbContext.Products.GetAsync(g => g.Key == gameKey) : searchedGame;
-
-            if (searchedGame == null)
-                throw new KeyNotFoundException();
+            Game searchedGame = await GetGameFromBasesAsync(gameKey);
 
             if (searchedGame.TypeOfBase == TypeOfBase.GameStore && isView)
             {
@@ -173,6 +171,28 @@ namespace GameStore.BLL.Services.Implementation.Games
 
                 return addedGame;
             }
+        }
+
+        private async Task<Game> GetGameFromBasesAsync(string gameKey)
+        {
+            Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres);
+            searchedGame = searchedGame == null ? await _northwindDbContext.Products.GetAsync(g => g.Key == gameKey) : searchedGame;
+
+            if (searchedGame == null)
+                throw new KeyNotFoundException();
+
+            if (searchedGame.PublisherName != null || searchedGame.SupplierID != 0)
+            {
+                searchedGame.Publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == searchedGame.PublisherName);
+                searchedGame.Publisher = searchedGame.Publisher == null ? await _northwindDbContext.Suppliers.GetAsync(p => p.SupplierID == searchedGame.SupplierID) : searchedGame.Publisher;
+            }
+
+            if (searchedGame.TypeOfBase == TypeOfBase.Northwind && searchedGame.CategoryID != 0)
+            {
+                searchedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => g.CategoryId == searchedGame.CategoryID);
+            }
+
+            return searchedGame;
         }
 
         private string CreateGameKey(string name)

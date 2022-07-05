@@ -8,7 +8,7 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<PublisherDTO> AddPublisherAsync(AddPublisherDTO addPublisherDTO);
 
-        Task<PublisherDTO> GetPublisherAsync(int id);
+        Task<PublisherDTO> GetPublisherAsync(string name);
 
         Task<List<PublisherDTO>> GetListOfPublishersAsync();
 

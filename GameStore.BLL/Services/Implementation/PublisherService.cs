@@ -40,16 +40,17 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<PublisherDTO>> GetListOfPublishersAsync()
         {
-            List<Publisher> publishersFromStore = await _unitOfWork.PublisherRepository.GetListAsync(p => p.Games);
+            List<Publisher> publishersFromStore = await _unitOfWork.PublisherRepository.GetListAsync();
             List<Publisher> publishersFromNorthwind = await _northwindDbContext.Suppliers.GetListAsync();
             publishersFromStore.AddRange(publishersFromNorthwind);
 
             return _mapper.Map<List<PublisherDTO>>(publishersFromStore);
         }
 
-        public async Task<PublisherDTO> GetPublisherAsync(int id)
+        public async Task<PublisherDTO> GetPublisherAsync(string name)
         {
-            Publisher searchedPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.Id == id);
+            Publisher searchedPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == name);
+            searchedPublisher = searchedPublisher == null ? await _northwindDbContext.Suppliers.GetAsync(p => p.CompanyName == name) : searchedPublisher;
 
             return searchedPublisher != null ? _mapper.Map<PublisherDTO>(searchedPublisher) : throw new KeyNotFoundException("Publisher not found");
         }

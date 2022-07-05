@@ -30,7 +30,7 @@ namespace GameStore.DAL.Entities
         public string City { get; set; }
 
         public string ContactName { get; set; }
- 
+
         public string ContactTitle { get; set; }
 
         [BsonIgnore]
@@ -45,6 +45,7 @@ namespace GameStore.DAL.Entities
         [BsonIgnore]
         public string PostalCode { get; set; }
 
-        public IEnumerable<Game> Games { get; set; }
+        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind)]
+        public TypeOfBase TypeOfBase { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GameStore.DAL.Migrations
 {
     [DbContext(typeof(StoreDbContext))]
-    partial class StoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220705141705_RemoveReletionsWithPublisherGame")]
+    partial class RemoveReletionsWithPublisherGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,7 +153,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(5398),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(2927),
                             Description = "New part of Stalker",
                             Discontinued = false,
                             IsDeleted = false,
@@ -159,7 +161,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Stalker2",
                             NumberOfViews = 0,
                             Price = 70m,
-                            PublishedAt = new DateTime(2022, 3, 27, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(6691),
+                            PublishedAt = new DateTime(2022, 3, 27, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4475),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -169,7 +171,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(6999),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4801),
                             Description = "Best part",
                             Discontinued = false,
                             IsDeleted = false,
@@ -177,7 +179,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Dying light",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 5, 16, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7052),
+                            PublishedAt = new DateTime(2022, 5, 16, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4853),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -187,7 +189,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 3,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7073),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4906),
                             Description = "Action ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -195,7 +197,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Left 4 Dead",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2021, 5, 31, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7076),
+                            PublishedAt = new DateTime(2021, 5, 31, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4909),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -205,7 +207,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 4,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7077),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4910),
                             Description = "Description of cmv",
                             Discontinued = false,
                             IsDeleted = false,
@@ -213,7 +215,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Call of Duty:MV",
                             NumberOfViews = 0,
                             Price = 30m,
-                            PublishedAt = new DateTime(2022, 6, 28, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7079),
+                            PublishedAt = new DateTime(2022, 6, 28, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4912),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -223,7 +225,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 5,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7080),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4913),
                             Description = "Description of civ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -231,7 +233,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sid Meier`s Civilization VI",
                             NumberOfViews = 0,
                             Price = 60m,
-                            PublishedAt = new DateTime(2022, 6, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7081),
+                            PublishedAt = new DateTime(2022, 6, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4914),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -241,7 +243,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 6,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7082),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4915),
                             Description = "Description of arma",
                             Discontinued = false,
                             IsDeleted = false,
@@ -249,7 +251,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Arma 3",
                             NumberOfViews = 0,
                             Price = 80m,
-                            PublishedAt = new DateTime(2022, 5, 6, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7083),
+                            PublishedAt = new DateTime(2022, 5, 6, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4917),
                             PublisherName = "Bohemia Interactive",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -259,7 +261,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7084),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4917),
                             Description = "Description of nfs",
                             Discontinued = false,
                             IsDeleted = false,
@@ -267,7 +269,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Need for speed",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 5, 16, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7085),
+                            PublishedAt = new DateTime(2022, 5, 16, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4919),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -277,7 +279,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 8,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7087),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4920),
                             Description = "Description of Sam",
                             Discontinued = false,
                             IsDeleted = false,
@@ -285,7 +287,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Serious Sam 4",
                             NumberOfViews = 0,
                             Price = 45m,
-                            PublishedAt = new DateTime(2022, 6, 20, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7088),
+                            PublishedAt = new DateTime(2022, 6, 20, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4921),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -295,7 +297,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 9,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7089),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4935),
                             Description = "Description of Sea",
                             Discontinued = false,
                             IsDeleted = false,
@@ -303,7 +305,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sea of Thieves",
                             NumberOfViews = 0,
                             Price = 90m,
-                            PublishedAt = new DateTime(2022, 5, 16, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7090),
+                            PublishedAt = new DateTime(2022, 5, 16, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4937),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -313,7 +315,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 10,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7091),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4937),
                             Description = "Description of Battlefield",
                             Discontinued = false,
                             IsDeleted = false,
@@ -321,7 +323,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Battlefield 4",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 6, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7093),
+                            PublishedAt = new DateTime(2022, 6, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4939),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -331,7 +333,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 11,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7094),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4940),
                             Description = "Description of Mass effect 1",
                             Discontinued = false,
                             IsDeleted = false,
@@ -339,7 +341,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Mass effect 1",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 6, 15, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7095),
+                            PublishedAt = new DateTime(2022, 6, 15, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4941),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -349,7 +351,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 12,
-                            AddedAt = new DateTime(2022, 7, 5, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7096),
+                            AddedAt = new DateTime(2022, 7, 5, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4942),
                             Description = "Description of Command and conqurer",
                             Discontinued = false,
                             IsDeleted = false,
@@ -357,7 +359,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Command and conqurer",
                             NumberOfViews = 0,
                             Price = 150m,
-                            PublishedAt = new DateTime(2022, 5, 6, 16, 45, 1, 560, DateTimeKind.Utc).AddTicks(7097),
+                            PublishedAt = new DateTime(2022, 5, 6, 14, 17, 5, 213, DateTimeKind.Utc).AddTicks(4943),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             TypeOfBase = 0,
@@ -604,6 +606,9 @@ namespace GameStore.DAL.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RequiredDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ShipAddress")

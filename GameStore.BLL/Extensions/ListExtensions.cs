@@ -9,6 +9,7 @@ namespace GameStore.BLL.Extensions
     {
         public static List<T> SortByParameter<T>(this List<T> items, Expression<Func<T, object>> order, bool asc)
         {
+            
             return !asc ? items.OrderByDescending(order.Compile()).ToList() : items.OrderBy(order.Compile()).ToList();
         }
 

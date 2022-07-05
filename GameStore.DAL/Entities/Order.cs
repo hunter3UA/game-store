@@ -46,9 +46,6 @@ namespace GameStore.DAL.Entities
 
         public int? ShipVia { get; set; }
 
-        [BsonSerializer(typeof(CustomDateTimeConverterNullable))]
-        public DateTime? RequiredDate { get; set; }
-
         public Order()
         {
             OrderDate = DateTime.UtcNow;

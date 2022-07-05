@@ -68,9 +68,12 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 var publishers = await _unitOfWork.PublisherRepository.GetRangeAsync(p => gameFilterDTO.Publishers.Contains(p.CompanyName));
    
-                filters.Add(g => gameFilterDTO.Publishers.Contains(g.Publisher.CompanyName));
+                filters.Add(g => gameFilterDTO.Publishers.Contains(g.PublisherName));
             }
-                
+
+            if (gameFilterDTO.PublishingDate != null)
+                filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
+
 
             return filters;
         }
@@ -175,8 +178,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (gameFilterDTO.MaxPrice != null)
                 filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
 
-            if (gameFilterDTO.PublishingDate != null)
-                filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
+            
 
             return filters;
         }
