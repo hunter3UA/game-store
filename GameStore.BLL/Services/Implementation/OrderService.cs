@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Context;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -20,7 +20,7 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(IUnitOfWork unitOfWork,INorthwindDbContext northwindDbContext ,IMapper mapper, ILogger<OrderService> logger)
+        public OrderService(IUnitOfWork unitOfWork, INorthwindDbContext northwindDbContext, IMapper mapper, ILogger<OrderService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -91,11 +91,53 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<OrderDTO>> GetListOfOrdersAsync(OrderHistoryDTO orderHistoryDTO)
         {
+            List<Order> orders = await FilterOrders(orderHistoryDTO);
+            return _mapper.Map<List<OrderDTO>>(orders);
+        }
+
+        private async Task<List<Order>> FilterOrders(OrderHistoryDTO orderHistoryDTO)
+        {
             Expression<Func<Order, bool>> expression = o => o.OrderDate >= orderHistoryDTO.From && o.OrderDate <= orderHistoryDTO.To;
             List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(expression);
-            List<Order> ordersFromNorthwind = await _northwindDbContext.Orders.GetRangeAsync(expression);
+            List<Order> ordersFromNorthwind = await _northwindDbContext.OrderRepository.GetListAsync();
             ordersFromStore.AddRange(ordersFromNorthwind);
-            return _mapper.Map<List<OrderDTO>>(ordersFromStore);
+            var filter = BuildFilter(orderHistoryDTO);
+            if (filter != null)
+                ordersFromStore = ordersFromStore.Where(filter.Compile()).ToList();
+            if (ordersFromNorthwind != null)
+            {
+                foreach (var item in ordersFromNorthwind)
+                {
+                    var detailsByOrderId = await _northwindDbContext.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == item.OrderID);
+                    var shipper = await _northwindDbContext.ShipperRepository.GetAsync(s => s.ShipperID == item.ShipVia);
+                    item.ShipperCompanyName = shipper.CompanyName;
+                    item.OrderDetails = detailsByOrderId;
+                }
+
+            }
+
+            return ordersFromStore;
+        }
+
+        private Expression<Func<Order, bool>> BuildFilter(OrderHistoryDTO orderHistoryDTO)
+        {
+            var type = typeof(Order);
+            var parameter = Expression.Parameter(type);
+            var historyParameter = Expression.Parameter(typeof(OrderHistoryDTO));
+            BinaryExpression expression = null;
+            foreach (var property in orderHistoryDTO.GetType().GetProperties())
+            {
+                var prop = Expression.Property(historyParameter,property.Name);
+                var value = Expression.Constant(property.GetValue(orderHistoryDTO));
+                if (value.Value != null)
+                {
+                    var operation = property.Name == "From" ? ExpressionType.GreaterThanOrEqual : ExpressionType.LessThanOrEqual;
+                    var newBinary = Expression.MakeBinary(operation, Expression.Property(parameter,type.GetProperty("OrderDate")), value);
+
+                    expression = expression == null ? newBinary : Expression.MakeBinary(ExpressionType.AndAlso, expression, newBinary);
+                }
+            }
+            return  expression!=null ? Expression.Lambda<Func<Order, bool>>(expression, parameter) : null;
         }
 
         private async Task<bool> ReserveGame(Order orderToReserve)

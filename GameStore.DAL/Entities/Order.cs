@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities
 {
@@ -19,7 +19,7 @@ namespace GameStore.DAL.Entities
         [Required, BsonSerializer(typeof(CustomDateTimeConverter))]
         public DateTime OrderDate { get; set; }
 
-        [DefaultValue(null), BsonSerializer(typeof(CustomDateTimeConverterNullable))]
+        [DefaultValue(null), BsonSerializer(typeof(CustomDateTimeConverterNullable)), BsonElement("RequiredDate")]
         public DateTime? Expiration { get; set; }
 
         [Required, DefaultValue(OrderStatus.Opened)]
@@ -40,11 +40,18 @@ namespace GameStore.DAL.Entities
         [BsonSerializer(typeof(CustomDateTimeConverterNullable))]
         public DateTime? ShippedDate { get; set; }
 
-        public int? ShipPostalCode { get; set; }
+        [BsonSerializer(typeof(CustomStringConverter))]
+        public string ShipPostalCode { get; set; }
 
         public string ShipRegion { get; set; }
 
-        public int? ShipVia { get; set; }
+        public int ShipVia { get; set; }
+
+        [NotMapped]
+        public string ShipperCompanyName { get; set; }
+
+        [NotMapped]
+        public int OrderID { get; set; }
 
         public Order()
         {

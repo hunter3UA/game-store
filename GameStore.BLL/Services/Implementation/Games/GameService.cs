@@ -41,7 +41,10 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
             mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
-            mappedGame.Publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == gameToAddDTO.PublisherName);
+
+            if (gameToAddDTO.PublisherName != null)
+                mappedGame.PublisherName = gameToAddDTO.PublisherName;
+
             if (string.IsNullOrEmpty(gameToAddDTO.Key) && !string.IsNullOrEmpty(gameToAddDTO.Name))
                 mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
 
@@ -64,7 +67,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         {
             filters = filters == null ? new List<Expression<Func<Game, bool>>>() : filters;
             int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);
-            totalGames = await _northwindDbContext.Products.GetCountAsync(filters);
+            totalGames = await _northwindDbContext.ProductRepository.GetCountAsync(filters);
 
             return totalGames;
         }
@@ -77,16 +80,10 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             bool orderDesc = gameFilterDTO.SortingType != SortingType.PriceAsc ? false : true;
             int totalGames = await _unitOfWork.GameRepository.CountListAsync(filtersFromStore);
-            totalGames += await _northwindDbContext.Products.GetCountAsync(filtersFromNorthwind);
+            totalGames += await _northwindDbContext.ProductRepository.GetCountAsync(filtersFromNorthwind);
             gameFilterDTO.Page = PaginationHelper<Game>.CheckCurrentPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames);
 
-            var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
-                 filtersFromStore,
-                 g => g.Genres, g => g.PlatformTypes, g => g.Comments);
-
-            var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
-            filteredGames.AddRange(northwindGames);
-            filteredGames.DistinctBy(g => g.Key);
+            var filteredGames = await GetGamesFromBasesAsync(filtersFromStore, filtersFromNorthwind);
             var gamesOnPage = filteredGames.SortByParameter(order, orderDesc).GetPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage);
 
             var mappedGames = _mapper.Map<List<GameDTO>>(gamesOnPage);
@@ -95,15 +92,27 @@ namespace GameStore.BLL.Services.Implementation.Games
             return gamePage;
         }
 
+        private async Task<List<Game>> GetGamesFromBasesAsync(List<Expression<Func<Game, bool>>> filtersFromStore, List<Expression<Func<Game, bool>>> filtersFromNorthwind)
+        {
+            var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
+                filtersFromStore,
+                g => g.Genres, g => g.PlatformTypes, g => g.Comments);
+            var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
+            filteredGames.AddRange(northwindGames);
+            filteredGames.DistinctBy(g => g.Key);
+
+            return filteredGames;
+        }
+
         private async Task<List<Game>> GetNorthwindGames(List<Expression<Func<Game, bool>>> filters)
         {
-            var northwindGames = await _northwindDbContext.Products.GetFilteredListAsync(filters);
+            var northwindGames = await _northwindDbContext.ProductRepository.GetFilteredListAsync(filters);
             foreach (var item in northwindGames)
             {
                 if (item.Key == null)
                 {
                     item.Key = CreateGameKey(item.Name);
-                    await _northwindDbContext.Products.UpdateAsync(item);
+                    await _northwindDbContext.ProductRepository.UpdateAsync(item);
                 }
                 item.AddedAt = DateTime.Parse(AddedToStoreDate);
             }
@@ -122,7 +131,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             else if (searchedGame.TypeOfBase == TypeOfBase.Northwind && isView)
             {
                 searchedGame.NumberOfViews += 1;
-                await _northwindDbContext.Products.UpdateAsync(searchedGame);
+                await _northwindDbContext.ProductRepository.UpdateAsync(searchedGame);
             }
 
             return _mapper.Map<GameDTO>(searchedGame);
@@ -176,18 +185,23 @@ namespace GameStore.BLL.Services.Implementation.Games
         private async Task<Game> GetGameFromBasesAsync(string gameKey)
         {
             Game searchedGame = await _unitOfWork.GameRepository.GetAsync(game => game.Key == gameKey, p => p.PlatformTypes, g => g.Genres);
-            searchedGame = searchedGame == null ? await _northwindDbContext.Products.GetAsync(g => g.Key == gameKey) : searchedGame;
+
+            if (searchedGame != null && searchedGame.IsDeleted == true)
+                throw new KeyNotFoundException();
+
+            searchedGame = searchedGame == null ? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey) : searchedGame;
 
             if (searchedGame == null)
                 throw new KeyNotFoundException();
 
-            if (searchedGame.PublisherName != null || searchedGame.SupplierID != 0)
+            if (searchedGame.PublisherName != null || searchedGame.SupplierID!=0)
             {
-                searchedGame.Publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == searchedGame.PublisherName);
-                searchedGame.Publisher = searchedGame.Publisher == null ? await _northwindDbContext.Suppliers.GetAsync(p => p.SupplierID == searchedGame.SupplierID) : searchedGame.Publisher;
+                var publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == searchedGame.PublisherName);
+                publisher = publisher ?? await _northwindDbContext.SupplierRepository.GetAsync(p => p.SupplierID == searchedGame.SupplierID);
+                searchedGame.Publisher = publisher ?? await _northwindDbContext.SupplierRepository.GetAsync(p => p.SupplierID == searchedGame.SupplierID);
             }
 
-            if (searchedGame.TypeOfBase == TypeOfBase.Northwind && searchedGame.CategoryID != 0)
+            if (searchedGame.CategoryID != 0)
             {
                 searchedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => g.CategoryId == searchedGame.CategoryID);
             }

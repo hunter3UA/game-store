@@ -21,6 +21,26 @@ namespace GameStore.BLL.DTO.Order
 
         public List<OrderDetailsDTO> OrderDetails { get; set; }
 
+        public double? Freight { get; set; }
+
+        public string ShipAddress { get; set; }
+
+        public string ShipCity { get; set; }
+
+        public string ShipCountry { get; set; }
+
+        public string ShipName { get; set; }
+
+        public DateTime? ShippedDate { get; set; }
+
+        public string ShipPostalCode { get; set; }
+
+        public string ShipRegion { get; set; }
+
+        public int? ShipVia { get; set; }
+
+        public string ShipperCompanyName { get; set; }
+
         public double TotalSum 
         { 
             get

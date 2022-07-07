@@ -5,12 +5,16 @@ namespace GameStore.DAL.Context.Abstract
 {
     public interface INorthwindDbContext
     {
-        INorthwindGenericRepository<Game> Products { get; }
+        INorthwindGenericRepository<Game> ProductRepository { get; }
 
-        INorthwindGenericRepository<Genre> Categories { get; }
+        INorthwindGenericRepository<Genre> CategoryRepository { get; }
 
-        INorthwindGenericRepository<Order> Orders { get; }
+        INorthwindGenericRepository<Order> OrderRepository { get; }
 
-        INorthwindGenericRepository<Publisher> Suppliers { get; }
+        INorthwindGenericRepository<Publisher> SupplierRepository { get; }
+
+        INorthwindGenericRepository<OrderDetails> OrderDetailsRepository { get; }
+
+        INorthwindGenericRepository<Shipper> ShipperRepository { get; }
     }
 }

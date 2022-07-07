@@ -36,5 +36,8 @@ namespace GameStore.BLL.DTO.Game
         public int ReorderLevel { get; set; }
 
         public string QuantityPerUnit { get; set; }
+
+        public bool IsSave { get; set; }
+
     }
 }

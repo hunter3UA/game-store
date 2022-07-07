@@ -48,7 +48,7 @@ namespace GameStore.DAL.Context
 
         private void GamesConfigure(EntityTypeBuilder<Game> builder)
         {
-            builder.HasQueryFilter(g => !g.IsDeleted);
+       
             builder
               .HasMany(g => g.PlatformTypes)
               .WithMany(p => p.Games)

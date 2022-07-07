@@ -40,7 +40,7 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             if (gameFilterDTO.Publishers != null)
             {
-                var publishers = await _northwindDbContext.Suppliers.GetRangeAsync(s => gameFilterDTO.Publishers.Contains(s.CompanyName));
+                var publishers = await _northwindDbContext.SupplierRepository.GetRangeAsync(s => gameFilterDTO.Publishers.Contains(s.CompanyName));
                 var publisherIds = publishers.Select(s => s.SupplierID).ToList();
                 if (publisherIds != null)
                 {

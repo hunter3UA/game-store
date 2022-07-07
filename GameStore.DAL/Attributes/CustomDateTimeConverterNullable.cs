@@ -14,8 +14,7 @@ namespace GameStore.DAL.Attributes
         public override DateTime? Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var res = context.Reader.ReadString();
-
-            var newDateTime = DateTime.Parse(res);
+            DateTime.TryParse(res, out var newDateTime);
 
             return newDateTime;
         }

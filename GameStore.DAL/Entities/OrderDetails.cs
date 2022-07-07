@@ -1,19 +1,23 @@
-﻿using System;
+﻿using GameStore.DAL.Attributes;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities
 {
+    [MongoCollection("order-details")]
+    [BsonIgnoreExtraElements]
     public class OrderDetails : BaseEntity
     {
-        [Required, Column(name: "ProductId")]
+        [Required, Column(name: "ProductId"), BsonIgnore]
         public int GameId { get; set; }
 
-        [ForeignKey("GameId")]
+        [ForeignKey("GameId"), BsonIgnore]
         public Game Game { get; set; }
 
-        [Required, Range(0.1, 10000)]
+        [Required, Range(0.1, 10000), BsonElement("UnitPrice")]
         public decimal Price { get; set; }
 
         [Required, Range(1, short.MaxValue)]
@@ -22,10 +26,10 @@ namespace GameStore.DAL.Entities
         [Required, DefaultValue(0)]
         public double Discount { get; set; }
 
-        [Required]
+        [Required, BsonElement("OrderID")]
         public int OrderId { get; set; }
 
-        [ForeignKey("OrderId")]
+        [ForeignKey("OrderId"), BsonIgnore]
         public Order Order { get; set; }
     }
 }

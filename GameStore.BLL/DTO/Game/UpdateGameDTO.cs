@@ -22,7 +22,7 @@ namespace GameStore.BLL.DTO.Game
 
         public int[] Platforms { get; set; }
 
-        public int? PublisherId { get; set; }
+        public string PublisherName { get; set; }
 
         public decimal Price { get; set; }
 

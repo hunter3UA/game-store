@@ -14,7 +14,7 @@ namespace GameStore.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWOrk;
         private readonly INorthwindDbContext _northwindDbContext;
-        private readonly IMongoCollection<Game> products;
+        
 
         public NorthwindController(INorthwindDbContext northwindDbContext, IUnitOfWork unitOfWork)
         {
@@ -26,7 +26,7 @@ namespace GameStore.API.Controllers
         public async Task<IActionResult> Get()
         {
 
-            var res = await _northwindDbContext.Orders.GetListAsync();
+            var res = await _northwindDbContext.OrderRepository.GetAsync(o => o.OrderDate==System.DateTime.Now);
             //  _northwindDbContext.UpdateDb();
 
             return new JsonResult(res);

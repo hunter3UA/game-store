@@ -10,21 +10,30 @@ namespace GameStore.DAL.Context
             INorthwindGenericRepository<Game> products,
             INorthwindGenericRepository<Genre> categories,
             INorthwindGenericRepository<Order> orders,
-            INorthwindGenericRepository<Publisher> suppliers
+            INorthwindGenericRepository<Publisher> suppliers,
+            INorthwindGenericRepository<OrderDetails> orderDetails,
+            INorthwindGenericRepository<Shipper> shippers
+            
             )
         {
-            Products = products;
-            Categories = categories;
-            Orders = orders;
-            Suppliers = suppliers;
+            ProductRepository = products;
+            CategoryRepository = categories;
+            OrderRepository = orders;
+            SupplierRepository = suppliers;
+            OrderDetailsRepository = orderDetails;
+            ShipperRepository = shippers;
         }
 
-        public INorthwindGenericRepository<Game> Products { get; }
+        public INorthwindGenericRepository<Game> ProductRepository { get; }
 
-        public INorthwindGenericRepository<Genre> Categories { get; }
+        public INorthwindGenericRepository<Genre> CategoryRepository { get; }
 
-        public INorthwindGenericRepository<Order> Orders { get; }
+        public INorthwindGenericRepository<Order> OrderRepository { get; }
 
-        public INorthwindGenericRepository<Publisher> Suppliers { get; }
+        public INorthwindGenericRepository<Publisher> SupplierRepository { get; }
+
+        public INorthwindGenericRepository<OrderDetails> OrderDetailsRepository { get; }
+
+        public INorthwindGenericRepository<Shipper> ShipperRepository { get; }
     }
 }
