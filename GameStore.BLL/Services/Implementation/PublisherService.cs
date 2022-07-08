@@ -57,9 +57,11 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<PublisherDTO> UpdatePublisherAsync(UpdatePublisherDTO updatePublisherDTO)
         {
+            Publisher oldPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.Id == updatePublisherDTO.Id);
+            await EditGamesByPublisher(oldPublisher.CompanyName, updatePublisherDTO.CompanyName);
             Publisher mappedPublisher = _mapper.Map<Publisher>(updatePublisherDTO);
-
             Publisher updatedPublisher = await _unitOfWork.PublisherRepository.UpdateAsync(mappedPublisher);
+        
             await _unitOfWork.SaveAsync();
 
             if (updatedPublisher != null)
@@ -72,15 +74,30 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<bool> RemovePublisherAsync(int id)
         {
-            bool isDeletedPublisher = await _unitOfWork.PublisherRepository.RemoveAsync(p => p.Id == id);
-            await _unitOfWork.SaveAsync();
+            var publisherById = await _unitOfWork.PublisherRepository.GetAsync(p => p.Id == id && !p.IsDeleted);
+            bool isDeletedPublisher = false;
+            if (publisherById != null)
+            {
+                await EditGamesByPublisher(publisherById.CompanyName, null);
 
-            if (isDeletedPublisher)
-                _logger.LogInformation($"Publisher with Id: {id} has been deleted");
-            else
-                throw new ArgumentException("Publisher can not be deleted");
+                isDeletedPublisher = await _unitOfWork.PublisherRepository.RemoveAsync(p => p.Id == id);
+                await _unitOfWork.SaveAsync();
 
+                if (isDeletedPublisher)
+                    _logger.LogInformation($"Publisher with Id: {id} has been deleted");
+                else
+                    throw new ArgumentException("Publisher can not be deleted");   
+            }
             return isDeletedPublisher;
+        }
+
+        private async Task EditGamesByPublisher(string publisherOldName, string publisherNewName)
+        {
+            List<Game> gamesByPublisher = await _unitOfWork.GameRepository.GetRangeAsync(g => g.PublisherName == publisherOldName);
+            foreach (var game in gamesByPublisher)
+            {
+                game.PublisherName = publisherNewName;
+            }
         }
     }
 }

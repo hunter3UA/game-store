@@ -24,5 +24,9 @@ namespace GameStore.BLL.DTO.Game
         public string PublisherName { get; set; }
 
         public string PublishedAt { get; set; }
+
+        public int NumberOfViews { get; set; }
+
+        public string QuantityPerUnit { get; set; }
     }
 }

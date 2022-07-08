@@ -5,6 +5,7 @@ using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Services.Abstract;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -15,18 +16,21 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INorthwindDbContext _northwindDbContext;
         private readonly ILogger<BasketService> _logger;
 
-        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger)
+        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger,INorthwindDbContext northwindDbContext)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _northwindDbContext = northwindDbContext;
         }
 
         public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
         {
             Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey);
+            gameOfDetails = gameOfDetails ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
 
             if (gameOfDetails == null)
                 throw new KeyNotFoundException("Game does not exist");

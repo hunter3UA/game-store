@@ -64,10 +64,10 @@ namespace GameStore.API.Controllers
         }
 
         [HttpDelete]
-        [Route("remove/{id}")]
-        public async Task<IActionResult> RemoveGameAsync([FromRoute] int id)
+        [Route("remove/{key}")]
+        public async Task<IActionResult> RemoveGameAsync([FromRoute] string key)
         {
-            await _gameService.RemoveGameAsync(id);
+            await _gameService.RemoveGameAsync(key);
 
             return Ok();
         }

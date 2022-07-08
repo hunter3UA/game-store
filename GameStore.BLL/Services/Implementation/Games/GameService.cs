@@ -79,11 +79,10 @@ namespace GameStore.BLL.Services.Implementation.Games
             Expression<Func<Game, object>> order = _gameFilterService.Sort(gameFilterDTO.SortingType);
 
             bool orderDesc = gameFilterDTO.SortingType != SortingType.PriceAsc ? false : true;
-            int totalGames = await _unitOfWork.GameRepository.CountListAsync(filtersFromStore);
-            totalGames += await _northwindDbContext.ProductRepository.GetCountAsync(filtersFromNorthwind);
-            gameFilterDTO.Page = PaginationHelper<Game>.CheckCurrentPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames);
 
             var filteredGames = await GetGamesFromBasesAsync(filtersFromStore, filtersFromNorthwind);
+            int totalGames = filteredGames.Count();
+            gameFilterDTO.Page = PaginationHelper<Game>.CheckCurrentPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames);
             var gamesOnPage = filteredGames.SortByParameter(order, orderDesc).GetPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage);
 
             var mappedGames = _mapper.Map<List<GameDTO>>(gamesOnPage);
@@ -99,7 +98,7 @@ namespace GameStore.BLL.Services.Implementation.Games
                 g => g.Genres, g => g.PlatformTypes, g => g.Comments);
             var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
             filteredGames.AddRange(northwindGames);
-            filteredGames.DistinctBy(g => g.Key);
+            filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
 
             return filteredGames;
         }
@@ -137,16 +136,26 @@ namespace GameStore.BLL.Services.Implementation.Games
             return _mapper.Map<GameDTO>(searchedGame);
         }
 
-        public async Task<bool> RemoveGameAsync(int id)
+        public async Task<bool> RemoveGameAsync(string key)
         {
-            bool isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Id == id);
-            await _unitOfWork.SaveAsync();
+            Game gameById = await _unitOfWork.GameRepository.GetAsync(g => g.Key==key);
+            bool isRemovedGame = false;
+            if (gameById != null)
+            {
+                isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key==key);
+                await _unitOfWork.SaveAsync();
 
-            if (isRemovedGame)
-                _logger.LogInformation($"Game with Key {id} has been deleted");
+                if (isRemovedGame)
+                    _logger.LogInformation($"Game with Key {key} has been deleted");
+                else
+                    throw new ArgumentException("Game can not be deleted");
+
+            }
             else
-                throw new ArgumentException("Game can not be deleted");
-
+            {
+      
+                //gameById= await _northwindDbContext.
+            }
             return isRemovedGame;
         }
 
@@ -158,8 +167,9 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 Game mappedGame = _mapper.Map<Game>(updateGameDTO);
 
-                mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.Genres.Contains(g.Id));
-                mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.Platforms.Contains(p.Id));
+                mappedGame.Id = gameByKey.Id;
+                mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.GenresId.Contains(g.Id));
+                mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
                 if (string.IsNullOrEmpty(updateGameDTO.Key) && !string.IsNullOrEmpty(updateGameDTO.Name))
                     mappedGame.Key = CreateGameKey(updateGameDTO.Name);
 
@@ -175,11 +185,17 @@ namespace GameStore.BLL.Services.Implementation.Games
             }
             else
             {
-                var mappedGame = _mapper.Map<AddGameDTO>(updateGameDTO);
-                GameDTO addedGame = await AddGameAsync(mappedGame);
+                gameByKey = await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == updateGameDTO.Key);
+                if (gameByKey != null)
+                {
+                    var mappedGame = _mapper.Map<AddGameDTO>(updateGameDTO);
+                    GameDTO addedGame = await AddGameAsync(mappedGame);
 
-                return addedGame;
+                    return addedGame;
+                }
             }
+
+            throw new KeyNotFoundException();
         }
 
         private async Task<Game> GetGameFromBasesAsync(string gameKey)
@@ -194,7 +210,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (searchedGame == null)
                 throw new KeyNotFoundException();
 
-            if (searchedGame.PublisherName != null || searchedGame.SupplierID!=0)
+            if (searchedGame.PublisherName != null || searchedGame.SupplierID != 0)
             {
                 var publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == searchedGame.PublisherName);
                 publisher = publisher ?? await _northwindDbContext.SupplierRepository.GetAsync(p => p.SupplierID == searchedGame.SupplierID);

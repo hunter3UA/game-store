@@ -6,7 +6,6 @@ namespace GameStore.BLL.DTO.Game
 {
     public class UpdateGameDTO
     {
-        public int Id { get; set; }
 
         public string Name { get; set; }
 
@@ -18,9 +17,9 @@ namespace GameStore.BLL.DTO.Game
 
         public short UnitsInStock { get; set; }
 
-        public int[] Genres { get; set; }
+        public int[] GenresId { get; set; }
 
-        public int[] Platforms { get; set; }
+        public int[] PlatformsId { get; set; }
 
         public string PublisherName { get; set; }
 
@@ -28,6 +27,9 @@ namespace GameStore.BLL.DTO.Game
 
         public string PublishedAt { get; set; }
 
-        public TypeOfBase TypeOfBase { get; set; }
+        public int NumberOfViews { get; set; }
+
+        public string QuantityPerUnit { get; set; }
+
     }
 }

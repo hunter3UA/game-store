@@ -39,5 +39,7 @@ namespace GameStore.BLL.DTO.Game
 
         public bool IsSave { get; set; }
 
+        public int NumberOfViews { get; set; }
+
     }
 }

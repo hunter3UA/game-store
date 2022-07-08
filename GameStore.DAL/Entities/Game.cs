@@ -23,7 +23,7 @@ namespace GameStore.DAL.Entities
         [Required, MaxLength(150), BsonElement("ProductName")]
         public string Name { get; set; }
 
-        [Required, MaxLength(5000), BsonIgnore]
+        [MaxLength(5000), BsonIgnore]
         public string Description { get; set; }
 
         [BsonIgnore]
@@ -76,6 +76,7 @@ namespace GameStore.DAL.Entities
         [NotMapped]
         public int SupplierID { get; set; }
 
+        [BsonIgnore]
         public string PublisherName { get; set; }
 
         public Game()
