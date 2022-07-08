@@ -11,10 +11,10 @@ namespace GameStore.DAL.Entities
     [BsonIgnoreExtraElements]
     public class OrderDetails : BaseEntity
     {
-        [Required, Column(name: "ProductId"), BsonIgnore]
-        public int GameId { get; set; }
+        [Required, Column(name: "GameKey"), BsonIgnore]
+        public string GameKey { get; set; }
 
-        [ForeignKey("GameId"), BsonIgnore]
+        [NotMapped, BsonIgnore]
         public Game Game { get; set; }
 
         [Required, Range(0.1, 10000), BsonElement("UnitPrice")]

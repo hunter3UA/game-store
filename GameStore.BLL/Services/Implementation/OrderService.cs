@@ -64,7 +64,7 @@ namespace GameStore.BLL.Services.Implementation
 
             foreach (var item in orderByCustomer.OrderDetails)
             {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
                 if (item.Game == null)
                     throw new KeyNotFoundException($"Games of order with id:{orderByCustomer.Id} not found");
             }
@@ -145,7 +145,7 @@ namespace GameStore.BLL.Services.Implementation
             bool isCompletedReserving = true;
             foreach (var item in orderToReserve.OrderDetails)
             {
-                Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId, g => g.Genres, g => g.PlatformTypes);
+                Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey, g => g.Genres, g => g.PlatformTypes);
 
                 if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
                 {
@@ -175,7 +175,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             foreach (var item in orderToCancel.OrderDetails)
             {
-                Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
                 if (gameOfItem == null)
                     await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
                 else

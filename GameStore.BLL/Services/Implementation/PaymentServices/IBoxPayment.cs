@@ -18,12 +18,12 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 
             foreach (var item in orderToPay.OrderDetails)
             {
-                item.Game = await unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                item.Game = await unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
                 if (item.Game == null)
                 {
                     orderToPay.Status = OrderStatus.Canceled;
                     await unitOfWork.SaveAsync();
-                    throw new KeyNotFoundException($"Games with id {item.GameId} not found");
+                    throw new KeyNotFoundException($"Games with id {item.GameKey} not found");
                 }
             }
 

@@ -35,9 +35,6 @@ namespace GameStore.DAL.Entities
         [BsonIgnore]
         public IEnumerable<Genre> Genres { get; set; }
 
-        [BsonIgnore]
-        public IEnumerable<OrderDetails> OrderDetails { get; set; }
-
         [Required, Range(0.1, 10000), BsonElement("UnitPrice"), BsonRepresentation(BsonType.Double)]
         public decimal Price { get; set; }
 

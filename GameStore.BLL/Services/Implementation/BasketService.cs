@@ -44,27 +44,32 @@ namespace GameStore.BLL.Services.Implementation
             else if (orderOfCustomer.Status == OrderStatus.Processing)
                 throw new ArgumentException("Order detils can not be added to order with Processing status");
 
-            OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameId == gameOfDetails.Id);
+            OrderDetails orderItemToAdd = await _unitOfWork.OrderDetailsRepository.GetAsync(od => od.OrderId == orderOfCustomer.Id && od.GameKey == gameOfDetails.Key);
             if (orderItemToAdd != null)
                 return _mapper.Map<OrderDetailsDTO>(orderItemToAdd);
 
-            OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Id, gameOfDetails.Price);
+            OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Key, gameOfDetails.Price);
 
             return _mapper.Map<OrderDetailsDTO>(addedOrderDetails);
         }
 
         public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
         {
-            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId, g => g.Game);
+            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
+            Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
+            gameByDetails = gameByDetails ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
 
             if (orderDetailsToUpdate == null)
                 throw new KeyNotFoundException("Order details not found");
 
             orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
-            if (orderDetailsToUpdate.Quantity > orderDetailsToUpdate.Game.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
+            if (orderDetailsToUpdate.Quantity > gameByDetails.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
                 throw new ArgumentException("Quantity is invalid");
 
-            await _unitOfWork.SaveAsync();
+            if (gameByDetails.TypeOfBase == TypeOfBase.GameStore)
+                await _unitOfWork.SaveAsync();
+            else
+                await _northwindDbContext.ProductRepository.UpdateAsync(gameByDetails);
 
             return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);
         }
@@ -91,12 +96,11 @@ namespace GameStore.BLL.Services.Implementation
 
             foreach (var item in orderByCustomer.OrderDetails)
             {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Id == item.GameId);
+                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+                item.Game = item.Game ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
                 if (item.Game == null)
                     await RemoveOrderDetailsAsync(item.Id);
             }
-
-            orderByCustomer.OrderDetails = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == orderByCustomer.Id, od => od.Game);
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
@@ -116,14 +120,14 @@ namespace GameStore.BLL.Services.Implementation
             return addedOrder;
         }
 
-        private async Task<OrderDetails> CreateOrderDetailsAsync(int orderId, int gameId, decimal price)
+        private async Task<OrderDetails> CreateOrderDetailsAsync(int orderId, string key, decimal price)
         {
             OrderDetails orderDetailsToAdd = new OrderDetails()
             {
                 Price = price,
                 OrderId = orderId,
                 Quantity = 1,
-                GameId = gameId,
+                GameKey = key,
                 Discount = 0
             };
 
