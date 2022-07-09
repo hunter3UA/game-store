@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using GameStore.BLL.DTO.Game;
+using GameStore.DAL.Entities;
 
 namespace GameStore.BLL.DTO.Publisher
 {
@@ -18,5 +19,7 @@ namespace GameStore.BLL.DTO.Publisher
 
         [JsonIgnore]
         public List<GameDTO> Games { get; set; }
+
+        public TypeOfBase TypeOfBase { get; set; }
     }
 }

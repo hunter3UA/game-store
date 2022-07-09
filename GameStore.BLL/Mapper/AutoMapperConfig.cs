@@ -8,6 +8,7 @@ using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.DTO.Publisher;
+using GameStore.BLL.DTO.Shipper;
 using GameStore.DAL.Entities;
 using System;
 using System.Linq;
@@ -44,6 +45,8 @@ namespace GameStore.BLL.Mapper
             CreateMap<OrderDetails, OrderDetailsDTO>();
 
             CreateMap<Order, OrderDTO>();
+
+            CreateMap<Shipper, ShipperDTO>();
         }
     }
 }

@@ -14,5 +14,7 @@ namespace GameStore.BLL.Services.Abstract
         Task<OrderDTO> GetOrderAsync(int orderId);
 
         Task<List<OrderDTO>> GetListOfOrdersAsync(OrderHistoryDTO orderHistoryDTO);
+
+        Task<OrderDTO> UpdateShipperOfOrderAsync(int orderId, int shipperId);
     }
 }

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities
-{
+{   
     [MongoCollection("order-details")]
     [BsonIgnoreExtraElements]
     public class OrderDetails : BaseEntity

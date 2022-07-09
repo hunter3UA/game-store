@@ -22,6 +22,6 @@ namespace GameStore.BLL.Services.Abstract.Games
 
         Task<ItemPageDTO<GameDTO>> GetRangeOfGamesAsync(GameFilterDTO gameFilterDTO);
 
-        Task<int> GetCountAsync(List<Expression<Func<Game, bool>>> filters = null);
+        Task<int> GetCountAsync();
     }
 }

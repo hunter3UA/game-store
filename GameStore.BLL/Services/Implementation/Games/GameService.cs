@@ -63,24 +63,23 @@ namespace GameStore.BLL.Services.Implementation.Games
             return _mapper.Map<List<GameDTO>>(allGames);
         }
 
-        public async Task<int> GetCountAsync(List<Expression<Func<Game, bool>>> filters)
+        public async Task<int> GetCountAsync()
         {
-            filters = filters == null ? new List<Expression<Func<Game, bool>>>() : filters;
-            int totalGames = await _unitOfWork.GameRepository.CountListAsync(filters);
-            totalGames = await _northwindDbContext.ProductRepository.GetCountAsync(filters);
+            var gamesFromStore = await _unitOfWork.GameRepository.GetListAsync(g => g.IsDeleted == false);
+            var gamesFromNorthwind = await _northwindDbContext.ProductRepository.GetListAsync();
+            gamesFromStore.AddRange(gamesFromNorthwind);
+            gamesFromStore = gamesFromStore.DistinctBy(g => g.Key).ToList();
+            int totalGames = gamesFromStore.Count();
 
             return totalGames;
         }
 
         public async Task<ItemPageDTO<GameDTO>> GetRangeOfGamesAsync(GameFilterDTO gameFilterDTO)
         {
-            List<Expression<Func<Game, bool>>> filtersFromStore = await _gameFilterService.GetFiltersForGameStore(gameFilterDTO);
-            List<Expression<Func<Game, bool>>> filtersFromNorthwind = await _gameFilterService.GetFiltersForNorthwind(gameFilterDTO);
             Expression<Func<Game, object>> order = _gameFilterService.Sort(gameFilterDTO.SortingType);
-
             bool orderDesc = gameFilterDTO.SortingType != SortingType.PriceAsc ? false : true;
 
-            var filteredGames = await GetGamesFromBasesAsync(filtersFromStore, filtersFromNorthwind);
+            var filteredGames = await GetGamesFromBasesAsync(gameFilterDTO);
             int totalGames = filteredGames.Count();
             gameFilterDTO.Page = PaginationHelper<Game>.CheckCurrentPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage, totalGames);
             var gamesOnPage = filteredGames.SortByParameter(order, orderDesc).GetPage(gameFilterDTO.Page, gameFilterDTO.ElementsOnPage);
@@ -91,13 +90,19 @@ namespace GameStore.BLL.Services.Implementation.Games
             return gamePage;
         }
 
-        private async Task<List<Game>> GetGamesFromBasesAsync(List<Expression<Func<Game, bool>>> filtersFromStore, List<Expression<Func<Game, bool>>> filtersFromNorthwind)
+        private async Task<List<Game>> GetGamesFromBasesAsync(GameFilterDTO gameFilterDTO)
         {
+            List<Expression<Func<Game, bool>>> filtersFromStore = await _gameFilterService.GetFiltersForGameStore(gameFilterDTO);
+            List<Expression<Func<Game, bool>>> filtersFromNorthwind = await _gameFilterService.GetFiltersForNorthwind(gameFilterDTO);
+
             var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
                 filtersFromStore,
                 g => g.Genres, g => g.PlatformTypes, g => g.Comments);
-            var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
-            filteredGames.AddRange(northwindGames);
+            if (gameFilterDTO.Platforms == null)
+            {
+                var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
+                filteredGames.AddRange(northwindGames);
+            }
             filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
 
             return filteredGames;
@@ -138,11 +143,11 @@ namespace GameStore.BLL.Services.Implementation.Games
 
         public async Task<bool> RemoveGameAsync(string key)
         {
-            Game gameById = await _unitOfWork.GameRepository.GetAsync(g => g.Key==key);
+            Game gameById = await _unitOfWork.GameRepository.GetAsync(g => g.Key == key);
             bool isRemovedGame = false;
             if (gameById != null)
             {
-                isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key==key);
+                isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key == key);
                 await _unitOfWork.SaveAsync();
 
                 if (isRemovedGame)
@@ -153,7 +158,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             }
             else
             {
-      
+
                 //gameById= await _northwindDbContext.
             }
             return isRemovedGame;

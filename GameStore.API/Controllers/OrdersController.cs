@@ -64,6 +64,15 @@ namespace GameStore.API.Controllers
             return new JsonResult(createdOrder);
         }
 
+        [HttpPut]
+        [Route("{orderId}/{shipperId}")]
+        public async Task<IActionResult> UpdateOrderShipperAsync([FromRoute] int orderId,[FromRoute] int shipperId)
+        {
+            var updatedOrder = await _orderService.UpdateShipperOfOrderAsync(orderId, shipperId);
+
+            return new JsonResult(updatedOrder);
+        }
+
         [HttpDelete]
         [Route("{orderId}")]
         public async Task<IActionResult> CancelOrderAsync([FromRoute] int orderId)

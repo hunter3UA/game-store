@@ -11,7 +11,8 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
     {
         public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork)
         {
-            Order orderToPay = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing);
+            Order orderToPay = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
+
 
             if (orderToPay == null)
                 throw new KeyNotFoundException("Order not found");

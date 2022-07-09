@@ -41,5 +41,6 @@ namespace GameStore.BLL.DTO.Game
 
         public int NumberOfViews { get; set; }
 
+        public TypeOfBase TypeOfBase { get; set; }
     }
 }

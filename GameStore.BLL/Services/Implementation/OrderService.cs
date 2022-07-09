@@ -62,12 +62,7 @@ namespace GameStore.BLL.Services.Implementation
             if (orderByCustomer == null || orderByCustomer.OrderDetails == null)
                 throw new KeyNotFoundException("Order not found");
 
-            foreach (var item in orderByCustomer.OrderDetails)
-            {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                if (item.Game == null)
-                    throw new KeyNotFoundException($"Games of order with id:{orderByCustomer.Id} not found");
-            }
+            await GetDetailsByOrder(orderByCustomer);
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
@@ -93,6 +88,18 @@ namespace GameStore.BLL.Services.Implementation
         {
             List<Order> orders = await FilterOrders(orderHistoryDTO);
             return _mapper.Map<List<OrderDTO>>(orders);
+        }
+
+        public async Task<OrderDTO> UpdateShipperOfOrderAsync(int orderId,int shipperId)
+        {
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId,o=>o.OrderDetails);
+            if (orderById != null)
+            {
+                orderById.ShipVia = shipperId;
+                await _unitOfWork.SaveAsync();
+            }
+            await GetDetailsByOrder(orderById);
+            return _mapper.Map<OrderDTO>(orderById);
         }
 
         private async Task<List<Order>> FilterOrders(OrderHistoryDTO orderHistoryDTO)
@@ -146,6 +153,7 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderToReserve.OrderDetails)
             {
                 Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey, g => g.Genres, g => g.PlatformTypes);
+                gameToReserve = gameToReserve ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
 
                 if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
                 {
@@ -162,9 +170,13 @@ namespace GameStore.BLL.Services.Implementation
                     await _unitOfWork.SaveAsync();
                 }
                 else
-                {
+                {              
                     gameToReserve.UnitsInStock -= item.Quantity;
-                    await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
+
+                    if (gameToReserve.TypeOfBase == TypeOfBase.GameStore)
+                        await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
+                    else if (gameToReserve.TypeOfBase == TypeOfBase.Northwind)
+                        await _northwindDbContext.ProductRepository.UpdateAsync(gameToReserve);
                 }
             }
 
@@ -176,12 +188,31 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderToCancel.OrderDetails)
             {
                 Game gameOfItem = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+                gameOfItem = gameOfItem ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
+
                 if (gameOfItem == null)
+                {
                     await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+                }             
                 else
+                {
                     gameOfItem.UnitsInStock += item.Quantity;
+                    if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
+                        await _northwindDbContext.ProductRepository.UpdateAsync(gameOfItem);
+                }
+                    
             }
         }
 
+        private async Task GetDetailsByOrder(Order order)
+        {
+            foreach (var item in order.OrderDetails)
+            {
+                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+                item.Game = item.Game ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
+                if (item.Game == null)
+                    throw new KeyNotFoundException($"Games of order with id:{order.Id} not found");
+            }
+        }
     }
 }
