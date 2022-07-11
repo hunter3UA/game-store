@@ -44,7 +44,9 @@ namespace GameStore.API
                 {
                     Duration = Constants.ResponseCacheDuration
                 });
-            });
+
+            }).AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(

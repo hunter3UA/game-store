@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.BLL.DTO.Game
@@ -11,9 +12,9 @@ namespace GameStore.BLL.DTO.Game
 
         public string Key { get; set; }
 
-        public int[] GenresId { get; set; }
+        public List<int> GenresId { get; set; }
 
-        public int[] PlatformsId { get; set; }
+        public List<int> PlatformsId { get; set; }
 
         public decimal Price { get; set; }
 

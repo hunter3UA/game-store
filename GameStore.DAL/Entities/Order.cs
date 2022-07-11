@@ -16,10 +16,10 @@ namespace GameStore.DAL.Entities
         [Required]
         public int CustomerId { get; set; }
 
-        [Required, BsonSerializer(typeof(CustomDateTimeConverter))]
+        [Required]
         public DateTime OrderDate { get; set; }
 
-        [DefaultValue(null), BsonSerializer(typeof(CustomDateTimeConverterNullable)), BsonElement("RequiredDate")]
+        [DefaultValue(null), BsonElement("RequiredDate")]
         public DateTime? Expiration { get; set; }
 
         [Required, DefaultValue(OrderStatus.Opened)]
@@ -27,7 +27,7 @@ namespace GameStore.DAL.Entities
 
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
 
-        public double? Freight { get; set; }
+        public decimal? Freight { get; set; }
 
         public string ShipAddress { get; set; }
 
@@ -37,7 +37,6 @@ namespace GameStore.DAL.Entities
 
         public string ShipName { get; set; }
 
-        [BsonSerializer(typeof(CustomDateTimeConverterNullable))]
         public DateTime? ShippedDate { get; set; }
 
         [BsonSerializer(typeof(CustomStringConverter))]

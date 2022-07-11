@@ -29,7 +29,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
         {
-            Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey);
+            Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey && !g.IsDeleted);
             gameOfDetails = gameOfDetails ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
 
             if (gameOfDetails == null)

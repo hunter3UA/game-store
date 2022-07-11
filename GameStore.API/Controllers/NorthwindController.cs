@@ -4,6 +4,8 @@ using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace GameStore.API.Controllers
@@ -25,11 +27,14 @@ namespace GameStore.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            Expression<Func<Game, object>> ex = g => g.Genres;
+            var b = ex.Body;
+            var res = await _unitOfWOrk.CommentRepository.GetAsync(g => g.Id == 3, g => g.Game, g => g.Game.Genres);
+            //var res= await _unitOfWOrk.CommentRepository.GetAsync()
 
-            var res = await _northwindDbContext.OrderRepository.GetAsync(o => o.OrderDate==System.DateTime.Now);
-            //  _northwindDbContext.UpdateDb();
 
             return new JsonResult(res);
+
         }
     }
 }

@@ -64,7 +64,7 @@ namespace GameStore.DAL.Entities
 
         public string QuantityPerUnit { get; set; }
 
-        [BsonDefaultValue(TypeOfBase.Northwind)]
+        [NotMapped,BsonDefaultValue(TypeOfBase.Northwind)]
         public TypeOfBase TypeOfBase { get; set; }
 
         [NotMapped, BsonRepresentation(BsonType.Int32), BsonElement("CategoryID")]

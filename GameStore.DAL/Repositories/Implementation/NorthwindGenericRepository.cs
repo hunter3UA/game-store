@@ -53,7 +53,8 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<List<TDocument>> GetRangeAsync(Expression<Func<TDocument, bool>> expression)
         {
-            var result = await _dbSet.Where(expression).ToListAsync();
+  
+            var result = expression != null ? await _dbSet.Where(expression).ToListAsync() : await _dbSet.ToListAsync();
 
             return result;
         }
@@ -68,7 +69,6 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task UpdateAsync(TDocument entityToUpdate)
         {
-
             var list = GetUpdateDefinition(entityToUpdate);
             var update = Builders<TDocument>.Update.Combine(list);
             await _collection.UpdateOneAsync(g => g.ObjectId == entityToUpdate.ObjectId, update);
