@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Order;
@@ -85,22 +86,26 @@ namespace GameStore.BLL.Services.Implementation
                 throw new ArgumentException("Order has not been deleted");
 
             return isDeletedOrderDetails;
-        }
+        }       
 
         public async Task<OrderDTO> GetBasketAsync(int customerId)
         {
-            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, od => od.OrderDetails);
+            Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, od => od.OrderDetails.Where(o=>!o.IsDeleted));
 
             if (orderByCustomer == null)
                 throw new KeyNotFoundException("Order not found");
-
-            foreach (var item in orderByCustomer.OrderDetails)
-            {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                item.Game = item.Game ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
-                if (item.Game == null)
-                    await RemoveOrderDetailsAsync(item.Id);
+            var details = orderByCustomer.OrderDetails.ToList();
+            for(int i = 0; i < orderByCustomer.OrderDetails.Count(); i++)
+            {       
+                details[i].Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == details[i].GameKey);
+                details[i].Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == details[i].GameKey);
+                if (orderByCustomer.Status != OrderStatus.Processing && details[i].Game != null && details[i].Game.IsDeleted)
+                {
+                    await RemoveOrderDetailsAsync(details[i].Id);
+                    details.Remove(details[i]);           
+                }
             }
+            orderByCustomer.OrderDetails = details;
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }

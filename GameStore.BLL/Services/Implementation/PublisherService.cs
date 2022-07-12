@@ -57,11 +57,9 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<PublisherDTO> UpdatePublisherAsync(UpdatePublisherDTO updatePublisherDTO)
         {
-            Publisher oldPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.Id == updatePublisherDTO.Id);
-            await EditGamesByPublisher(oldPublisher.CompanyName, updatePublisherDTO.CompanyName);
             Publisher mappedPublisher = _mapper.Map<Publisher>(updatePublisherDTO);
             Publisher updatedPublisher = await _unitOfWork.PublisherRepository.UpdateAsync(mappedPublisher);
-        
+       
             await _unitOfWork.SaveAsync();
 
             if (updatedPublisher != null)
@@ -78,8 +76,6 @@ namespace GameStore.BLL.Services.Implementation
             bool isDeletedPublisher = false;
             if (publisherById != null)
             {
-                await EditGamesByPublisher(publisherById.CompanyName, null);
-
                 isDeletedPublisher = await _unitOfWork.PublisherRepository.RemoveAsync(p => p.Id == id);
                 await _unitOfWork.SaveAsync();
 
@@ -89,15 +85,6 @@ namespace GameStore.BLL.Services.Implementation
                     throw new ArgumentException("Publisher can not be deleted");   
             }
             return isDeletedPublisher;
-        }
-
-        private async Task EditGamesByPublisher(string publisherOldName, string publisherNewName)
-        {
-            List<Game> gamesByPublisher = await _unitOfWork.GameRepository.GetRangeAsync(g => g.PublisherName == publisherOldName);
-            foreach (var game in gamesByPublisher)
-            {
-                game.PublisherName = publisherNewName;
-            }
         }
     }
 }

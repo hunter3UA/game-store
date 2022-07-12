@@ -96,7 +96,7 @@ namespace GameStore.BLL.Services.Implementation
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(mappedOrder);
             await _unitOfWork.SaveAsync();
 
-            return _mapper.Map<OrderDTO>(updateOrderDTO);
+            return _mapper.Map<OrderDTO>(updatedOrder);
         }
 
         private async Task<List<Order>> FilterOrders(OrderHistoryDTO orderHistoryDTO)

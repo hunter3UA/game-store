@@ -139,14 +139,15 @@ namespace GameStore.BLL.Services.Implementation.Games
 
         public async Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO)
         {
-            Game gameByKey = await SetGameAsync(updateGameDTO.Key);
+            Game gameByKey = await SetGameAsync(updateGameDTO.OldGameKey);
 
             if (gameByKey.TypeOfBase == TypeOfBase.GameStore)
             {
                 Game mappedGame = _mapper.Map<Game>(updateGameDTO);
+                mappedGame.Id = gameByKey.Id;
                 mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.GenresId.Contains(g.Id));
                 mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
-                if (string.IsNullOrEmpty(updateGameDTO.Key) && !string.IsNullOrEmpty(updateGameDTO.Name))
+                if (string.IsNullOrEmpty(updateGameDTO.NewGameKey) && !string.IsNullOrEmpty(updateGameDTO.Name))
                     mappedGame.Key = CreateGameKey(updateGameDTO.Name);
 
                 Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
@@ -162,8 +163,13 @@ namespace GameStore.BLL.Services.Implementation.Games
             else
             {
                 var mappedGame = _mapper.Map<AddGameDTO>(updateGameDTO);
-                GameDTO addedGame = await AddGameAsync(mappedGame);
+                var detailsByOrder = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(o => o.GameKey == gameByKey.Key);
+                detailsByOrder.ForEach(o =>
+                {
+                    o.GameKey = mappedGame.Key;
 
+                });
+                GameDTO addedGame = await AddGameAsync(mappedGame);
                 return addedGame;
             }
         }  
@@ -179,7 +185,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (gameFilterDTO.Platforms == null)
             {
                 var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
-                filteredGames.AddRange(northwindGames);
+                filteredGames = filteredGames.Concat(northwindGames).ToList();
             }
             filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
 

@@ -9,7 +9,9 @@ namespace GameStore.BLL.DTO.Game
 
         public string Name { get; set; }
 
-        public string Key { get; set; }
+        public string NewGameKey { get; set; }
+
+        public string OldGameKey { get; set; }
 
         public string Description { get; set; }
 
