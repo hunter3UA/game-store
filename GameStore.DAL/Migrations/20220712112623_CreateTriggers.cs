@@ -9,23 +9,23 @@ namespace GameStore.DAL.Migrations
         {
 
             migrationBuilder.Sql(@"create trigger 
-                                    Publishers_Update on Publishers AFTER UPDATE AS 
-		                             Declare @IsDeleted bit
-		 Declare @NewPublisherName nvarchar(150)
-         Declare @OldPublisherName nvarchar(150)
-        select @NewPublisherName=CompanyName from inserted
-        select @OldPublisherName=CompanyName from deleted  
-		select @IsDeleted=IsDeleted from inserted
-		if  
-        @IsDeleted=1 And @NewPublisherName=@OldPublisherName
-		Update Games
-		Set PublisherName=null
-		Where PublisherName= @OldPublisherName
-		else if
-        @NewPublisherName!=@OldPublisherName And @IsDeleted=0
-		Update Games
-		Set PublisherName=@NewPublisherName
-		Where PublisherName=@OldPublisherName");
+                                   Publishers_Update on Publishers AFTER UPDATE AS 
+		                           Declare @IsDeleted bit
+		                           Declare @NewPublisherName nvarchar(150)
+                                   Declare @OldPublisherName nvarchar(150)
+                                   select @NewPublisherName=CompanyName from inserted
+                                   select @OldPublisherName=CompanyName from deleted  
+                                   select @IsDeleted=IsDeleted from inserted
+		                           if  
+                                   @IsDeleted=1 And @NewPublisherName=@OldPublisherName
+		                           Update Games
+		                           Set PublisherName=null
+		                           Where PublisherName= @OldPublisherName
+		                           else if
+                                   @NewPublisherName!=@OldPublisherName And @IsDeleted=0
+		                           Update Games
+		                           Set PublisherName=@NewPublisherName
+		                           Where PublisherName=@OldPublisherName");
 
             migrationBuilder.Sql(@"create trigger 
                                     Games_Update on Games AFTER UPDATE AS 
@@ -41,12 +41,9 @@ namespace GameStore.DAL.Migrations
                                     Where GameKey = @OldGameKey
                                     if @IsDeleted = 1
                                     Update OrderDetails
-
                                     Set IsDeleted = 1
+                                    Where GameKey = @NewGameKey And OrderId in (Select Id From Orders Where ""Status"" = 0 Or ""Status"" = 3)");
 
-                                    Where GameKey = @NewGameKey And OrderId in (Select Id From Orders Where ""Status"" = 0 Or ""Status"" = 3)
-                            
-                    ");
             migrationBuilder.UpdateData(
                 table: "Games",
                 keyColumn: "Id",

@@ -23,16 +23,16 @@ namespace GameStore.DAL.Entities
         [Required, MaxLength(150), BsonElement("ProductName")]
         public string Name { get; set; }
 
-        [MaxLength(5000), BsonIgnore]
+        [MaxLength(5000), IgnoreMongoUpdate]
         public string Description { get; set; }
 
-        [BsonIgnore]
+        [IgnoreMongoUpdate]
         public IEnumerable<Comment> Comments { get; set; }
 
-        [BsonIgnore]
+        [IgnoreMongoUpdate]
         public IEnumerable<PlatformType> PlatformTypes { get; set; }
 
-        [BsonIgnore]
+        [IgnoreMongoUpdate]
         public IEnumerable<Genre> Genres { get; set; }
 
         [Required, Range(0.1, 10000), BsonElement("UnitPrice"), BsonRepresentation(BsonType.Double)]
@@ -44,16 +44,16 @@ namespace GameStore.DAL.Entities
         [Required, Range(0, short.MaxValue)]
         public short UnitsInStock { get; set; }
 
-        [NotMapped, BsonIgnore]
+        [NotMapped, IgnoreMongoUpdate]
         public Publisher Publisher { get; set; }
 
         [Required, DefaultValue(0)]
         public int NumberOfViews { get; set; }
-
-        [BsonIgnore]
+        
+        [IgnoreMongoUpdate]
         public DateTime AddedAt { get; set; }
 
-        [BsonIgnore]
+        [IgnoreMongoUpdate]
         public DateTime PublishedAt { get; set; }
 
         [DefaultValue(0)]
@@ -64,7 +64,7 @@ namespace GameStore.DAL.Entities
 
         public string QuantityPerUnit { get; set; }
 
-        [NotMapped,BsonDefaultValue(TypeOfBase.Northwind)]
+        [NotMapped,BsonDefaultValue(TypeOfBase.Northwind),IgnoreMongoUpdate]
         public TypeOfBase TypeOfBase { get; set; }
 
         [NotMapped, BsonRepresentation(BsonType.Int32), BsonElement("CategoryID")]
@@ -73,11 +73,12 @@ namespace GameStore.DAL.Entities
         [NotMapped]
         public int SupplierID { get; set; }
 
-        [BsonIgnore]
+        [IgnoreMongoUpdate]
         public string PublisherName { get; set; }
 
         public Game()
         {
+            PublishedAt = DateTime.UtcNow;
             AddedAt = DateTime.UtcNow;
             Comments = new List<Comment>();
             

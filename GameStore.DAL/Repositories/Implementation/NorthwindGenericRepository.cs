@@ -98,7 +98,7 @@ namespace GameStore.DAL.Repositories.Implementation
             foreach (var t in type.GetProperties())
             {
                 var propName = t.Name;
-                var isIgnore = t.GetCustomAttributes(typeof(BsonIgnoreAttribute), true).FirstOrDefault() as BsonIgnoreAttribute;
+                var isIgnore = t.GetCustomAttributes(typeof(IgnoreMongoUpdateAttribute), true).FirstOrDefault() as IgnoreMongoUpdateAttribute;
 
                 if (isIgnore == null)
                 {

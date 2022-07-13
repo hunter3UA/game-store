@@ -58,7 +58,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
             Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-            gameByDetails = gameByDetails ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
+            gameByDetails ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
 
             if (orderDetailsToUpdate == null)
                 throw new KeyNotFoundException("Order details not found");

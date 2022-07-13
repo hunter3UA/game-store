@@ -23,7 +23,10 @@ namespace GameStore.BLL.Mapper
             CreateMap<AddGameDTO, Game>()
                 .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
             CreateMap<Game, AddGameDTO>();
-            CreateMap<UpdateGameDTO, Game>().ForMember((m) => m.Genres, mapper => mapper.Ignore()).ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
+            CreateMap<UpdateGameDTO, Game>()
+                .ForMember((m) => m.Genres, mapper => mapper.Ignore())
+                .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)))
+                .ForMember(m=>m.Key,mapper=>mapper.MapFrom(g=>g.NewGameKey));
             CreateMap<UpdateGameDTO, AddGameDTO>().ForMember(m=>m.Key,mapper=>mapper.MapFrom(m=>m.NewGameKey));
 
             CreateMap<AddCommentDTO, Comment>();

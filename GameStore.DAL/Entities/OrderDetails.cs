@@ -14,7 +14,7 @@ namespace GameStore.DAL.Entities
         [Required, Column(name: "GameKey"), BsonIgnore]
         public string GameKey { get; set; }
 
-        [NotMapped, BsonIgnore]
+        [NotMapped, IgnoreMongoUpdate]
         public Game Game { get; set; }
 
         [Required, Range(0.1, 10000), BsonElement("UnitPrice")]
@@ -29,7 +29,7 @@ namespace GameStore.DAL.Entities
         [Required, BsonElement("OrderID")]
         public int OrderId { get; set; }
 
-        [ForeignKey("OrderId"), BsonIgnore]
+        [ForeignKey("OrderId"), IgnoreMongoUpdate]
         public Order Order { get; set; }
     }
 }

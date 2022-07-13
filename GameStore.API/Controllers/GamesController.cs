@@ -24,7 +24,7 @@ namespace GameStore.API.Controllers
         public async Task<IActionResult> AddGameAsync([FromBody] AddGameDTO addGameDTO)
         {
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
-
+          
             return new JsonResult(addedGame);
         }
 

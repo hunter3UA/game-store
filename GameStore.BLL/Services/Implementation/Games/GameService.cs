@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Common;
@@ -14,6 +15,7 @@ using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
+using Serilog.Context;
 
 namespace GameStore.BLL.Services.Implementation.Games
 {
@@ -38,33 +40,18 @@ namespace GameStore.BLL.Services.Implementation.Games
         public async Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO)
         {
             Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
-            mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => gameToAddDTO.GenresId.Contains(g.Id));
-            mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => gameToAddDTO.PlatformsId.Contains(p.Id));
-
-            if (gameToAddDTO.PublisherName != null)
-                mappedGame.PublisherName = gameToAddDTO.PublisherName;
-
-            if (string.IsNullOrEmpty(gameToAddDTO.Key) && !string.IsNullOrEmpty(gameToAddDTO.Name))
-                mappedGame.Key = CreateGameKey(gameToAddDTO.Name);
-
-            Game addedGame = await _unitOfWork.GameRepository.AddAsync(mappedGame);
+            Game initializedGame = await InitializeGameAsync(mappedGame, gameToAddDTO.GenresId, gameToAddDTO.PlatformsId, gameToAddDTO.Key);
+            Game addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
             await _unitOfWork.SaveAsync();
-
-            _logger.LogInformation($"Game has been added with Id: {addedGame.Id}");
+            
+            _logger.LogInformation($"Game has been added with Id: {addedGame.Id}",addedGame);
 
             return _mapper.Map<GameDTO>(addedGame);
         }
 
-        public async Task<List<GameDTO>> GetListOfGamesAsync()
-        {
-            List<Game> allGames = await _unitOfWork.GameRepository.GetListAsync(g => g.Genres, p => p.PlatformTypes, pb => pb.Publisher);
-
-            return _mapper.Map<List<GameDTO>>(allGames);
-        }
-
         public async Task<int> GetCountAsync()
         {
-            var gamesFromStore = await _unitOfWork.GameRepository.GetListAsync(g => g.IsDeleted == false);
+            var gamesFromStore = await _unitOfWork.GameRepository.GetRangeAsync(g=>!g.IsDeleted);
             var gamesFromNorthwind = await _northwindDbContext.ProductRepository.GetListAsync();
             gamesFromStore.AddRange(gamesFromNorthwind);
             gamesFromStore = gamesFromStore.DistinctBy(g => g.Key).ToList();
@@ -129,7 +116,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             else if (gameById.TypeOfBase == TypeOfBase.Northwind)
             {
                 gameById.IsDeleted = true;
-                Game addedGame =  await _unitOfWork.GameRepository.AddAsync(gameById);
+                Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameById);
 
                 await _unitOfWork.SaveAsync();
                 return gameById.IsDeleted;
@@ -144,13 +131,8 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (gameByKey.TypeOfBase == TypeOfBase.GameStore)
             {
                 Game mappedGame = _mapper.Map<Game>(updateGameDTO);
-                mappedGame.Id = gameByKey.Id;
-                mappedGame.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => updateGameDTO.GenresId.Contains(g.Id));
-                mappedGame.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => updateGameDTO.PlatformsId.Contains(p.Id));
-                if (string.IsNullOrEmpty(updateGameDTO.NewGameKey) && !string.IsNullOrEmpty(updateGameDTO.Name))
-                    mappedGame.Key = CreateGameKey(updateGameDTO.Name);
-
-                Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(mappedGame, g => g.Genres, p => p.PlatformTypes);
+                Game initializedGame = await InitializeGameAsync(mappedGame, updateGameDTO.GenresId, updateGameDTO.PlatformsId, updateGameDTO.NewGameKey);
+                Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(initializedGame, g => g.Genres, p => p.PlatformTypes);
                 await _unitOfWork.SaveAsync();
 
                 if (updatedGame != null)
@@ -162,29 +144,32 @@ namespace GameStore.BLL.Services.Implementation.Games
             }
             else
             {
-                var mappedGame = _mapper.Map<AddGameDTO>(updateGameDTO);
+                var mappedGame = _mapper.Map<Game>(updateGameDTO);
+                var initializedGame = await InitializeGameAsync(mappedGame, updateGameDTO.GenresId, updateGameDTO.PlatformsId, updateGameDTO.NewGameKey);
                 var detailsByOrder = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(o => o.GameKey == gameByKey.Key);
                 detailsByOrder.ForEach(o =>
                 {
                     o.GameKey = mappedGame.Key;
 
                 });
-                GameDTO addedGame = await AddGameAsync(mappedGame);
-                return addedGame;
+                var addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
+                await _unitOfWork.SaveAsync();
+
+                return _mapper.Map<GameDTO>(addedGame);
             }
-        }  
+        }
 
         private async Task<List<Game>> FilterGamesFromBasesAsync(GameFilterDTO gameFilterDTO)
         {
-            List<Expression<Func<Game, bool>>> filtersFromStore = await _gameFilterService.GetFiltersForGameStore(gameFilterDTO);
-            List<Expression<Func<Game, bool>>> filtersFromNorthwind = await _gameFilterService.GetFiltersForNorthwind(gameFilterDTO);
+            List<Expression<Func<Game, bool>>> storeFilters = await _gameFilterService.GetFiltersForGameStore(gameFilterDTO);
+            List<Expression<Func<Game, bool>>> northwindFilters = await _gameFilterService.GetFiltersForNorthwind(gameFilterDTO);
 
             var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
-                filtersFromStore,
+                storeFilters,
                 g => g.Genres, g => g.PlatformTypes, g => g.Comments);
             if (gameFilterDTO.Platforms == null)
             {
-                var northwindGames = await GetNorthwindGames(filtersFromNorthwind);
+                var northwindGames = await InitializeNorthwindEntities(northwindFilters);
                 filteredGames = filteredGames.Concat(northwindGames).ToList();
             }
             filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
@@ -192,16 +177,14 @@ namespace GameStore.BLL.Services.Implementation.Games
             return filteredGames;
         }
 
-        private async Task<List<Game>> GetNorthwindGames(List<Expression<Func<Game, bool>>> filters)
+        private async Task<List<Game>> InitializeNorthwindEntities(List<Expression<Func<Game, bool>>> filters)
         {
             var northwindGames = await _northwindDbContext.ProductRepository.GetFilteredListAsync(filters);
-            foreach (var item in northwindGames)
+      
+            foreach (var item in northwindGames.Where(g => g.Key == null).ToList())
             {
-                if (item.Key == null)
-                {
-                    item.Key = CreateGameKey(item.Name);
-                    await _northwindDbContext.ProductRepository.UpdateAsync(item);
-                }
+                item.Key = CreateGameKey(item.Name);
+                await _northwindDbContext.ProductRepository.UpdateAsync(item);
                 item.AddedAt = DateTime.Parse(AddedToStoreDate);
             }
             return northwindGames;
@@ -210,7 +193,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         private async Task<Game> SetGameAsync(string gameKey)
         {
             Game gameByKey = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey, g => g.Genres, g => g.PlatformTypes);
-            gameByKey = gameByKey ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
+            gameByKey ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
 
             return gameByKey != null ? gameByKey : throw new KeyNotFoundException();
         }
@@ -222,7 +205,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (searchedGame.PublisherName != null || searchedGame.SupplierID != 0)
             {
                 var publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == searchedGame.PublisherName);
-                publisher = publisher ?? await _northwindDbContext.SupplierRepository.GetAsync(p => p.SupplierID == searchedGame.SupplierID);
+                publisher ??= await _northwindDbContext.SupplierRepository.GetAsync(p => p.SupplierID == searchedGame.SupplierID);
                 searchedGame.Publisher = publisher;
             }
 
@@ -232,9 +215,19 @@ namespace GameStore.BLL.Services.Implementation.Games
             return searchedGame;
         }
 
+        private async Task<Game> InitializeGameAsync(Game gameToInitialize, List<int> genres, List<int> platforms, string key)
+        {
+            gameToInitialize.Genres = await _unitOfWork.GenreRepository.GetRangeAsync(g => genres.Contains(g.Id));
+            gameToInitialize.PlatformTypes = await _unitOfWork.PlatformTypeRepository.GetRangeAsync(p => platforms.Contains(p.Id));
+            if (string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(gameToInitialize.Name))
+                gameToInitialize.Key = CreateGameKey(gameToInitialize.Name);
+
+            return gameToInitialize;
+        }
+
         private string CreateGameKey(string name)
         {
-            var key = name.Trim().ToLower().Replace(" ", "-");
+            var key = Regex.Replace(name, @"\s+", " ").ToLower().Replace(" ", "-");
             return key;
         }
     }

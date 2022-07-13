@@ -12,8 +12,6 @@ namespace GameStore.BLL.Services.Abstract.Games
     {
         Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO);
 
-        Task<List<GameDTO>> GetListOfGamesAsync();
-
         Task<GameDTO> GetGameAsync(string gameKey, bool isView);
 
         Task<bool> RemoveGameAsync(string key);

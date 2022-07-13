@@ -1,4 +1,5 @@
 ﻿using GameStore.BLL.Services.Abstract;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using System;
@@ -9,7 +10,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 {
     public class IBoxPayment : IPaymentStrategy
     {
-        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork)
+        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindDbContext _northwindDbContext)
         {
             Order orderToPay = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
 
@@ -20,6 +21,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
             foreach (var item in orderToPay.OrderDetails)
             {
                 item.Game = await unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+                item.Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
                 if (item.Game == null)
                 {
                     orderToPay.Status = OrderStatus.Canceled;

@@ -33,19 +33,15 @@ namespace GameStore.DAL.Entities
 
         public string ContactTitle { get; set; }
 
-        [BsonIgnore]
         public string Country { get; set; }
 
-        [BsonIgnore]
         public string Fax { get; set; }
-
-        [BsonIgnore]
+ 
         public string Phone { get; set; }
-
-        [BsonIgnore]
+    
         public string PostalCode { get; set; }
 
-        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind)]
+        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind),IgnoreMongoUpdate]
         public TypeOfBase TypeOfBase { get; set; }
     }
 }

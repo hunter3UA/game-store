@@ -27,6 +27,6 @@ namespace GameStore.BLL.DTO.Order
 
         public string ShipRegion { get; set; }
 
-        public OrderStatus OrderStatus { get; set; }
+        public OrderStatus Status { get; set; }
     }
 }
