@@ -17,8 +17,8 @@ namespace GameStore.DAL.Entities
         [NotMapped, IgnoreMongoUpdate]
         public Game Game { get; set; }
 
-        [Required, Range(0.1, 10000), BsonElement("UnitPrice")]
-        public decimal Price { get; set; }
+        [Range(0.1, 10000), BsonElement("UnitPrice")]
+        public decimal? Price { get; set; }
 
         [Required, Range(1, short.MaxValue)]
         public short Quantity { get; set; }

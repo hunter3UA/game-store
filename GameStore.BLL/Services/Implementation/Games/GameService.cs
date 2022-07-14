@@ -43,15 +43,15 @@ namespace GameStore.BLL.Services.Implementation.Games
             Game initializedGame = await InitializeGameAsync(mappedGame, gameToAddDTO.GenresId, gameToAddDTO.PlatformsId, gameToAddDTO.Key);
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
             await _unitOfWork.SaveAsync();
-            
-            _logger.LogInformation($"Game has been added with Id: {addedGame.Id}",addedGame);
+
+            _logger.LogInformation("{Date} {Action} {Type}", DateTime.UtcNow, "Create", "Game");
 
             return _mapper.Map<GameDTO>(addedGame);
         }
 
         public async Task<int> GetCountAsync()
         {
-            var gamesFromStore = await _unitOfWork.GameRepository.GetRangeAsync(g=>!g.IsDeleted);
+            var gamesFromStore = await _unitOfWork.GameRepository.GetRangeAsync(g => !g.IsDeleted);
             var gamesFromNorthwind = await _northwindDbContext.ProductRepository.GetListAsync();
             gamesFromStore.AddRange(gamesFromNorthwind);
             gamesFromStore = gamesFromStore.DistinctBy(g => g.Key).ToList();
@@ -180,7 +180,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         private async Task<List<Game>> InitializeNorthwindEntities(List<Expression<Func<Game, bool>>> filters)
         {
             var northwindGames = await _northwindDbContext.ProductRepository.GetFilteredListAsync(filters);
-      
+
             foreach (var item in northwindGames.Where(g => g.Key == null).ToList())
             {
                 item.Key = CreateGameKey(item.Name);

@@ -37,8 +37,6 @@ namespace GameStore.BLL.DTO.Order
 
         public string ShipRegion { get; set; }
 
-        public int? ShipVia { get; set; }
-
         public string ShipperCompanyName { get; set; }
 
         public double TotalSum 

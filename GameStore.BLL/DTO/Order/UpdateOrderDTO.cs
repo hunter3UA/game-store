@@ -13,7 +13,7 @@ namespace GameStore.BLL.DTO.Order
 
         public int CustomerId { get; set; }
 
-        public int ShipVia { get; set; }
+        public string ShipperCompanyName { get; set; }
 
         public string ShipName { get; set; }
 

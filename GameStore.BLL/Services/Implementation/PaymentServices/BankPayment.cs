@@ -12,7 +12,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 {
     public class BankPayment : IPaymentStrategy
     {
-        private  IUnitOfWork _unitOfWork;
+        private IUnitOfWork _unitOfWork;
         private INorthwindDbContext _northwindDbContext;
 
         public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindDbContext northwindDbContext)
@@ -53,7 +53,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 
         private async Task<byte[]> CreateInvoiceFileAsync(Order orderToPay)
         {
-            decimal total = orderToPay.OrderDetails.Sum(o => o.Price * o.Quantity);
+            decimal total = orderToPay.OrderDetails.Sum(o =>(decimal)o.Price * o.Quantity);
             MemoryStream memoryStream = new MemoryStream();
             using (StreamWriter writer = new StreamWriter(memoryStream))
             {

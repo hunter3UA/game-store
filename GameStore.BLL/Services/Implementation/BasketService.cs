@@ -33,11 +33,8 @@ namespace GameStore.BLL.Services.Implementation
             Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey && !g.IsDeleted);
             gameOfDetails = gameOfDetails ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
 
-            if (gameOfDetails == null)
-                throw new KeyNotFoundException("Game does not exist");
-
-            if (gameOfDetails.UnitsInStock <= 0)
-                throw new ArgumentException("Value of order details can not be less then 1");  
+            if (gameOfDetails == null || gameOfDetails.UnitsInStock<=0)
+                throw new KeyNotFoundException("Game does not exist"); 
 
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId && g.Status != OrderStatus.Succeeded);
             if (orderOfCustomer == null)
@@ -49,7 +46,7 @@ namespace GameStore.BLL.Services.Implementation
             if (orderItemToAdd != null)
                 return _mapper.Map<OrderDetailsDTO>(orderItemToAdd);
 
-            OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Key, gameOfDetails.Price);
+            OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Key);
 
             return _mapper.Map<OrderDetailsDTO>(addedOrderDetails);
         }
@@ -96,9 +93,11 @@ namespace GameStore.BLL.Services.Implementation
                 throw new KeyNotFoundException("Order not found");
             var details = orderByCustomer.OrderDetails.ToList();
             for(int i = 0; i < orderByCustomer.OrderDetails.Count(); i++)
-            {       
-                details[i].Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == details[i].GameKey);
-                details[i].Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == details[i].GameKey);
+            {   
+                var gameOfDetais = await _unitOfWork.GameRepository.GetAsync(g => g.Key == details[i].GameKey);
+                gameOfDetais??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == details[i].GameKey);
+                details[i].Game = gameOfDetais;
+                details[i].Price = gameOfDetais.Price;
                 if (orderByCustomer.Status != OrderStatus.Processing && details[i].Game != null && details[i].Game.IsDeleted)
                 {
                     await RemoveOrderDetailsAsync(details[i].Id);
@@ -114,7 +113,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             Order orderToAdd = new Order()
             {
-                CustomerId = customerId
+                CustomerId = customerId,      
             };
 
             Order addedOrder = await _unitOfWork.OrderRepository.AddAsync(orderToAdd);
@@ -125,11 +124,10 @@ namespace GameStore.BLL.Services.Implementation
             return addedOrder;
         }
 
-        private async Task<OrderDetails> CreateOrderDetailsAsync(int orderId, string key, decimal price)
+        private async Task<OrderDetails> CreateOrderDetailsAsync(int orderId, string key)
         {
             OrderDetails orderDetailsToAdd = new OrderDetails()
             {
-                Price = price,
                 OrderId = orderId,
                 Quantity = 1,
                 GameKey = key,

@@ -44,9 +44,9 @@ namespace GameStore.DAL.Entities
 
         public string ShipRegion { get; set; }
 
-        public int ShipVia { get; set; }
-
         [NotMapped]
+        public int ShipVia { get; set; }
+       
         public string ShipperCompanyName { get; set; }
 
         [NotMapped]

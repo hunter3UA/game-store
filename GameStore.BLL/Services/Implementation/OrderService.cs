@@ -147,7 +147,7 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in orderToReserve.OrderDetails)
             {
                 Game gameToReserve = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey, g => g.Genres, g => g.PlatformTypes);
-                gameToReserve = gameToReserve ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
+                gameToReserve ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
 
                 if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
                 {
@@ -159,6 +159,7 @@ namespace GameStore.BLL.Services.Implementation
                 else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
                 {
                     item.Quantity = gameToReserve.UnitsInStock;
+                    item.Price = gameToReserve.Price;
                     isCompletedReserving = false;
 
                     await _unitOfWork.SaveAsync();
@@ -166,6 +167,7 @@ namespace GameStore.BLL.Services.Implementation
                 else
                 {              
                     gameToReserve.UnitsInStock -= item.Quantity;
+                    item.Price = gameToReserve.Price;
 
                     if (gameToReserve.TypeOfBase == TypeOfBase.GameStore)
                         await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
@@ -191,6 +193,7 @@ namespace GameStore.BLL.Services.Implementation
                 else
                 {
                     gameOfItem.UnitsInStock += item.Quantity;
+                    item.Price = null;
                     if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
                         await _northwindDbContext.ProductRepository.UpdateAsync(gameOfItem);
                 }
