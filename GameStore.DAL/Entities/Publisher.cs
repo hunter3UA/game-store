@@ -35,6 +35,8 @@ namespace GameStore.DAL.Entities
 
         public string Country { get; set; }
 
+        public string Region { get; set; }
+
         public string Fax { get; set; }
  
         public string Phone { get; set; }

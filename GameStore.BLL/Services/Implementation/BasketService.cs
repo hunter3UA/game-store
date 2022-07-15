@@ -114,6 +114,7 @@ namespace GameStore.BLL.Services.Implementation
             Order orderToAdd = new Order()
             {
                 CustomerId = customerId,      
+                Status=OrderStatus.Opened
             };
 
             Order addedOrder = await _unitOfWork.OrderRepository.AddAsync(orderToAdd);

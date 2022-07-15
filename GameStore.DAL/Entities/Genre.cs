@@ -27,7 +27,7 @@ namespace GameStore.DAL.Entities
         [MaxLength(200)]
         public string Description { get; set; }
 
-        [BsonElement("CategoryId"), DefaultValue(null)]
+        [BsonElement("CategoryID"), DefaultValue(null)]
         public int? CategoryId { get; set; }
     }
 }

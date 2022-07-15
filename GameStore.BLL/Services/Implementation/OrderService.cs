@@ -102,9 +102,19 @@ namespace GameStore.BLL.Services.Implementation
         private async Task<List<Order>> FilterOrders(OrderHistoryDTO orderHistoryDTO)
         {
             var filter = BuildFilter(orderHistoryDTO);
-            List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(filter,o=>o.OrderDetails);
+            List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(filter, o => o.OrderDetails);
             List<Order> ordersFromNorthwind = await _northwindDbContext.OrderRepository.GetRangeAsync(filter);
-            ordersFromStore.AddRange(ordersFromNorthwind);
+
+            foreach (var order in ordersFromStore)
+            {
+                if (order.Status == OrderStatus.Opened || order.Status == OrderStatus.Canceled)
+                {
+                    foreach (var od in order.OrderDetails)
+                    {
+                        od.Price = null;
+                    }
+                }
+            }
 
             if (ordersFromNorthwind != null)
             {
@@ -116,29 +126,27 @@ namespace GameStore.BLL.Services.Implementation
                     item.OrderDetails = detailsByOrderId;
                 }
             }
-
+            ordersFromStore.AddRange(ordersFromNorthwind);
             return ordersFromStore;
         }
 
         private Expression<Func<Order, bool>> BuildFilter(OrderHistoryDTO orderHistoryDTO)
         {
             var type = typeof(Order);
-            var parameter = Expression.Parameter(type,"o");
-            var historyParameter = Expression.Parameter(typeof(OrderHistoryDTO));
+            var parameter = Expression.Parameter(type, "o");
             BinaryExpression expression = null;
             foreach (var property in orderHistoryDTO.GetType().GetProperties())
             {
-                var prop = Expression.Property(historyParameter,property.Name);
                 var value = Expression.Constant(property.GetValue(orderHistoryDTO));
                 if (value.Value != null)
                 {
                     var operation = property.Name == "From" ? ExpressionType.GreaterThanOrEqual : ExpressionType.LessThanOrEqual;
-                    var newBinary = Expression.MakeBinary(operation, Expression.Property(parameter,type.GetProperty("OrderDate")), value);
+                    var newBinary = Expression.MakeBinary(operation, Expression.Property(parameter, type.GetProperty("OrderDate")), value);
 
                     expression = expression == null ? newBinary : Expression.MakeBinary(ExpressionType.AndAlso, expression, newBinary);
                 }
             }
-            return  expression!=null ? Expression.Lambda<Func<Order, bool>>(expression, parameter) : null;
+            return expression != null ? Expression.Lambda<Func<Order, bool>>(expression, parameter) : null;
         }
 
         private async Task<bool> ReserveGame(Order orderToReserve)
@@ -165,7 +173,7 @@ namespace GameStore.BLL.Services.Implementation
                     await _unitOfWork.SaveAsync();
                 }
                 else
-                {              
+                {
                     gameToReserve.UnitsInStock -= item.Quantity;
                     item.Price = gameToReserve.Price;
 
@@ -189,7 +197,7 @@ namespace GameStore.BLL.Services.Implementation
                 if (gameOfItem == null)
                 {
                     await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
-                }             
+                }
                 else
                 {
                     gameOfItem.UnitsInStock += item.Quantity;
@@ -197,7 +205,7 @@ namespace GameStore.BLL.Services.Implementation
                     if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
                         await _northwindDbContext.ProductRepository.UpdateAsync(gameOfItem);
                 }
-                    
+
             }
         }
 

@@ -27,6 +27,7 @@ namespace GameStore.DAL.Entities
 
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
 
+        [DefaultValue(0)]
         public decimal? Freight { get; set; }
 
         public string ShipAddress { get; set; }
@@ -39,7 +40,6 @@ namespace GameStore.DAL.Entities
 
         public DateTime? ShippedDate { get; set; }
 
-        [BsonSerializer(typeof(CustomStringConverter))]
         public string ShipPostalCode { get; set; }
 
         public string ShipRegion { get; set; }

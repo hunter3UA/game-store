@@ -227,8 +227,23 @@ namespace GameStore.BLL.Services.Implementation.Games
 
         private string CreateGameKey(string name)
         {
-            var key = Regex.Replace(name, @"\s+", " ").ToLower().Replace(" ", "-");
-            return key;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("The name cannot be empty or contain only spaces.");
+            }
+
+            name = Regex.Replace(name, @"[^'0-9a-zA-Z]", "-");
+
+            name = Regex.Replace(name, @"[-]{2,}", "-");
+
+            name = Regex.Replace(name, @"-+$", string.Empty);
+
+            if (name.StartsWith("-"))
+            {
+                name = name[1..];
+            }
+
+            return name.ToLower();
         }
     }
 }
