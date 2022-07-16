@@ -21,10 +21,11 @@ namespace GameStore.Tests.Services
         public async Task AddOrderDetailsAsync_GivenValidDetails_ReturnDetails(
             OrderDetails detailsToAdd,
             Game gameOfDetails,
+            Order orderOfDetails,
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             BasketService orderService)
         {
-            detailsToAdd.Game = gameOfDetails;
+            detailsToAdd.GameKey = gameOfDetails.Key;
             mockUnitOfWork.Setup(m => m.OrderDetailsRepository.GetAsync(
                 It.IsAny<Expression<Func<OrderDetails, bool>>>(),
                 It.IsAny<Expression<Func<OrderDetails, object>>[]>())).ReturnsAsync(() => { return null; });
@@ -33,9 +34,15 @@ namespace GameStore.Tests.Services
                 return detailsToAdd;
             });
 
+            mockUnitOfWork.Setup(m=>m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>())).ReturnsAsync(() =>
+            {
+                orderOfDetails.Status = OrderStatus.Opened;
+                return orderOfDetails;
+            });
+          
             var result = await orderService.AddOrderDetailsAsync(gameOfDetails.Key, 1);
 
-            result.Game.Key.Should().BeEquivalentTo(gameOfDetails.Key);
+            result.Game.Key.Should().NotBeNullOrEmpty();
         }
 
         [Theory, AutoDomainData]
@@ -46,7 +53,7 @@ namespace GameStore.Tests.Services
            BasketService orderService)
         {
             gameOfDetails.UnitsInStock = 0;
-            detailsToAdd.Game = gameOfDetails;
+            detailsToAdd.GameKey = gameOfDetails.Key;
 
             mockUnitOfWork.Setup(m => m.GameRepository.GetAsync(
               It.IsAny<Expression<Func<Game, bool>>>(),

@@ -50,7 +50,7 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<PublisherDTO> GetPublisherAsync(string name)
         {
             Publisher searchedPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == name);
-            searchedPublisher = searchedPublisher == null ? await _northwindDbContext.SupplierRepository.GetAsync(p => p.CompanyName == name) : searchedPublisher;
+            searchedPublisher ??= await _northwindDbContext.SupplierRepository.GetAsync(p => p.CompanyName == name);
 
             return searchedPublisher != null ? _mapper.Map<PublisherDTO>(searchedPublisher) : throw new KeyNotFoundException("Publisher not found");
         }

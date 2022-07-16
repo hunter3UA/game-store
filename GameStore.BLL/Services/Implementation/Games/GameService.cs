@@ -181,10 +181,13 @@ namespace GameStore.BLL.Services.Implementation.Games
         {
             var northwindGames = await _northwindDbContext.ProductRepository.GetFilteredListAsync(filters);
 
-            foreach (var item in northwindGames.Where(g => g.Key == null).ToList())
+            foreach (var item in northwindGames)
             {
-                item.Key = CreateGameKey(item.Name);
-                await _northwindDbContext.ProductRepository.UpdateAsync(item);
+                if (item.Key == null)
+                {
+                    item.Key = CreateGameKey(item.Name);
+                    await _northwindDbContext.ProductRepository.UpdateAsync(item);
+                }
                 item.AddedAt = DateTime.Parse(AddedToStoreDate);
             }
             return northwindGames;
@@ -228,20 +231,14 @@ namespace GameStore.BLL.Services.Implementation.Games
         private string CreateGameKey(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-            {
                 throw new ArgumentException("The name cannot be empty or contain only spaces.");
-            }
 
             name = Regex.Replace(name, @"[^'0-9a-zA-Z]", "-");
-
             name = Regex.Replace(name, @"[-]{2,}", "-");
-
             name = Regex.Replace(name, @"-+$", string.Empty);
 
             if (name.StartsWith("-"))
-            {
                 name = name[1..];
-            }
 
             return name.ToLower();
         }

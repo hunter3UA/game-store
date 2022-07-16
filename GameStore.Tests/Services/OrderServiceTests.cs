@@ -36,7 +36,7 @@ namespace GameStore.Tests.Services
                 details.Add(new OrderDetails
                 {
                     Id = 1,
-                    GameId = item.Id,
+                    GameKey = item.Key,
                     OrderId = orderToUpdate.Id,
                     Discount = 0,
                     Quantity = 1,
@@ -129,7 +129,7 @@ namespace GameStore.Tests.Services
                 details.Add(new OrderDetails
                 {
                     Id = 1,
-                    GameId = item.Id,
+                    GameKey = item.Key,
                     OrderId = orderToCanel.Id,
                     Discount = 0,
                     Quantity = 1,
@@ -153,6 +153,24 @@ namespace GameStore.Tests.Services
             Exception result = await Record.ExceptionAsync(() => orderService.CancelOrderAsync(1));
 
             result.Should().BeOfType<KeyNotFoundException>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateOrderAsync_GivenValidOrder_ReturnOrder([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
+        {
+            mockUnitOfWork.Setup(m => m.OrderRepository.UpdateAsync(It.IsAny<Order>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(new Order());
+
+            var result = await orderService.UpdateOrderAsync(new UpdateOrderDTO());
+
+            result.Should().BeOfType<OrderDTO>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateOrderAsync_GivenNull_ThrowArgumentException([Frozen]Mock<IUnitOfWork> mockUnitOfWork,OrderService orderService)
+        {
+            Exception result = await  Record.ExceptionAsync(()=>orderService.UpdateOrderAsync(null));
+
+            result.Should().BeOfType<ArgumentException>();
         }
     }
 }

@@ -3,6 +3,7 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Community.AutoMapper;
 using AutoFixture.Xunit2;
 using GameStore.BLL.Mapper;
+using MongoDB.Bson;
 
 namespace GameStore.Tests.Attributes
 {
@@ -17,6 +18,7 @@ namespace GameStore.Tests.Attributes
             var fixture = new Fixture();
             fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
             fixture.Behaviors.Add(new OmitOnRecursionBehavior());
+            fixture.Register(ObjectId.GenerateNewId);
             fixture.Customize(
              new CompositeCustomization(
                  new AutoMoqCustomization { ConfigureMembers = true, },

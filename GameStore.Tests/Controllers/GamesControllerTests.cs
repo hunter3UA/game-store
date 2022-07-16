@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AutoFixture.Xunit2;
 using AutoMapper;
 using FluentAssertions;
@@ -23,6 +24,7 @@ namespace GameStore.Tests.Controllers
         [Frozen] Mock<IGameService> mockGameService,
         [NoAutoProperties] GamesController gameController)
         {
+            addGameDTO.PublishedAt = DateTime.UtcNow.ToString();
             Game gameToAdd = mapper.Map<Game>(addGameDTO);
             mockGameService.Setup(m => m.AddGameAsync(It.IsAny<AddGameDTO>()))
                 .ReturnsAsync(() =>
@@ -75,13 +77,13 @@ namespace GameStore.Tests.Controllers
 
         [Theory, AutoDomainData]
         public async Task RemoveGameAsync_RequestedGameRemoved_ReturnOkResult(
-            int id,
+            string key,
             [Frozen] Mock<IGameService> mockGameService,
             [NoAutoProperties] GamesController gamesController)
         {
-            mockGameService.Setup(m => m.RemoveGameAsync(It.IsAny<int>())).ReturnsAsync(true);
+            mockGameService.Setup(m => m.RemoveGameAsync(It.IsAny<string>())).ReturnsAsync(true);
 
-            var result = await gamesController.RemoveGameAsync(id);
+            var result = await gamesController.RemoveGameAsync(key);
 
             result.Should().BeOfType<OkResult>();
         }

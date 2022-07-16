@@ -53,14 +53,10 @@ namespace GameStore.DAL.Context
             modelBuilder.ApplyConfiguration(new PlatformTypeConfiguration());
             modelBuilder.ApplyConfiguration(new GenresInGamesConfiguration());
             modelBuilder.ApplyConfiguration(new PlatformsInGamesConfiguration());
-            modelBuilder.ApplyConfiguration(new PublisherConfiguration());      
+            modelBuilder.ApplyConfiguration(new PublisherConfiguration());
             modelBuilder.Entity<Order>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<OrderDetails>().HasQueryFilter(p => !p.IsDeleted);
         }
-
-       
-
-   
     }
 }
 

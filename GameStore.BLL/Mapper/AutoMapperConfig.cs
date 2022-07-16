@@ -42,7 +42,7 @@ namespace GameStore.BLL.Mapper
             CreateMap<UpdateGenreDTO, Genre>();
 
             CreateMap<AddPublisherDTO, Publisher>();
-            CreateMap<Publisher, PublisherDTO>().ForMember(p => p.ObjectId, mapper => mapper.MapFrom(p => p.ObjectId.ToString()));
+            CreateMap<Publisher, PublisherDTO>();
             CreateMap<UpdatePublisherDTO, Publisher>();
 
             CreateMap<AddOrderDetailsDTO, OrderDetails>();

@@ -3,6 +3,7 @@ using AutoMapper;
 using FluentAssertions;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Services.Implementation;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
@@ -72,21 +73,26 @@ namespace GameStore.Tests.Services
         {
             mockUnitOfWOrk.Setup(m => m.PublisherRepository.GetAsync(It.IsAny<Expression<Func<Publisher, bool>>>())).ReturnsAsync(publisher);
 
-            var result = await publisherService.GetPublisherAsync(1);
+            var result = await publisherService.GetPublisherAsync(publisher.CompanyName);
 
-            result.Id.Should().Be(publisher.Id);
+            result.CompanyName.Should().Be(publisher.CompanyName);
             result.Should().BeOfType<PublisherDTO>();
         }
 
         [Theory, AutoDomainData]
-        public async Task GetPublisherAsync_GivenInValidPublisherId_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, PublisherService publisherService)
+        public async Task GetPublisherAsync_GivenInValidPublisherId_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk,[Frozen]Mock<INorthwindDbContext> mockNorthwind, PublisherService publisherService)
         {
             mockUnitOfWOrk.Setup(m => m.PublisherRepository.GetAsync(It.IsAny<Expression<Func<Publisher, bool>>>())).ReturnsAsync(() =>
             {
                 return null;
             });
 
-            Exception result = await Record.ExceptionAsync(() => publisherService.GetPublisherAsync(1));
+            mockNorthwind.Setup(m => m.SupplierRepository.GetAsync(It.IsAny<Expression<Func<Publisher, bool>>>())).ReturnsAsync(() =>
+            {
+                return null;
+            });
+
+            Exception result = await Record.ExceptionAsync(() => publisherService.GetPublisherAsync("NotExistedPublisher"));
 
             result.Should().BeOfType<KeyNotFoundException>();
         }

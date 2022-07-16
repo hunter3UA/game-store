@@ -50,7 +50,7 @@ namespace GameStore.DAL.Entities
         [Required, DefaultValue(0)]
         public int NumberOfViews { get; set; }
         
-        [IgnoreMongoUpdate]
+        [IgnoreMongoUpdate,BsonIgnore]
         public DateTime AddedAt { get; set; }
 
         [IgnoreMongoUpdate]

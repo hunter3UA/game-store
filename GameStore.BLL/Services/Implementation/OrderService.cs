@@ -7,7 +7,6 @@ using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -47,6 +46,7 @@ namespace GameStore.BLL.Services.Implementation
             _logger.LogInformation($"Games of order with id {orderById.Id} have been reserved");
             orderById.Status = OrderStatus.Processing;
             orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
+            orderById.ShippedDate = DateTime.UtcNow.AddDays(7);
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);
             await _unitOfWork.SaveAsync();
 
@@ -92,6 +92,9 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<OrderDTO> UpdateOrderAsync(UpdateOrderDTO updateOrderDTO)
         {
+            if (updateOrderDTO == null)
+                throw new ArgumentException();
+
             Order mappedOrder = _mapper.Map<Order>(updateOrderDTO);
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(mappedOrder);
             await _unitOfWork.SaveAsync();

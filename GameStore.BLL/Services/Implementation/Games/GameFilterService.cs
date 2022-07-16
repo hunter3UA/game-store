@@ -17,7 +17,7 @@ namespace GameStore.BLL.Services.Implementation.Games
         private readonly IUnitOfWork _unitOfWork;
         private readonly INorthwindDbContext _northwindDbContext;
 
-        public GameFilterService(IUnitOfWork unitOfWork,INorthwindDbContext northwindDbContext)
+        public GameFilterService(IUnitOfWork unitOfWork, INorthwindDbContext northwindDbContext)
         {
             _unitOfWork = unitOfWork;
             _northwindDbContext = northwindDbContext;
@@ -67,13 +67,11 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (gameFilterDTO.Publishers != null)
             {
                 var publishers = await _unitOfWork.PublisherRepository.GetRangeAsync(p => gameFilterDTO.Publishers.Contains(p.CompanyName));
-   
                 filters.Add(g => gameFilterDTO.Publishers.Contains(g.PublisherName));
             }
 
             if (gameFilterDTO.PublishingDate != null)
                 filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
-
 
             return filters;
         }
@@ -90,7 +88,7 @@ namespace GameStore.BLL.Services.Implementation.Games
                     }
                 case SortingType.Commented:
                     {
-                        expression = g => g.Comments.Where(c =>!c.IsDeleted ).Count();
+                        expression = g => g.Comments.Where(c => !c.IsDeleted).Count();
                         break;
                     }
                 case SortingType.PriceAsc:
@@ -177,8 +175,6 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             if (gameFilterDTO.MaxPrice != null)
                 filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
-
-            
 
             return filters;
         }
