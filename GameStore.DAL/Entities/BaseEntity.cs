@@ -9,11 +9,11 @@ namespace GameStore.DAL.Entities
 {
     public abstract class BaseEntity
     {
-        [Key, BsonIgnore, IgnoreMongoUpdate]
-        public int Id { get; set; }
+        [NotMapped, BsonId, BsonElement("_id")]
+        public ObjectId ObjectId { get; set; } = ObjectId.GenerateNewId();
 
-        [NotMapped, BsonElement("_id")]
-        public ObjectId ObjectId { get; set; }
+        [Key, IgnoreMongoUpdate]
+        public int Id { get; set; }
 
         [Required, DefaultValue(false), IgnoreMongoUpdate]
         public bool IsDeleted { get; set; }

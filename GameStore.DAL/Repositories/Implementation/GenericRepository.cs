@@ -27,7 +27,7 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<TEntity> AddAsync(TEntity entityToAdd)
         {
             var addedEntity = await _dbSet.AddAsync(entityToAdd);
-
+            
             return addedEntity.Entity;
         }
 

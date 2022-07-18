@@ -27,6 +27,13 @@ namespace GameStore.DAL.Repositories.Implementation
             _dbSet = _collection.AsQueryable();
         }
 
+        public async Task<TDocument> AddAsync(TDocument document)
+        {
+            await _collection.InsertOneAsync(document);
+
+            return document;
+        }
+
         public async Task<TDocument> GetAsync(Expression<Func<TDocument, bool>> expression)
         {
 

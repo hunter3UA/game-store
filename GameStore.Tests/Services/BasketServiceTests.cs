@@ -151,15 +151,15 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetOrderAsync_RequesteOrderNotExist_ThrowKeyNotFoundException([Frozen]Mock<IUnitOfWork> mockUnitOfWork,BasketService orderService)
+        public async Task GetOrderAsync_RequesteOrderNotExist_ReturnEmptyOrder([Frozen]Mock<IUnitOfWork> mockUnitOfWork,BasketService orderService)
         {
             mockUnitOfWork.Setup(m => m.OrderRepository.GetAsync(
             It.IsAny<Expression<Func<Order, bool>>>(),
             It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() => { return null; });
 
-            Exception result = await Record.ExceptionAsync(() => orderService.GetBasketAsync(1));
+            var result =  await orderService.GetBasketAsync(1);
           
-            result.Should().BeOfType<KeyNotFoundException>();
+            result.Should().BeOfType<OrderDTO>();
         }
 
         [Theory, AutoDomainData]

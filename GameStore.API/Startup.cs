@@ -22,6 +22,7 @@ using GameStore.BLL.Services.Implementation.Games;
 using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
 using GameStore.DAL.Context.Abstract;
+using GameStore.BLL.Providers;
 
 namespace GameStore.API
 {
@@ -47,6 +48,7 @@ namespace GameStore.API
 
             }).AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc(
@@ -75,6 +77,7 @@ namespace GameStore.API
             services.AddScoped<INorthwindDbContext, NorthwindDbContext>();
             services.AddScoped(typeof(INorthwindGenericRepository<>), typeof(NorthwindGenericRepository<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<INorthwindLogRepository, NorthwindLogRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IGameService, GameService>();
@@ -90,13 +93,14 @@ namespace GameStore.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameFilterService, GameFilterService>();
             services.AddScoped<IShipperService, ShipperService>();
+            services.AddScoped<IMongoLoggerProvider, MongoLoggerProvider>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSerilogRequestLogging(options =>
-            {
+            {  
                 options.MessageTemplate =
                 " [{RemoteIpAddress}] {RequestScheme} {RequestHost} {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
                 options.EnrichDiagnosticContext = (diagnosticContext,

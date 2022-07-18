@@ -11,8 +11,6 @@ namespace GameStore.BLL.DTO.Game
     {
         public int Id { get; set; }
 
-        public string ObjectId { get; set; }
-
         public string Name { get; set; }
 
         public string Key { get; set; }
@@ -42,5 +40,7 @@ namespace GameStore.BLL.DTO.Game
         public int NumberOfViews { get; set; }
 
         public TypeOfBase TypeOfBase { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

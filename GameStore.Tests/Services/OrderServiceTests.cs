@@ -19,8 +19,10 @@ namespace GameStore.Tests.Services
     public class OrderServiceTests
     {
         [Theory, AutoDomainData]
-        public async Task MakeOrderAsync_GivenValidOrderId_ReturnOrder([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService, IEnumerable<Game> games)
+        public async Task MakeOrderAsync_GivenValidOrderId_ReturnOrder([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService, IEnumerable<Game> games,Game game)
         {
+            game.Price = 10;
+
             Order orderToUpdate = new Order()
             {
                 OrderDate = DateTime.UtcNow,
@@ -33,6 +35,9 @@ namespace GameStore.Tests.Services
             List<OrderDetails> details = new List<OrderDetails>();
             foreach (var item in games)
             {
+                item.Price = 10m;
+             
+              
                 details.Add(new OrderDetails
                 {
                     Id = 1,
@@ -45,6 +50,10 @@ namespace GameStore.Tests.Services
                 });
             }
             orderToUpdate.OrderDetails = details;
+            mockUnitOfWOrk.Setup(m=>m.GameRepository.GetAsync(It.IsAny<Expression<Func<Game, bool>>>(), It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() =>
+            {
+                return game;
+            });
             mockUnitOfWOrk.Setup(m => m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() =>
             {
                 return orderToUpdate;

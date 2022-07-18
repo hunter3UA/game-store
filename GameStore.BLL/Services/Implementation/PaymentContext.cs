@@ -1,6 +1,8 @@
-﻿using GameStore.BLL.Services.Abstract;
+﻿using GameStore.BLL.Providers;
+using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.UoW.Abstract;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
@@ -9,6 +11,8 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INorthwindDbContext _northwindDbContext;
+        private readonly ILogger<PaymentContext> _logger;
+        private readonly IMongoLoggerProvider _mongoLogger;
         private IPaymentStrategy _paymentStrategy;
         
         public PaymentContext(IUnitOfWork unitOfWOrk,INorthwindDbContext northwindDbContext)

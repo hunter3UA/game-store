@@ -12,8 +12,8 @@ namespace GameStore.DAL.Context
             INorthwindGenericRepository<Order> orders,
             INorthwindGenericRepository<Publisher> suppliers,
             INorthwindGenericRepository<OrderDetails> orderDetails,
-            INorthwindGenericRepository<Shipper> shippers
-            
+            INorthwindGenericRepository<Shipper> shippers,
+            INorthwindLogRepository logs
             )
         {
             ProductRepository = products;
@@ -22,6 +22,7 @@ namespace GameStore.DAL.Context
             SupplierRepository = suppliers;
             OrderDetailsRepository = orderDetails;
             ShipperRepository = shippers;
+            LogRepository = logs;
         }
 
         public INorthwindGenericRepository<Game> ProductRepository { get; }
@@ -35,5 +36,8 @@ namespace GameStore.DAL.Context
         public INorthwindGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
         public INorthwindGenericRepository<Shipper> ShipperRepository { get; }
+
+        public INorthwindLogRepository LogRepository { get; }
+
     }
 }

@@ -8,14 +8,16 @@ using AutoMapper;
 using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Enum;
+using GameStore.BLL.Enums;
 using GameStore.BLL.Extensions;
 using GameStore.BLL.Helpers;
+using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
-using Serilog.Context;
+using MongoDB.Bson;
 
 namespace GameStore.BLL.Services.Implementation.Games
 {
@@ -26,15 +28,17 @@ namespace GameStore.BLL.Services.Implementation.Games
         private readonly ILogger<GameService> _logger;
         private readonly IMapper _mapper;
         private readonly INorthwindDbContext _northwindDbContext;
+        private readonly IMongoLoggerProvider _mongoLogger;
         private const string AddedToStoreDate = "June 2, 2022";
 
-        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService, INorthwindDbContext northwindDbContext)
+        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService, INorthwindDbContext northwindDbContext, IMongoLoggerProvider mongoLogger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
             _gameFilterService = gameFilterService;
             _northwindDbContext = northwindDbContext;
+            _mongoLogger = mongoLogger;
         }
 
         public async Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO)
@@ -44,17 +48,19 @@ namespace GameStore.BLL.Services.Implementation.Games
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
             await _unitOfWork.SaveAsync();
 
-            _logger.LogInformation("{Date} {Action} {Type}", DateTime.UtcNow, "Create", "Game");
+            _logger.LogInformation("Game has been created");
+            await _mongoLogger.LogInformation<Game>(ActionType.Create);
 
             return _mapper.Map<GameDTO>(addedGame);
         }
 
         public async Task<int> GetCountAsync()
         {
-            var gamesFromStore = await _unitOfWork.GameRepository.GetRangeAsync(g => !g.IsDeleted);
+            var gamesFromStore = await _unitOfWork.GameRepository.GetListAsync();
             var gamesFromNorthwind = await _northwindDbContext.ProductRepository.GetListAsync();
             gamesFromStore.AddRange(gamesFromNorthwind);
             gamesFromStore = gamesFromStore.DistinctBy(g => g.Key).ToList();
+            gamesFromStore = gamesFromStore.Where(g => !g.IsDeleted).ToList();
             int totalGames = gamesFromStore.Count();
 
             return totalGames;
@@ -97,50 +103,47 @@ namespace GameStore.BLL.Services.Implementation.Games
         public async Task<bool> RemoveGameAsync(string key)
         {
             Game gameById = await GetGameFromBasesAsync(key);
-            bool isRemovedGame = false;
+            bool isGameRemoved = false;
 
             if (gameById.IsDeleted)
-                return isRemovedGame;
+                return isGameRemoved;
 
             if (gameById.TypeOfBase == TypeOfBase.GameStore)
             {
-                isRemovedGame = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key == key);
+                isGameRemoved = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key == key);
                 await _unitOfWork.SaveAsync();
-
-                if (isRemovedGame)
-                    _logger.LogInformation($"Game with Key {key} has been deleted");
-                else
-                    throw new ArgumentException("Game can not be deleted");
-
             }
             else if (gameById.TypeOfBase == TypeOfBase.Northwind)
             {
                 gameById.IsDeleted = true;
                 Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameById);
-
                 await _unitOfWork.SaveAsync();
-                return gameById.IsDeleted;
+                isGameRemoved = gameById.IsDeleted;
             }
-            return isRemovedGame;
+
+            if (isGameRemoved)
+            {
+                _logger.LogInformation($"Game with Key {key} has been deleted");
+                await _mongoLogger.LogInformation<Game>(ActionType.Delete);
+            }
+            else
+                throw new ArgumentException("Game can not be deleted");
+
+            return isGameRemoved;
         }
 
         public async Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO)
         {
             Game gameByKey = await SetGameAsync(updateGameDTO.OldGameKey);
+            Game updatedGame = null;
+            BsonDocument oldVersion = gameByKey.ToBsonDocument();
 
+            var type = typeof(Game);
             if (gameByKey.TypeOfBase == TypeOfBase.GameStore)
             {
                 Game mappedGame = _mapper.Map<Game>(updateGameDTO);
                 Game initializedGame = await InitializeGameAsync(mappedGame, updateGameDTO.GenresId, updateGameDTO.PlatformsId, updateGameDTO.NewGameKey);
-                Game updatedGame = await _unitOfWork.GameRepository.UpdateAsync(initializedGame, g => g.Genres, p => p.PlatformTypes);
-                await _unitOfWork.SaveAsync();
-
-                if (updatedGame != null)
-                    _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
-                else
-                    throw new ArgumentException("Game can not be updated");
-
-                return _mapper.Map<GameDTO>(updatedGame);
+                updatedGame = await _unitOfWork.GameRepository.UpdateAsync(initializedGame, g => g.Genres, p => p.PlatformTypes);       
             }
             else
             {
@@ -150,13 +153,20 @@ namespace GameStore.BLL.Services.Implementation.Games
                 detailsByOrder.ForEach(o =>
                 {
                     o.GameKey = mappedGame.Key;
-
                 });
-                var addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
-                await _unitOfWork.SaveAsync();
-
-                return _mapper.Map<GameDTO>(addedGame);
+                updatedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
             }
+
+            if (updatedGame != null)
+            {
+                await _unitOfWork.SaveAsync();
+                _logger.LogInformation($"Game with Id:{updatedGame.Id} has been updated");
+                await _mongoLogger.LogInformation<Game>(ActionType.Update, oldVersion, updatedGame.ToBsonDocument());
+            }
+            else
+                throw new ArgumentException("Game can not be updated");
+
+            return _mapper.Map<GameDTO>(updatedGame);
         }
 
         private async Task<List<Game>> FilterGamesFromBasesAsync(GameFilterDTO gameFilterDTO)
@@ -167,12 +177,12 @@ namespace GameStore.BLL.Services.Implementation.Games
             var filteredGames = await _unitOfWork.GameRepository.GetFilteredListAsync(
                 storeFilters,
                 g => g.Genres, g => g.PlatformTypes, g => g.Comments);
-            if (gameFilterDTO.Platforms == null)
-            {
-                var northwindGames = await InitializeNorthwindEntities(northwindFilters);
-                filteredGames = filteredGames.Concat(northwindGames).ToList();
-            }
+
+            var northwindGames = await InitializeNorthwindEntities(northwindFilters);
+            filteredGames = filteredGames.Concat(northwindGames).ToList();
+
             filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
+            filteredGames = filteredGames.Where(g => !g.IsDeleted).ToList();
 
             return filteredGames;
         }
@@ -198,7 +208,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             Game gameByKey = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey, g => g.Genres, g => g.PlatformTypes);
             gameByKey ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
 
-            return gameByKey != null ? gameByKey : throw new KeyNotFoundException();
+            return gameByKey != null && !gameByKey.IsDeleted ? gameByKey : throw new KeyNotFoundException();
         }
 
         private async Task<Game> GetGameFromBasesAsync(string gameKey)

@@ -7,6 +7,8 @@ namespace GameStore.DAL.Repositories.Abstract
 {
     public interface INorthwindGenericRepository<TDocument> where TDocument : class 
     {
+        Task<TDocument> AddAsync(TDocument document);
+
         Task<List<TDocument>> GetListAsync();
 
         Task<TDocument> GetAsync(Expression<Func<TDocument, bool>> expression);

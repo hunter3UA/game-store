@@ -13,7 +13,6 @@ namespace GameStore.DAL.Entities
 
     [MongoCollection("products")]
     [BsonIgnoreExtraElements]
-    [Index("Name", IsUnique = true)]
     [Index("Key", IsUnique = true)]
     public class Game : BaseEntity
     {
@@ -26,13 +25,13 @@ namespace GameStore.DAL.Entities
         [MaxLength(5000), IgnoreMongoUpdate]
         public string Description { get; set; }
 
-        [IgnoreMongoUpdate]
+        [IgnoreMongoUpdate, BsonIgnore]
         public IEnumerable<Comment> Comments { get; set; }
 
-        [IgnoreMongoUpdate]
+        [IgnoreMongoUpdate, BsonIgnore]
         public IEnumerable<PlatformType> PlatformTypes { get; set; }
 
-        [IgnoreMongoUpdate]
+        [IgnoreMongoUpdate, BsonIgnore]
         public IEnumerable<Genre> Genres { get; set; }
 
         [Required, Range(0.1, 10000), BsonElement("UnitPrice"), BsonRepresentation(BsonType.Double)]
@@ -44,13 +43,13 @@ namespace GameStore.DAL.Entities
         [Required, Range(0, short.MaxValue)]
         public short UnitsInStock { get; set; }
 
-        [NotMapped, IgnoreMongoUpdate]
+        [NotMapped, IgnoreMongoUpdate, BsonIgnore]
         public Publisher Publisher { get; set; }
 
         [Required, DefaultValue(0)]
         public int NumberOfViews { get; set; }
-        
-        [IgnoreMongoUpdate,BsonIgnore]
+
+        [IgnoreMongoUpdate, BsonIgnore]
         public DateTime AddedAt { get; set; }
 
         [IgnoreMongoUpdate]
@@ -64,7 +63,7 @@ namespace GameStore.DAL.Entities
 
         public string QuantityPerUnit { get; set; }
 
-        [NotMapped,BsonDefaultValue(TypeOfBase.Northwind),IgnoreMongoUpdate]
+        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind), IgnoreMongoUpdate]
         public TypeOfBase TypeOfBase { get; set; }
 
         [NotMapped, BsonRepresentation(BsonType.Int32), BsonElement("CategoryID")]
@@ -78,10 +77,9 @@ namespace GameStore.DAL.Entities
 
         public Game()
         {
-            PublishedAt = DateTime.UtcNow;
             AddedAt = DateTime.UtcNow;
             Comments = new List<Comment>();
-            
+            PlatformTypes = new List<PlatformType>();
         }
     }
 }

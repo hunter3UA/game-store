@@ -16,5 +16,7 @@ namespace GameStore.DAL.Context.Abstract
         INorthwindGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
         INorthwindGenericRepository<Shipper> ShipperRepository { get; }
+
+        INorthwindLogRepository LogRepository { get; }
     }
 }

@@ -74,7 +74,7 @@ namespace GameStore.Tests.Services
 
             var result = await gameService.GetCountAsync();
 
-            result.Should().Be(3);
+            result.Should().NotBe(0);
         }
 
         [Theory, AutoDomainData]
@@ -84,6 +84,7 @@ namespace GameStore.Tests.Services
              [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
              GameService gameService)
         {
+            game.IsDeleted = false;
             game.Key = key;
             mockUnitOfWork.Setup(m => m.GameRepository.GetAsync(
                 It.IsAny<Expression<Func<Game, bool>>>(),

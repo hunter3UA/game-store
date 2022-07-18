@@ -43,7 +43,10 @@ namespace GameStore.BLL.DTO.Order
         { 
             get
             {
-                return OrderDetails.Sum(o => o.Total);
+                if (OrderDetails != null)
+                    return OrderDetails.Sum(o => o.Total);
+                else
+                    return 0;
             } 
         }
     }
