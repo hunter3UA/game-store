@@ -50,6 +50,7 @@ namespace GameStore.BLL.Services.Implementation
 
             _logger.LogInformation($"Games of order with id {orderById.Id} have been reserved");
             orderById.Status = OrderStatus.Processing;
+            orderById.OrderDate = DateTime.UtcNow;
             orderById.Expiration = DateTime.UtcNow.AddMinutes(15);
             orderById.ShippedDate = DateTime.UtcNow.AddDays(7);
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);

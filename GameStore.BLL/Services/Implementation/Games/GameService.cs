@@ -111,16 +111,15 @@ namespace GameStore.BLL.Services.Implementation.Games
             if (gameById.TypeOfBase == TypeOfBase.GameStore)
             {
                 isGameRemoved = await _unitOfWork.GameRepository.RemoveAsync(g => g.Key == key);
-                await _unitOfWork.SaveAsync();
             }
             else if (gameById.TypeOfBase == TypeOfBase.Northwind)
             {
                 gameById.IsDeleted = true;
-                Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameById);
-                await _unitOfWork.SaveAsync();
+                Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameById);           
                 isGameRemoved = gameById.IsDeleted;
             }
 
+            await _unitOfWork.SaveAsync();
             if (isGameRemoved)
             {
                 _logger.LogInformation($"Game with Key {key} has been deleted");
