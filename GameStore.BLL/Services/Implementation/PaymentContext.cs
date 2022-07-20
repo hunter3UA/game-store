@@ -11,8 +11,6 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INorthwindFactory _northwindDbContext;
-        private readonly ILogger<PaymentContext> _logger;
-        private readonly IMongoLoggerProvider _mongoLogger;
         private IPaymentStrategy _paymentStrategy;
         
         public PaymentContext(IUnitOfWork unitOfWOrk,INorthwindFactory northwindDbContext)
