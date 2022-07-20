@@ -14,6 +14,8 @@ namespace GameStore.BLL.Services.Abstract.Games
 
         Task<List<Expression<Func<Game, bool>>>> GetFiltersForNorthwind(GameFilterDTO gameFilterDTO);
 
+        List<Game> FilterByPlatforms(List<Game> gamesToFilter, List<int> platforms);
+
         Expression<Func<Game, object>> Sort(SortingType sortingType);
     }
 }

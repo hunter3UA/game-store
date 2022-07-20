@@ -182,6 +182,7 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
             filteredGames = filteredGames.Where(g => !g.IsDeleted).ToList();
+            filteredGames = _gameFilterService.FilterByPlatforms(filteredGames, gameFilterDTO.Platforms);
 
             return filteredGames;
         }

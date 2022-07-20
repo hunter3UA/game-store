@@ -60,9 +60,9 @@ namespace GameStore.BLL.Services.Implementation.Games
                 gameFilterDTO.Genres = await GetAllGenresByFilter(gameFilterDTO.Genres);
                 filters.Add(g => g.Genres.Any(gf => gameFilterDTO.Genres.Any(filter => filter == gf.Id)));
             }
+          
+    //        filters.Add(g => g.PlatformTypes.Any(gf => gameFilterDTO.Platforms.Any(filter => filter == gf.Id)));
 
-            if (gameFilterDTO.Platforms != null)
-                filters.Add(g => g.PlatformTypes.Any(gf => gameFilterDTO.Platforms.Any(filter => filter == gf.Id)));
 
             if (gameFilterDTO.Publishers != null)
             {
@@ -74,6 +74,14 @@ namespace GameStore.BLL.Services.Implementation.Games
                 filters.Add(DateFilter((PublishingDate)gameFilterDTO.PublishingDate));
 
             return filters;
+        }
+
+        public List<Game> FilterByPlatforms(List<Game> gamesToFilter, List<int> platforms)
+        {
+            if(platforms!=null)
+                gamesToFilter = gamesToFilter.Where(g => g.PlatformTypes.Any(gf => platforms.Any(filter => filter == gf.Id))).ToList();
+
+            return gamesToFilter;
         }
 
         public Expression<Func<Game, object>> Sort(SortingType sortingType)
@@ -178,5 +186,7 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             return filters;
         }
+
+
     }
 }
