@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.BLL.DTO.Game
 {
@@ -10,9 +12,9 @@ namespace GameStore.BLL.DTO.Game
 
         public string Key { get; set; }
 
-        public int[] GenresId { get; set; }
+        public List<int> GenresId { get; set; }
 
-        public int[] PlatformsId { get; set; }
+        public List<int> PlatformsId { get; set; }
 
         public decimal Price { get; set; }
 
@@ -20,6 +22,12 @@ namespace GameStore.BLL.DTO.Game
 
         public short UnitsInStock { get; set; }
 
-        public int? PublisherId { get; set; }
+        public string PublisherName { get; set; }
+
+        public string PublishedAt { get; set; }
+
+        public int NumberOfViews { get; set; }
+
+        public string QuantityPerUnit { get; set; }
     }
 }

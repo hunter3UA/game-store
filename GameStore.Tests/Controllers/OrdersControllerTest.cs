@@ -67,5 +67,14 @@ namespace GameStore.Tests.Controllers
            
         }
 
+        [Theory,AutoDomainData]
+        public async Task UpdateOrderAsync_GivenValidUpdateOrder_ReturnJsonResult(UpdateOrderDTO updateOrderDTO,[Frozen]Mock<IOrderService> mockOrderService,[NoAutoProperties] OrdersController ordersController)
+        {
+            mockOrderService.Setup(m => m.UpdateOrderAsync(It.IsAny<UpdateOrderDTO>())).ReturnsAsync(new OrderDTO());
+
+            var result = await ordersController.UpdateOrderAsync(updateOrderDTO);
+
+            result.Should().BeOfType<JsonResult>();
+        }  
     }
 }

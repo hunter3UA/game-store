@@ -13,7 +13,7 @@ namespace GameStore.BLL.DTO.Game
 
         public List<int> Platforms { get; set; }
 
-        public List<int> Publishers { get; set; }
+        public List<string> Publishers { get; set; }
 
         public int? MinPrice { get; set; }
 
@@ -22,9 +22,8 @@ namespace GameStore.BLL.DTO.Game
         public int Page { get; set; } = 1;
 
         public int ElementsOnPage { get; set; } = 10;
-       
 
-        public SortingType? SortingType { get; set; }
+        public SortingType SortingType { get; set; } = SortingType.Popularity;
 
         public PublishingDate? PublishingDate { get; set; }
     }

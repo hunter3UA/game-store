@@ -2,7 +2,8 @@
 {
     public class Constants
     {
-        public const string DB_NAME = "GameStoreDb";
-        public const string JSON_CONFIG_FILE = "appsettings.json";
+        public const string GameStoreDb = "GameStoreDb";
+        public const string NorthwindDb = "NorthwindDb";
+        public const string JsonConfigFile = "appsettings.json";
     }
 }

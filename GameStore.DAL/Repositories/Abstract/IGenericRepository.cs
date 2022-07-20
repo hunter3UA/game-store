@@ -19,7 +19,7 @@ namespace GameStore.DAL.Repositories.Abstract
 
         Task<TEntity> UpdateAsync(TEntity entityToUpdate, params Expression<Func<TEntity, object>>[] includeProperties);
 
-        Task<List<TEntity>> GetFilteredList(List<Expression<Func<TEntity, bool>>> filters, int skip, int take, bool desc, Expression<Func<TEntity, object>> order, params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<List<TEntity>> GetFilteredListAsync(List<Expression<Func<TEntity, bool>>> filters, params Expression<Func<TEntity, object>>[] includeProperties);
 
         Task<int> CountListAsync(List<Expression<Func<TEntity, bool>>> filters);
     }

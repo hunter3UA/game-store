@@ -19,8 +19,10 @@ namespace GameStore.Tests.Services
     public class OrderServiceTests
     {
         [Theory, AutoDomainData]
-        public async Task MakeOrderAsync_GivenValidOrderId_ReturnOrder([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService, IEnumerable<Game> games)
+        public async Task MakeOrderAsync_GivenValidOrderId_ReturnOrder([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk, OrderService orderService, IEnumerable<Game> games,Game game)
         {
+            game.Price = 10;
+
             Order orderToUpdate = new Order()
             {
                 OrderDate = DateTime.UtcNow,
@@ -33,10 +35,13 @@ namespace GameStore.Tests.Services
             List<OrderDetails> details = new List<OrderDetails>();
             foreach (var item in games)
             {
+                item.Price = 10m;
+             
+              
                 details.Add(new OrderDetails
                 {
                     Id = 1,
-                    GameId = item.Id,
+                    GameKey = item.Key,
                     OrderId = orderToUpdate.Id,
                     Discount = 0,
                     Quantity = 1,
@@ -45,6 +50,10 @@ namespace GameStore.Tests.Services
                 });
             }
             orderToUpdate.OrderDetails = details;
+            mockUnitOfWOrk.Setup(m=>m.GameRepository.GetAsync(It.IsAny<Expression<Func<Game, bool>>>(), It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() =>
+            {
+                return game;
+            });
             mockUnitOfWOrk.Setup(m => m.OrderRepository.GetAsync(It.IsAny<Expression<Func<Order, bool>>>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() =>
             {
                 return orderToUpdate;
@@ -129,7 +138,7 @@ namespace GameStore.Tests.Services
                 details.Add(new OrderDetails
                 {
                     Id = 1,
-                    GameId = item.Id,
+                    GameKey = item.Key,
                     OrderId = orderToCanel.Id,
                     Discount = 0,
                     Quantity = 1,
@@ -153,6 +162,24 @@ namespace GameStore.Tests.Services
             Exception result = await Record.ExceptionAsync(() => orderService.CancelOrderAsync(1));
 
             result.Should().BeOfType<KeyNotFoundException>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateOrderAsync_GivenValidOrder_ReturnOrder([Frozen] Mock<IUnitOfWork> mockUnitOfWork, OrderService orderService)
+        {
+            mockUnitOfWork.Setup(m => m.OrderRepository.UpdateAsync(It.IsAny<Order>(), It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(new Order());
+
+            var result = await orderService.UpdateOrderAsync(new UpdateOrderDTO());
+
+            result.Should().BeOfType<OrderDTO>();
+        }
+
+        [Theory, AutoDomainData]
+        public async Task UpdateOrderAsync_GivenNull_ThrowArgumentException([Frozen]Mock<IUnitOfWork> mockUnitOfWork,OrderService orderService)
+        {
+            Exception result = await  Record.ExceptionAsync(()=>orderService.UpdateOrderAsync(null));
+
+            result.Should().BeOfType<ArgumentException>();
         }
     }
 }

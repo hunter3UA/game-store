@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GameStore.DAL.Entities;
@@ -28,7 +27,7 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<TEntity> AddAsync(TEntity entityToAdd)
         {
             var addedEntity = await _dbSet.AddAsync(entityToAdd);
-
+            
             return addedEntity.Entity;
         }
 
@@ -51,7 +50,7 @@ namespace GameStore.DAL.Repositories.Implementation
         public async Task<List<TEntity>> GetRangeAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
-            var rangeOfEntities = await query.Where(predicate).ToListAsync();
+            var rangeOfEntities = predicate != null ? await query.Where(predicate).ToListAsync() : await query.ToListAsync();
 
             return rangeOfEntities;
         }
@@ -69,12 +68,7 @@ namespace GameStore.DAL.Repositories.Implementation
             return count;
         }
 
-        public async Task<List<TEntity>> GetFilteredList(List<Expression<Func<TEntity, bool>>> filters,
-            int skip,
-            int take,
-            bool desc,
-            Expression<Func<TEntity, object>> order,
-            params Expression<Func<TEntity, object>>[] includeProperties)
+        public async Task<List<TEntity>> GetFilteredListAsync(List<Expression<Func<TEntity, bool>>> filters, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
             foreach (var filter in filters)
@@ -82,15 +76,9 @@ namespace GameStore.DAL.Repositories.Implementation
                 query = query.Where(filter);
             }
 
-            List<TEntity> filteredList = new List<TEntity>();
-
-            if (order == null)
-                filteredList = await query.Skip(skip).Take(take).ToListAsync();
-            else
-                filteredList = !desc ? await query.OrderByDescending(order).Skip(skip).Take(take).ToListAsync() : await query.OrderBy(order).Skip(skip).Take(take).ToListAsync();
-
-            return filteredList;
+            return await query.ToListAsync();
         }
+
 
         public async Task<bool> RemoveAsync(Expression<Func<TEntity, bool>> predicate)
         {
@@ -130,8 +118,7 @@ namespace GameStore.DAL.Repositories.Implementation
         {
             IQueryable<TEntity> query = _dbSet;
 
-            return includeProperties
-                .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            return includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }
 
         private async Task CheckEntity(NavigationEntry navEntity, TEntity entity)
@@ -147,5 +134,7 @@ namespace GameStore.DAL.Repositories.Implementation
                 }
             }
         }
+
+
     }
 }

@@ -7,14 +7,14 @@ namespace GameStore.API
 {
     public class Program
     {
-        private const string JSON_CONFIG_FILE = "appsettings.json";
+        private const string JsonConfigFile = "appsettings.json";
 
         public static void Main(string[] args)
         {
             try
             {
                 var config = new ConfigurationBuilder()
-                    .AddJsonFile(JSON_CONFIG_FILE)
+                    .AddJsonFile(JsonConfigFile)
                     .Build();
                 Log.Logger = new LoggerConfiguration()
                     .ReadFrom.Configuration(config)

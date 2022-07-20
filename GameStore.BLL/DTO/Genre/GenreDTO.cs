@@ -11,5 +11,7 @@ namespace GameStore.BLL.DTO.Genre
         public List<GenreDTO> SubGenres { get; set; }
 
         public int ParentGenreId { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

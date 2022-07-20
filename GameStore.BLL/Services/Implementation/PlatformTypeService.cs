@@ -5,10 +5,13 @@ using AutoMapper;
 using GameStore.BLL.DTO;
 using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
+using GameStore.BLL.Enums;
+using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 
 namespace GameStore.BLL.Services.Implementation
 {
@@ -17,12 +20,14 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<PlatformTypeService> _logger;
+        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public PlatformTypeService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<PlatformTypeService> logger)
+        public PlatformTypeService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<PlatformTypeService> logger, IMongoLoggerProvider mongoLogger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
+            _mongoLogger = mongoLogger;
         }
 
         public async Task<PlatformTypeDTO> AddPlatformAsync(AddPlatformTypeDTO addPlatformDTO)
@@ -33,6 +38,7 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Platform with Id {addedPlatform.Id} has been added");
+            await _mongoLogger.LogInformation<PlatformType>(ActionType.Create);
 
             return _mapper.Map<PlatformTypeDTO>(addedPlatform);
         }
@@ -54,12 +60,16 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<PlatformTypeDTO> UpdatePlatformAsync(UpdatePlatformTypeDTO updatePlatformDTO)
         {
             PlatformType mappedPlatform = _mapper.Map<PlatformType>(updatePlatformDTO);
-
+            PlatformType oldPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == updatePlatformDTO.Id);
+            var oldVersion = mappedPlatform.ToBsonDocument();
             PlatformType updatedPlatform = await _unitOfWork.PlatformTypeRepository.UpdateAsync(mappedPlatform);
             await _unitOfWork.SaveAsync();
 
             if (updatedPlatform != null)
+            {
                 _logger.LogInformation($"Platform with Id {updatedPlatform.Id} has been updated");
+                await _mongoLogger.LogInformation<PlatformType>(ActionType.Update, oldVersion, updatedPlatform.ToBsonDocument());
+            }
             else
                 throw new ArgumentException("Platform can not be updated");
 
@@ -72,7 +82,10 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             if (isRemovedPlatform)
+            {
                 _logger.LogInformation($"Platform with Id {id} has been deleted");
+                await _mongoLogger.LogInformation<PlatformType>(ActionType.Delete);
+            }
             else
                 throw new ArgumentException("Platform can not be deleted");
 

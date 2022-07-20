@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
+using GameStore.DAL.Entities;
 
 namespace GameStore.BLL.Services.Abstract.Games
 {
@@ -9,11 +12,9 @@ namespace GameStore.BLL.Services.Abstract.Games
     {
         Task<GameDTO> AddGameAsync(AddGameDTO gameToAddDTO);
 
-        Task<List<GameDTO>> GetListOfGamesAsync();
-
         Task<GameDTO> GetGameAsync(string gameKey, bool isView);
 
-        Task<bool> RemoveGameAsync(int id);
+        Task<bool> RemoveGameAsync(string key);
 
         Task<GameDTO> UpdateGameAsync(UpdateGameDTO updateGameDTO);
 

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
@@ -63,10 +64,10 @@ namespace GameStore.API.Controllers
         }
 
         [HttpDelete]
-        [Route("remove/{id}")]
-        public async Task<IActionResult> RemoveGameAsync([FromRoute] int id)
+        [Route("remove/{key}")]
+        public async Task<IActionResult> RemoveGameAsync([FromRoute] string key)
         {
-            await _gameService.RemoveGameAsync(id);
+            await _gameService.RemoveGameAsync(key);
 
             return Ok();
         }

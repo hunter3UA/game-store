@@ -10,7 +10,7 @@ namespace GameStore.Tests.Controllers
     public class UsersControllerTests
     {
         [Theory, AutoDomainData]
-        public void RemoveComment_UserIsBanned_ReturnOkResult([NoAutoProperties] UsersController commentController)
+        public void BanUser_UserIsBanned_ReturnOkResult([NoAutoProperties] UsersController commentController)
         {
             var result = commentController.BanUser();
 

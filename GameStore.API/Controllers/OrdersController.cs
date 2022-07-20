@@ -49,12 +49,27 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetOrdersAsync([FromQuery] OrderHistoryDTO orderHistoryDTO)
+        {
+            var orders = await _orderService.GetListOfOrdersAsync(orderHistoryDTO);
+            return new JsonResult(orders);
+        }
+
+        [HttpGet]
         [Route("{orderId}")]
         public async Task<IActionResult> MakeOrderAsync([FromRoute] int orderId)
         {
             var createdOrder = await _orderService.MakeOrderAsync(orderId);
 
             return new JsonResult(createdOrder);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateOrderAsync([FromBody] UpdateOrderDTO updateOrderDTO)
+        {
+            var updatedOrder = await _orderService.UpdateOrderAsync(updateOrderDTO);
+
+            return new JsonResult(updatedOrder);
         }
 
         [HttpDelete]

@@ -8,6 +8,7 @@ using FluentAssertions;
 using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Implementation.Games;
+using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
@@ -26,6 +27,7 @@ namespace GameStore.Tests.Services
              IMapper mapper,
              GameService gameService)
         {
+            gameToAddDto.PublishedAt = DateTime.UtcNow.ToString();
             Game gameToAdd = mapper.Map<Game>(gameToAddDto);
             var id = 15;
             mockUnitOfWork.Setup(m => m.GameRepository.AddAsync(It.IsAny<Game>())).ReturnsAsync(
@@ -72,19 +74,7 @@ namespace GameStore.Tests.Services
 
             var result = await gameService.GetCountAsync();
 
-            result.Should().Be(3);
-        }
-
-        [Theory, AutoDomainData]
-        public async Task GetListOfGamesAsync_RequestListExist_ReturnListOfGames(
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
-            GameService gameService)
-        {
-            mockUnitOfWork.Setup(m => m.GameRepository.GetListAsync());
-
-            var listOfGames = await gameService.GetListOfGamesAsync();
-
-            listOfGames.Should().NotBeNull();
+            result.Should().NotBe(0);
         }
 
         [Theory, AutoDomainData]
@@ -94,6 +84,7 @@ namespace GameStore.Tests.Services
              [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
              GameService gameService)
         {
+            game.IsDeleted = false;
             game.Key = key;
             mockUnitOfWork.Setup(m => m.GameRepository.GetAsync(
                 It.IsAny<Expression<Func<Game, bool>>>(),
@@ -106,9 +97,10 @@ namespace GameStore.Tests.Services
 
         [Theory, AutoDomainData]
         public async Task GetGameAsync_GivenInvalidKey_ReturnKeyNotFoundException(
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,[Frozen]Mock<INorthwindFactory> _northwindDbContext,
              GameService gameService)
         {
+            _northwindDbContext.Setup(m=>m.ProductRepository.GetAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(() => { return null; });
             mockUnitOfWork.Setup(m => m.GameRepository.GetAsync(
                 It.IsAny<Expression<Func<Game, bool>>>(),
                 It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() => { return null; });
@@ -126,7 +118,7 @@ namespace GameStore.Tests.Services
         {
             mockUnitOfWork.Setup(m => m.GameRepository.RemoveAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(true);
 
-            var isDeletedGame = await gameService.RemoveGameAsync(game.Id);
+            var isDeletedGame = await gameService.RemoveGameAsync(game.Key);
 
             isDeletedGame.Should().BeTrue();
         }
@@ -138,7 +130,7 @@ namespace GameStore.Tests.Services
         {
             mockUnitOfWork.Setup(m => m.GameRepository.RemoveAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(false);
 
-            Exception result = await Record.ExceptionAsync(() => gameService.RemoveGameAsync(1));
+            Exception result = await Record.ExceptionAsync(() => gameService.RemoveGameAsync("Key"));
 
             result.Should().BeOfType<ArgumentException>();
         }
@@ -149,6 +141,7 @@ namespace GameStore.Tests.Services
             [Frozen] Mock<IUnitOfWork> mockUnitOfWork,
             GameService gameService)
         {
+            updateGameDTO.PublishedAt = DateTime.UtcNow.ToString();
             mockUnitOfWork.Setup(m => m.GameRepository.UpdateAsync(
                 It.IsAny<Game>(),
                 It.IsAny<Expression<Func<Game, object>>[]>())).ReturnsAsync(() => { return new Game { Name = updateGameDTO.Name }; });

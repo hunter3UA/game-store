@@ -43,9 +43,9 @@ namespace GameStore.Tests.Controllers
         public async Task GetPublisherAsync_RequestedPublisherIsExist_ReturnJsonResult([Frozen] Mock<IPublisherService> mockPublisherService,
             [NoAutoProperties] PublishersController publishersController)
         {
-            mockPublisherService.Setup(m => m.GetPublisherAsync(It.IsAny<int>())).ReturnsAsync(new PublisherDTO());
+            mockPublisherService.Setup(m => m.GetPublisherAsync(It.IsAny<string>())).ReturnsAsync(new PublisherDTO());
 
-            var result = await publishersController.GetPublisherAsync(1);
+            var result = await publishersController.GetPublisherAsync("MyPub");
 
             result.Should().BeOfType<JsonResult>();
         }

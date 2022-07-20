@@ -8,7 +8,10 @@ using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.DTO.Platform;
 using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.DTO.Publisher;
+using GameStore.BLL.DTO.Shipper;
 using GameStore.DAL.Entities;
+using System;
+using System.Linq;
 
 namespace GameStore.BLL.Mapper
 {
@@ -17,9 +20,14 @@ namespace GameStore.BLL.Mapper
         public AutoMapperConfig()
         {
             CreateMap<Game, GameDTO>();
-            CreateMap<AddGameDTO, Game>();
+            CreateMap<AddGameDTO, Game>()
+                .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
             CreateMap<Game, AddGameDTO>();
-            CreateMap<UpdateGameDTO, Game>().ForMember((m) => m.Genres, mapper => mapper.Ignore());
+            CreateMap<UpdateGameDTO, Game>()
+                .ForMember((m) => m.Genres, mapper => mapper.Ignore())
+                .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)))
+                .ForMember(m => m.Key, mapper => mapper.MapFrom(g => g.NewGameKey));
+            CreateMap<UpdateGameDTO, AddGameDTO>().ForMember(m => m.Key, mapper => mapper.MapFrom(m => m.NewGameKey));
 
             CreateMap<AddCommentDTO, Comment>();
             CreateMap<Comment, CommentDTO>();
@@ -30,7 +38,7 @@ namespace GameStore.BLL.Mapper
             CreateMap<UpdatePlatformTypeDTO, PlatformType>();
 
             CreateMap<AddGenreDTO, Genre>();
-            CreateMap<Genre, GenreDTO>();
+            CreateMap<Genre, GenreDTO>().ReverseMap();
             CreateMap<UpdateGenreDTO, Genre>();
 
             CreateMap<AddPublisherDTO, Publisher>();
@@ -41,6 +49,9 @@ namespace GameStore.BLL.Mapper
             CreateMap<OrderDetails, OrderDetailsDTO>();
 
             CreateMap<Order, OrderDTO>();
+            CreateMap<UpdateOrderDTO, Order>();
+
+            CreateMap<Shipper, ShipperDTO>();
         }
     }
 }
