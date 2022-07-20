@@ -3,7 +3,7 @@ using GameStore.DAL.Repositories.Abstract;
 
 namespace GameStore.DAL.Context.Abstract
 {
-    public interface INorthwindDbContext
+    public interface INorthwindFactory
     {
         INorthwindGenericRepository<Game> ProductRepository { get; }
 

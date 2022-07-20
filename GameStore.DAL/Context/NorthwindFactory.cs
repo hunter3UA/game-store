@@ -4,9 +4,9 @@ using GameStore.DAL.Repositories.Abstract;
 
 namespace GameStore.DAL.Context
 {
-    public class NorthwindDbContext : INorthwindDbContext
+    public class NorthwindFactory : INorthwindFactory
     {
-        public NorthwindDbContext(
+        public NorthwindFactory(
             INorthwindGenericRepository<Game> products,
             INorthwindGenericRepository<Genre> categories,
             INorthwindGenericRepository<Order> orders,

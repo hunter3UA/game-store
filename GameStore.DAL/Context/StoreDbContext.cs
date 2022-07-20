@@ -14,7 +14,7 @@ namespace GameStore.DAL.Context
 {
     public class StoreDbContext : DbContext
     {
-        public INorthwindDbContext _northwindDbContext;
+        public INorthwindFactory _northwindDbContext;
         public DbSet<Game> Games { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
@@ -33,7 +33,7 @@ namespace GameStore.DAL.Context
 
         public DbSet<Order> Orders { get; set; }
 
-        public StoreDbContext(INorthwindDbContext northwindDbContext)
+        public StoreDbContext(INorthwindFactory northwindDbContext)
         {
             _northwindDbContext = northwindDbContext;
         }

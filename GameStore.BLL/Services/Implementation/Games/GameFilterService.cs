@@ -15,9 +15,9 @@ namespace GameStore.BLL.Services.Implementation.Games
     public class GameFilterService : IGameFilterService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
 
-        public GameFilterService(IUnitOfWork unitOfWork, INorthwindDbContext northwindDbContext)
+        public GameFilterService(IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext)
         {
             _unitOfWork = unitOfWork;
             _northwindDbContext = northwindDbContext;

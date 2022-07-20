@@ -15,7 +15,7 @@ namespace GameStore.Tests.Services
     public class ShipperServiceTests
     {
         [Theory, AutoDomainData]
-        public async Task GetListOfShippersAsync_ShippersExist_RetrunListOfShippers([Frozen]Mock<INorthwindDbContext> mockNorthwindDb, ShipperService shipperService,List<Shipper> shippers)
+        public async Task GetListOfShippersAsync_ShippersExist_RetrunListOfShippers([Frozen]Mock<INorthwindFactory> mockNorthwindDb, ShipperService shipperService,List<Shipper> shippers)
         {
             mockNorthwindDb.Setup(m => m.ShipperRepository.GetListAsync()).ReturnsAsync(()=> { return shippers; });
 

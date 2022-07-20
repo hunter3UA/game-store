@@ -19,10 +19,10 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<GenreService> _logger;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly IMongoLoggerProvider _mongoLogger;
 
-        public GenreService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GenreService> logger, INorthwindDbContext northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public GenreService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GenreService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

@@ -27,11 +27,11 @@ namespace GameStore.BLL.Services.Implementation.Games
         private readonly IGameFilterService _gameFilterService;
         private readonly ILogger<GameService> _logger;
         private readonly IMapper _mapper;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly IMongoLoggerProvider _mongoLogger;
         private const string AddedToStoreDate = "June 2, 2022";
 
-        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService, INorthwindDbContext northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public GameService(IUnitOfWork unitOfWork, ILogger<GameService> logger, IMapper mapper, IGameFilterService gameFilterService, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

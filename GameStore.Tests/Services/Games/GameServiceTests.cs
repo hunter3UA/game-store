@@ -97,7 +97,7 @@ namespace GameStore.Tests.Services
 
         [Theory, AutoDomainData]
         public async Task GetGameAsync_GivenInvalidKey_ReturnKeyNotFoundException(
-            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,[Frozen]Mock<INorthwindDbContext> _northwindDbContext,
+            [Frozen] Mock<IUnitOfWork> mockUnitOfWork,[Frozen]Mock<INorthwindFactory> _northwindDbContext,
              GameService gameService)
         {
             _northwindDbContext.Setup(m=>m.ProductRepository.GetAsync(It.IsAny<Expression<Func<Game, bool>>>())).ReturnsAsync(() => { return null; });

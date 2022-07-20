@@ -10,10 +10,10 @@ namespace GameStore.BLL.Services.Implementation
 {
     public class ShipperService : IShipperService
     {
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly IMapper _mapper;
 
-        public ShipperService(INorthwindDbContext northwindDbContext,IMapper mapper)
+        public ShipperService(INorthwindFactory northwindDbContext,IMapper mapper)
         {
             _northwindDbContext = northwindDbContext;
             _mapper = mapper;

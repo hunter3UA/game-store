@@ -11,9 +11,9 @@ namespace GameStore.DAL.Context.Configuration
 {
     public class GenreConfiguration : IEntityTypeConfiguration<Genre>
     {
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
 
-        public GenreConfiguration(INorthwindDbContext northwindDbContext)
+        public GenreConfiguration(INorthwindFactory northwindDbContext)
         {
             _northwindDbContext = northwindDbContext;
         }

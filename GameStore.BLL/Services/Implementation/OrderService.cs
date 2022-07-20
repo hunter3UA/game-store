@@ -18,12 +18,12 @@ namespace GameStore.BLL.Services.Implementation
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<OrderService> _logger;
         private readonly IMongoLoggerProvider _mongoLogger;
 
-        public OrderService(IUnitOfWork unitOfWork, INorthwindDbContext northwindDbContext, IMapper mapper, ILogger<OrderService> logger, IMongoLoggerProvider mongoLogger)
+        public OrderService(IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext, IMapper mapper, ILogger<OrderService> logger, IMongoLoggerProvider mongoLogger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

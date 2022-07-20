@@ -10,9 +10,9 @@ namespace GameStore.BLL.Providers
 {
     public class MongoLoggerProvider : IMongoLoggerProvider
     {
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
 
-        public MongoLoggerProvider(INorthwindDbContext northwindDbContext)
+        public MongoLoggerProvider(INorthwindFactory northwindDbContext)
         {
             _northwindDbContext = northwindDbContext;
         }

@@ -10,7 +10,7 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 {
     public class IBoxPayment : IPaymentStrategy
     {
-        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindDbContext _northwindDbContext)
+        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindFactory _northwindDbContext)
         {
             Order orderToPay = await unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
 

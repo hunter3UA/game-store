@@ -19,10 +19,10 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PublisherService> _logger;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly IMongoLoggerProvider _mongoLogger;
 
-        public PublisherService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PublisherService> logger, INorthwindDbContext northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public PublisherService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PublisherService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;

@@ -19,11 +19,11 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly ILogger<BasketService> _logger;
         private readonly IMongoLoggerProvider _mongoLogger;
 
-        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger, INorthwindDbContext northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;

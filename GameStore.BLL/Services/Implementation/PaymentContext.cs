@@ -10,12 +10,12 @@ namespace GameStore.BLL.Services.Implementation
     public class PaymentContext : IPaymentContext
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindDbContext _northwindDbContext;
+        private readonly INorthwindFactory _northwindDbContext;
         private readonly ILogger<PaymentContext> _logger;
         private readonly IMongoLoggerProvider _mongoLogger;
         private IPaymentStrategy _paymentStrategy;
         
-        public PaymentContext(IUnitOfWork unitOfWOrk,INorthwindDbContext northwindDbContext)
+        public PaymentContext(IUnitOfWork unitOfWOrk,INorthwindFactory northwindDbContext)
         {
             _unitOfWork = unitOfWOrk;
             _northwindDbContext = northwindDbContext;

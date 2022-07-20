@@ -13,9 +13,9 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
     public class BankPayment : IPaymentStrategy
     {
         private IUnitOfWork _unitOfWork;
-        private INorthwindDbContext _northwindDbContext;
+        private INorthwindFactory _northwindDbContext;
 
-        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindDbContext northwindDbContext)
+        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext)
         {
             _unitOfWork = unitOfWork;
             _northwindDbContext = northwindDbContext;

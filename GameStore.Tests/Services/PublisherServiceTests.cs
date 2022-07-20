@@ -80,7 +80,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task GetPublisherAsync_GivenInValidPublisherId_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk,[Frozen]Mock<INorthwindDbContext> mockNorthwind, PublisherService publisherService)
+        public async Task GetPublisherAsync_GivenInValidPublisherId_ThrowKeyNotFoundException([Frozen] Mock<IUnitOfWork> mockUnitOfWOrk,[Frozen]Mock<INorthwindFactory> mockNorthwind, PublisherService publisherService)
         {
             mockUnitOfWOrk.Setup(m => m.PublisherRepository.GetAsync(It.IsAny<Expression<Func<Publisher, bool>>>())).ReturnsAsync(() =>
             {

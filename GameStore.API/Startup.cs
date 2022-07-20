@@ -74,7 +74,7 @@ namespace GameStore.API
 
             services.AddScoped<StoreDbContext>();
             services.AddSingleton<IMongoClient, MongoClient>(m => new MongoClient(_config.GetConnectionString("NorthwindDb")));
-            services.AddScoped<INorthwindDbContext, NorthwindDbContext>();
+            services.AddScoped<INorthwindFactory, NorthwindFactory>();
             services.AddScoped(typeof(INorthwindGenericRepository<>), typeof(NorthwindGenericRepository<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<INorthwindLogRepository, NorthwindLogRepository>();
