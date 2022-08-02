@@ -48,9 +48,9 @@ namespace GameStore.DAL.Entities
         public TypeOfBase TypeOfBase { get; set; }
 
         [IgnoreMongoUpdate]
-        public int? UserId { get; set; }
+        public string UserId { get; set; }
 
-        [ForeignKey(nameof(UserId)),IgnoreMongoUpdate]
+        [ForeignKey(nameof(UserId)), IgnoreMongoUpdate]
         public User User { get; set; }
     }
 }

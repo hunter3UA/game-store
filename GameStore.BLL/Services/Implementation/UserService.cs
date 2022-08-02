@@ -42,6 +42,7 @@ namespace GameStore.BLL.Services.Implementation
             var response = await _authService.GetJwtTokenAsync(authRequest);
 
             return response;
+ 
         }
 
         public async Task<UserDTO> GetUserAsync(string email)

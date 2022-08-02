@@ -92,6 +92,7 @@ namespace GameStore.API
             services.AddScoped(typeof(INorthwindGenericRepository<>), typeof(NorthwindGenericRepository<>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<INorthwindLogRepository, NorthwindLogRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
@@ -173,8 +174,7 @@ namespace GameStore.API
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameFilterService, GameFilterService>();
             services.AddScoped<IShipperService, ShipperService>();
-            services.AddScoped<IPasswordService, PasswordService>();
-            
+            services.AddScoped<IPasswordService, PasswordService>();          
         }
 
         private void ConfigureAuthenticationService(IServiceCollection services)

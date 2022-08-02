@@ -1,13 +1,16 @@
-﻿using GameStore.DAL.Enums;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.DAL.Entities
 {
     [Index(nameof(UserName), IsUnique = true)]
-    public class User : BaseEntity
+    public class User
     {
+        [Key]
+        public string Id { get; set; }
+
         [Required, MaxLength(150)]
         public string UserName { get; set; }
 
@@ -24,5 +27,12 @@ namespace GameStore.DAL.Entities
         public string Role { get; set; }
 
         public IEnumerable<UserRefreshToken> UserRefreshTokens { get; set; }
+
+        public bool IsDeleted { get; set; }
+
+        public User()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
     }
 }

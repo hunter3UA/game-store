@@ -6,9 +6,9 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface IBasketService
     {
-        Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId);
+        Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, string customerId);
 
-        Task<OrderDTO> GetBasketAsync(int cusomerId);
+        Task<OrderDTO> GetBasketAsync(string cusomerId);
 
         Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO);
 

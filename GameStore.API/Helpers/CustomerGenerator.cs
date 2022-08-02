@@ -7,7 +7,7 @@ namespace GameStore.API.Helpers
     {
         private const string CustomerIdKey = "CustomerId";
 
-        public int GetCookies(HttpContext context)
+        public string GetCookies(HttpContext context)
         {
             string customerId;
             var cookies = context.Request.Cookies.ContainsKey(CustomerIdKey);
@@ -20,16 +20,15 @@ namespace GameStore.API.Helpers
                 context.Request.Cookies.TryGetValue(CustomerIdKey, out customerId);
             }
 
-            return Convert.ToInt32(customerId);
+            return customerId;
         }
 
         private string CreateCookies(HttpContext context)
         {
-            Random rand = new Random();
-            int customerId = rand.Next(1, int.MaxValue);
-            context.Response.Cookies.Append(CustomerIdKey, customerId.ToString(), new CookieOptions { Secure = true, Expires = DateTimeOffset.UtcNow.AddHours(1) });
+            var customerId = Guid.NewGuid().ToString();
+            context.Response.Cookies.Append(CustomerIdKey, customerId, new CookieOptions { Secure = true, Expires = DateTimeOffset.UtcNow.AddHours(1) });
 
-            return customerId.ToString();
+            return customerId;
         }
     }
 }

@@ -62,7 +62,7 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(updatedOrder);
         }
 
-        public async Task<OrderDTO> GetOrderAsync(int customerId)
+        public async Task<OrderDTO> GetOrderAsync(string customerId)
         {
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status == OrderStatus.Processing, o => o.OrderDetails);
 

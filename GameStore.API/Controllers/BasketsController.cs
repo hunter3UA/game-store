@@ -32,7 +32,11 @@ namespace GameStore.API.Controllers
         [Route("games/{gamekey}/buy")]
         public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey)
         {
-            var customerId = _customerGenerator.GetCookies(HttpContext);
+            string customerId = string.Empty;
+           
+            
+   
+            customerId = _customerGenerator.GetCookies(HttpContext);
             var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
 
             return new JsonResult(addedOrderDetails);

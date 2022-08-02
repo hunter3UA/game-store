@@ -38,7 +38,6 @@ namespace GameStore.BLL.Services.Implementation
             return await GenerateTokens(userByEmail);
         }
 
-
         public async Task<AuthResponseDTO> GetJwtTokenAsync(User user)
         {
             return await GenerateTokens(user);
@@ -53,16 +52,17 @@ namespace GameStore.BLL.Services.Implementation
 
             var token = ReadJwtToken(refreshTokenRequestDTO.ExpiredAccessToken);
             var userRefreshToken = await _unitOfWork.RefreshTokenRepository.GetAsync(
-                t => !t.IsInvalidated && t.Token== refreshTokenRequestDTO.ExpiredAccessToken && 
+                t => !t.IsInvalidated && t.Token == refreshTokenRequestDTO.ExpiredAccessToken &&
                 t.RefreshToken == refreshTokenRequestDTO.RefreshToken, t => t.User);
-          
-            var authResponse = ValidateDetails(token,userRefreshToken);
+
+            var authResponse = ValidateDetails(token, userRefreshToken);
             userRefreshToken.IsInvalidated = true;
             await _unitOfWork.SaveAsync();
 
             var response = await GetJwtTokenAsync(userRefreshToken.User);
 
             return response;
+           
         }
 
         private async Task<AuthResponseDTO> SaveTokenDetailsAsync(User user, string accessToken, string refreshToken)
@@ -73,7 +73,7 @@ namespace GameStore.BLL.Services.Implementation
                 IsInvalidated = false,
                 RefreshToken = refreshToken,
                 Token = accessToken,
-                UserId=user.Id
+                UserId = user.Id
             };
 
             await _unitOfWork.RefreshTokenRepository.AddAsync(userRefreshToken);
@@ -98,6 +98,7 @@ namespace GameStore.BLL.Services.Implementation
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim(ClaimTypes.Sid,userOfToken.Id),
                     new Claim(ClaimTypes.Name, userOfToken.UserName),
                     new Claim(ClaimTypes.Email, userOfToken.Email),
                     new Claim(ClaimTypes.Role, userOfToken.Role.ToString()),

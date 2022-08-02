@@ -33,7 +33,7 @@ namespace GameStore.BLL.Services.Implementation
             _mongoLogger = mongoLogger;
         }
 
-        public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
+        public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, string customerId)
         {
             Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey && !g.IsDeleted);
             gameOfDetails ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
@@ -94,7 +94,7 @@ namespace GameStore.BLL.Services.Implementation
             return isDeletedOrderDetails;
         }
 
-        public async Task<OrderDTO> GetBasketAsync(int customerId)
+        public async Task<OrderDTO> GetBasketAsync(string customerId)
         {
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, od => od.OrderDetails.Where(o => !o.IsDeleted));
 
@@ -119,7 +119,7 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
 
-        private async Task<Order> CreateOrderAsync(int customerId)
+        private async Task<Order> CreateOrderAsync(string customerId)
         {
             Order orderToAdd = new Order()
             {

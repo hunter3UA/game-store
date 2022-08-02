@@ -12,7 +12,7 @@ namespace GameStore.BLL.DTO.Order
     {
         public int Id { get; set; }
 
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
 
         public DateTime OrderDate { get; set; }
 

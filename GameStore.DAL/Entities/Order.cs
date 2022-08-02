@@ -15,7 +15,7 @@ namespace GameStore.DAL.Entities
     public class Order : BaseEntity
     {
         [Required]
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }
@@ -26,7 +26,6 @@ namespace GameStore.DAL.Entities
         [Required, DefaultValue(OrderStatus.Opened)]
         public OrderStatus Status { get; set; }
 
-        
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
 
         [DefaultValue(0)]

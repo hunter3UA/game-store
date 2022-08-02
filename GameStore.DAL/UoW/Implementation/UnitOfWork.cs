@@ -19,7 +19,7 @@ namespace GameStore.DAL.UoW.Abstract
             IGenericRepository<Publisher> publisherRepository,
             IGenericRepository<Order> orderRepository,
             IGenericRepository<OrderDetails> orderDetailsRepository,
-            IGenericRepository<User> loginRepository,
+            IUserRepository userRepository,
             IGenericRepository<UserRefreshToken> refreshTokenRepository)              
         {
             _dbContext = dbContext;
@@ -30,8 +30,8 @@ namespace GameStore.DAL.UoW.Abstract
             PublisherRepository = publisherRepository;
             OrderRepository = orderRepository;
             OrderDetailsRepository = orderDetailsRepository;
-            UserRepository = loginRepository;
             RefreshTokenRepository = refreshTokenRepository;
+            UserRepository = userRepository;
         }
 
         public IGenericRepository<Game> GameRepository { get; }
@@ -48,9 +48,9 @@ namespace GameStore.DAL.UoW.Abstract
 
         public IGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
-        public IGenericRepository<User> UserRepository { get; }
-
         public IGenericRepository<UserRefreshToken> RefreshTokenRepository { get; }
+
+        public IUserRepository UserRepository { get; }
 
         public void Dispose()
         {

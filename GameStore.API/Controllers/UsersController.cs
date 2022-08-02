@@ -20,16 +20,14 @@ namespace GameStore.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUsersAsync()
         {
+            var res = HttpContext.User.Claims;
             var users = await _userService.GetListOfUsersAsync();
 
             return new JsonResult(users);
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateUserAsync()
-        //{
 
-        //}
+
 
         
 
