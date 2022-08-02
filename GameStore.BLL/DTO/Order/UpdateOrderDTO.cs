@@ -1,4 +1,5 @@
 ﻿using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using System;
 
 namespace GameStore.BLL.DTO.Order

@@ -3,18 +3,14 @@ using GameStore.DAL.Context.Configuration;
 using GameStore.DAL.Entities;
 using GameStore.DAL.Static;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GameStore.DAL.Context
 {
     public class StoreDbContext : DbContext
     {
         public INorthwindFactory _northwindDbContext;
+
         public DbSet<Game> Games { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
@@ -32,6 +28,10 @@ namespace GameStore.DAL.Context
         public DbSet<OrderDetails> OrderDetails { get; set; }
 
         public DbSet<Order> Orders { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<UserRefreshToken> RefreshTokens { get; set; }
 
         public StoreDbContext(INorthwindFactory northwindDbContext)
         {

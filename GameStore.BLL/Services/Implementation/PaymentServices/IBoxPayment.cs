@@ -1,6 +1,7 @@
 ﻿using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using System;
 using System.Collections.Generic;

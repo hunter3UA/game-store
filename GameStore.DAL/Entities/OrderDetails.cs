@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities
-{   
+{
     [MongoCollection("order-details")]
     [BsonIgnoreExtraElements]
     public class OrderDetails : BaseEntity
@@ -29,7 +29,7 @@ namespace GameStore.DAL.Entities
         [Required, BsonElement("OrderID")]
         public int OrderId { get; set; }
 
-        [ForeignKey("OrderId"), IgnoreMongoUpdate]
+        [ForeignKey("OrderId"), IgnoreMongoUpdate, BsonIgnore]
         public Order Order { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GameStore.DAL.Attributes;
+using GameStore.DAL.Enums;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using System;
@@ -25,6 +26,7 @@ namespace GameStore.DAL.Entities
         [Required, DefaultValue(OrderStatus.Opened)]
         public OrderStatus Status { get; set; }
 
+        
         public IEnumerable<OrderDetails> OrderDetails { get; set; }
 
         [DefaultValue(0)]

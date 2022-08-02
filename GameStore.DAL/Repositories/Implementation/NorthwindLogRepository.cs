@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
-    public class NorthwindLogRepository:INorthwindLogRepository
+    public class NorthwindLogRepository : INorthwindLogRepository
     {
         private readonly IMongoDatabase _db;
         private readonly IMongoCollection<Log> _collection;

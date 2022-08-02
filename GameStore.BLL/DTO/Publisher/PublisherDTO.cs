@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using GameStore.BLL.DTO.Game;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 
 namespace GameStore.BLL.DTO.Publisher
 {

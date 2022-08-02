@@ -60,9 +60,6 @@ namespace GameStore.BLL.Services.Implementation.Games
                 gameFilterDTO.Genres = await GetAllGenresByFilter(gameFilterDTO.Genres);
                 filters.Add(g => g.Genres.Any(gf => gameFilterDTO.Genres.Any(filter => filter == gf.Id)));
             }
-          
-    //        filters.Add(g => g.PlatformTypes.Any(gf => gameFilterDTO.Platforms.Any(filter => filter == gf.Id)));
-
 
             if (gameFilterDTO.Publishers != null)
             {

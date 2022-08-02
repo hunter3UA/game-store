@@ -1,5 +1,6 @@
 ﻿using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace GameStore.API.Controllers
 {
@@ -8,11 +9,29 @@ namespace GameStore.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthenticationService _authService;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService,IAuthenticationService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var users = await _userService.GetListOfUsersAsync();
+
+            return new JsonResult(users);
+        }
+
+        //[HttpPut]
+        //public async Task<IActionResult> UpdateUserAsync()
+        //{
+
+        //}
+
+        
 
         [HttpGet]
         [Route("ban")]

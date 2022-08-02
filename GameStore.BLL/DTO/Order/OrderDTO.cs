@@ -4,6 +4,7 @@ using System.Linq;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enum;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 
 namespace GameStore.BLL.DTO.Order
 {

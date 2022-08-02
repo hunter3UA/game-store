@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using MongoDB.Bson;
 
 namespace GameStore.BLL.DTO.Game

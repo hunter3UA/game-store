@@ -3,6 +3,7 @@ using FluentAssertions;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
 using Moq;
