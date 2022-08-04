@@ -9,9 +9,11 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<AuthResponseDTO> RegisterUserAsync(RegisterDTO registerDTO);
 
-        Task<UserDTO> GetUserAsync(string email);
+        Task<UserDTO> GetUserAsync(string userName);
 
         Task<List<UserDTO>> GetListOfUsersAsync();
+
+        Task<UserDTO> UpdateUserAsync(UpdateUserDTO updateUserDTO);
 
         bool BanUser();
     }

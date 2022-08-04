@@ -1,6 +1,8 @@
 ﻿using GameStore.DAL.Entities;
 using GameStore.DAL.Enums;
+using GameStore.DAL.Migrations;
 using System;
+using System.Collections.Generic;
 
 namespace GameStore.BLL.DTO.Order
 {
@@ -27,6 +29,9 @@ namespace GameStore.BLL.DTO.Order
         public string ShipCountry { get; set; }
 
         public string ShipRegion { get; set; }
+
+
+        public List<UpdateOrderDetils> DetailsToUpdate { get; set; }
 
         public OrderStatus Status { get; set; }
     }

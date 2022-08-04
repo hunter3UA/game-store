@@ -69,7 +69,7 @@ namespace GameStore.BLL.Services.Implementation
         {
             var userRefreshToken = new UserRefreshToken
             {
-                ExpirationDate = DateTime.UtcNow.AddDays(7),
+                ExpirationDate = DateTime.UtcNow.AddMinutes(5),
                 IsInvalidated = false,
                 RefreshToken = refreshToken,
                 Token = accessToken,
@@ -103,7 +103,7 @@ namespace GameStore.BLL.Services.Implementation
                     new Claim(ClaimTypes.Email, userOfToken.Email),
                     new Claim(ClaimTypes.Role, userOfToken.Role.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
+                Expires = DateTime.UtcNow.AddMinutes(3),
                 SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
             };
 

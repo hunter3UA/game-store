@@ -1,4 +1,5 @@
-﻿using GameStore.BLL.Services.Abstract;
+﻿using GameStore.BLL.DTO.User;
+using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -18,18 +19,29 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsersAsync()
+        public async Task<IActionResult> GetListAsync()
         {
-            var res = HttpContext.User.Claims;
             var users = await _userService.GetListOfUsersAsync();
 
             return new JsonResult(users);
         }
 
+        [HttpGet]
+        [Route("{userName}")]
+        public async Task<IActionResult> GetAsync([FromRoute] string userName)
+        {
+            var userByName = await _userService.GetUserAsync(userName);
 
+            return new JsonResult(userByName);
+        }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody]UpdateUserDTO updateUserDTO)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(updateUserDTO);
 
-        
+            return new JsonResult(updateUserDTO);
+        }
 
         [HttpGet]
         [Route("ban")]

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Order;
+using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enums;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
@@ -69,9 +70,21 @@ namespace GameStore.BLL.Services.Implementation
             if (orderByCustomer == null || orderByCustomer.OrderDetails == null)
                 throw new KeyNotFoundException("Order not found");
 
-            await GetDetailsByOrder(orderByCustomer);
+            await GetDetailsByOrderAsync(orderByCustomer);
 
             return _mapper.Map<OrderDTO>(orderByCustomer);
+        }
+
+        public async Task<OrderDTO> GetOrderAsync(int orderId)
+        {
+            Order orderById = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == orderId, o => o.OrderDetails);
+
+            if (orderById == null || orderById.OrderDetails == null)
+                throw new KeyNotFoundException("Order not found");
+
+            await GetDetailsByOrderAsync(orderById);
+
+            return _mapper.Map<OrderDTO>(orderById);
         }
 
         public async Task<bool> CancelOrderAsync(int orderId)
@@ -93,9 +106,36 @@ namespace GameStore.BLL.Services.Implementation
             return true;
         }
 
-        public async Task<List<OrderDTO>> GetListOfOrdersAsync(OrderHistoryDTO orderHistoryDTO)
+        public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
         {
-            List<Order> orders = await FilterOrders(orderHistoryDTO);
+            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
+            Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
+            gameByDetails ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
+
+            if (orderDetailsToUpdate == null)
+                throw new KeyNotFoundException("Order details not found");
+
+            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
+            if (orderDetailsToUpdate.Quantity > gameByDetails.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
+                throw new ArgumentException("Quantity is invalid");
+
+            if (gameByDetails.TypeOfBase == TypeOfBase.Northwind)
+                await _northwindDbContext.ProductRepository.UpdateAsync(gameByDetails);
+
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);
+        }
+
+        public async Task<List<OrderDTO>> GetStoreOrdersAsync()
+        {
+            var storeOrders = await _unitOfWork.OrderRepository.GetListAsync(g=>g.OrderDetails);
+
+            return _mapper.Map<List<OrderDTO>>(storeOrders);
+        }
+
+        public async Task<List<OrderDTO>> GetListOfOrdersAsync(OrderFilterDTO orderHistoryDTO)
+        {
+            List<Order> orders = await FilterOrdersAsync(orderHistoryDTO);
             return _mapper.Map<List<OrderDTO>>(orders);
         }
 
@@ -117,7 +157,17 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(updatedOrder);
         }
 
-        private async Task<List<Order>> FilterOrders(OrderHistoryDTO orderHistoryDTO)
+        public async Task UpdateOrderDetailsAsync(List<OrderDetails> detailsToUpdate)
+        {
+            var mappedDetails = _mapper.Map<List<OrderDetails>>(detailsToUpdate);
+            foreach(var details in mappedDetails)
+            {
+                await _unitOfWork.OrderDetailsRepository.UpdateAsync(details);
+            }
+            await _unitOfWork.SaveAsync();
+        }
+
+        private async Task<List<Order>> FilterOrdersAsync(OrderFilterDTO orderHistoryDTO)
         {
             var filter = BuildFilter(orderHistoryDTO);
             List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(filter, o => o.OrderDetails);
@@ -148,7 +198,7 @@ namespace GameStore.BLL.Services.Implementation
             return ordersFromStore;
         }
 
-        private Expression<Func<Order, bool>> BuildFilter(OrderHistoryDTO orderHistoryDTO)
+        private Expression<Func<Order, bool>> BuildFilter(OrderFilterDTO orderHistoryDTO)
         {
             var type = typeof(Order);
             var parameter = Expression.Parameter(type, "o");
@@ -235,7 +285,7 @@ namespace GameStore.BLL.Services.Implementation
             }
         }
 
-        private async Task GetDetailsByOrder(Order order)
+        private async Task GetDetailsByOrderAsync(Order order)
         {
             foreach (var item in order.OrderDetails)
             {

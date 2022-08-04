@@ -20,7 +20,7 @@ namespace GameStore.API.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUserAsync(RegisterDTO registerDTO)
+        public async Task<IActionResult> RegisterAsync(RegisterDTO registerDTO)
         {
             var jwtToken = await _userService.RegisterUserAsync(registerDTO);
 
@@ -29,7 +29,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> LoginUserAsync(AuthRequestDTO authRequestDTO)
+        public async Task<IActionResult> LoginAsync(AuthRequestDTO authRequestDTO)
         {
             var jwtToken = await _authService.GetJwtTokenAsync(authRequestDTO);
             if (jwtToken == null)

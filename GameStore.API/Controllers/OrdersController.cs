@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using GameStore.API.Helpers;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Order;
+using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Implementation.PaymentServices;
@@ -49,15 +50,23 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOrdersAsync([FromQuery] OrderHistoryDTO orderHistoryDTO)
+        [Route("history")]
+        public async Task<IActionResult> GetListAsync([FromQuery] OrderFilterDTO orderFilterDTO)
         {
-            var orders = await _orderService.GetListOfOrdersAsync(orderHistoryDTO);
+            var orders = await _orderService.GetListOfOrdersAsync(orderFilterDTO);
             return new JsonResult(orders);
         }
 
         [HttpGet]
-        [Route("{orderId}")]
-        public async Task<IActionResult> MakeOrderAsync([FromRoute] int orderId)
+        public async Task<IActionResult> GetStoreOrdersAsync([FromQuery] OrderFilterDTO orderFilterDTO)
+        {
+            var storeOrders = await _orderService.GetStoreOrdersAsync();
+
+            return new JsonResult(storeOrders);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MakeOrderAsync([FromBody] int orderId)
         {
             var createdOrder = await _orderService.MakeOrderAsync(orderId);
 
@@ -65,7 +74,16 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateOrderAsync([FromBody] UpdateOrderDTO updateOrderDTO)
+        [Route("details/update")]
+        public async Task<IActionResult> ChangeQuantityOfOrderDetailsAsync([FromBody] ChangeQuantityDTO changeQuantityDTO)
+        {
+            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
+
+            return new JsonResult(updatedOrderDetails);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateOrderDTO updateOrderDTO)
         {
             var updatedOrder = await _orderService.UpdateOrderAsync(updateOrderDTO);
 
@@ -83,12 +101,21 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/api/order")]
-        public async Task<IActionResult> GetOrderAsync()
+        public async Task<IActionResult> GetAsync()
         {
             var customerId = _customerGenerator.GetCookies(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
             return new JsonResult(orderByCustomer);
+        }
+
+        [HttpGet]
+        [Route("{orderId}")]
+        public async Task<IActionResult> GetAsync([FromRoute] int orderId)
+        {
+            var orderById = await _orderService.GetOrderAsync(orderId);
+
+            return new JsonResult(orderById);
         }
     }
 }

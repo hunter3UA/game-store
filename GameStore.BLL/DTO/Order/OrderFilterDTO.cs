@@ -2,7 +2,7 @@
 
 namespace GameStore.BLL.DTO.Order
 {
-    public class OrderHistoryDTO
+    public class OrderFilterDTO
     {
         public DateTime? From { get; set; }
 

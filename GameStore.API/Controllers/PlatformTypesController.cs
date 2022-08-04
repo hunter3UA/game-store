@@ -19,7 +19,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
-        public async Task<IActionResult> AddPlatformTypeAsync([FromBody] AddPlatformTypeDTO platformDTO)
+        public async Task<IActionResult> AddAsync([FromBody] AddPlatformTypeDTO platformDTO)
         {
             var addedPlatform = await _platformService.AddPlatformAsync(platformDTO);
 
@@ -27,7 +27,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListOfPlatformsAsync()
+        public async Task<IActionResult> GetListAsync()
         {
             var listOfPlatforms = await _platformService.GetListOfPlatformsAsync();
 
@@ -36,7 +36,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetPlatformAsync([FromRoute] int id)
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
             var searchedPlatform = await _platformService.GetPlatformAsync(id);
 
@@ -45,7 +45,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdatePlatformAsync([FromBody] UpdatePlatformTypeDTO updatePlatformTypeDTO)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdatePlatformTypeDTO updatePlatformTypeDTO)
         {
             var updatedPlatform = await _platformService.UpdatePlatformAsync(updatePlatformTypeDTO);
             
@@ -54,7 +54,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{id}")]
-        public async Task<IActionResult> RemovePlatformAsync([FromRoute] int id)
+        public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _platformService.RemovePlatformAsync(id);
 

@@ -6,6 +6,7 @@ using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
 using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IPasswordService _passwordService;
         private readonly IAuthenticationService _authService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper,IPasswordService passwordService,IAuthenticationService authService)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService, IAuthenticationService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -42,14 +43,14 @@ namespace GameStore.BLL.Services.Implementation
             var response = await _authService.GetJwtTokenAsync(authRequest);
 
             return response;
- 
+
         }
 
-        public async Task<UserDTO> GetUserAsync(string email)
+        public async Task<UserDTO> GetUserAsync(string userName)
         {
-            User userByEmail = await _unitOfWork.UserRepository.GetAsync(u => u.Email == email && !u.IsDeleted);
+            User userByEmail = await _unitOfWork.UserRepository.GetAsync(u => u.UserName == userName && !u.IsDeleted);
 
-            return _mapper.Map<UserDTO>(userByEmail);
+            return userByEmail != null ? _mapper.Map<UserDTO>(userByEmail) : throw new KeyNotFoundException();
         }
 
         public async Task<List<UserDTO>> GetListOfUsersAsync()
@@ -62,6 +63,19 @@ namespace GameStore.BLL.Services.Implementation
         public bool BanUser()
         {
             return true;
+        }
+
+        public async Task<UserDTO> UpdateUserAsync(UpdateUserDTO updateUserDTO)
+        {
+            if (updateUserDTO == null)
+                throw new ArgumentException();
+
+            User userById = await _unitOfWork.UserRepository.GetAsync(u => u.UserName == u.UserName);
+            userById.Role = updateUserDTO.Role;
+            userById.UserName = updateUserDTO.UserName;
+            await _unitOfWork.SaveAsync();
+
+            return _mapper.Map<UserDTO>(userById);
         }
     }
 }

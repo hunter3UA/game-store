@@ -58,26 +58,6 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDetailsDTO>(addedOrderDetails);
         }
 
-        public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
-        {
-            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
-            Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-            gameByDetails ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-
-            if (orderDetailsToUpdate == null)
-                throw new KeyNotFoundException("Order details not found");
-
-            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
-            if (orderDetailsToUpdate.Quantity > gameByDetails.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
-                throw new ArgumentException("Quantity is invalid");
-
-            if (gameByDetails.TypeOfBase == TypeOfBase.Northwind)
-                await _northwindDbContext.ProductRepository.UpdateAsync(gameByDetails);
-
-            await _unitOfWork.SaveAsync();
-            return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);
-        }
-
         public async Task<bool> RemoveOrderDetailsAsync(int id)
         {
             bool isDeletedOrderDetails = await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == id);

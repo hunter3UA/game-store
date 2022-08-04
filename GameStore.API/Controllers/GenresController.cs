@@ -18,7 +18,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
-        public async Task<IActionResult> AddGenreAsync([FromBody] AddGenreDTO addGenreDTO)
+        public async Task<IActionResult> AddAsync([FromBody] AddGenreDTO addGenreDTO)
         {
             var addedGenre = await _genreService.AddGenreAsync(addGenreDTO);
 
@@ -26,7 +26,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllGenresAsync()
+        public async Task<IActionResult> GetListAsync()
         {
             var allGenres = await _genreService.GetListOfGenresAsync();
 
@@ -35,7 +35,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> GetGenreAsync([FromRoute] int id)
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
             var genreByKey = await _genreService.GetGenreAsync(id);
 
@@ -44,7 +44,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateGenreAsync([FromBody] UpdateGenreDTO updateGenreDTO)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateGenreDTO updateGenreDTO)
         {
             var updatedGenre = await _genreService.UpdateGenreAsync(updateGenreDTO);
 
@@ -53,7 +53,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{id}")]
-        public async Task<IActionResult> RemoveGenreAsync([FromRoute] int id)
+        public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _genreService.RemoveGenreAsync(id);
 

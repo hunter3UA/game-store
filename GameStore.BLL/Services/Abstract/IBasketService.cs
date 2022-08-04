@@ -10,8 +10,6 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<OrderDTO> GetBasketAsync(string cusomerId);
 
-        Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO);
-
         Task<bool> RemoveOrderDetailsAsync(int id);
     }
 }

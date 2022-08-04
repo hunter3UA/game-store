@@ -18,7 +18,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
-        public async Task<IActionResult> AddPublisherAsync([FromBody] AddPublisherDTO addPublisherDTO)
+        public async Task<IActionResult> AddAsync([FromBody] AddPublisherDTO addPublisherDTO)
         {
             var addedPublisher = await _publisherService.AddPublisherAsync(addPublisherDTO);
 
@@ -27,7 +27,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{name}")]
-        public async Task<IActionResult> GetPublisherAsync([FromRoute] string name)
+        public async Task<IActionResult> GetAsync([FromRoute] string name)
         {
             var searchedPublisher = await _publisherService.GetPublisherAsync(name);
 
@@ -35,7 +35,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListOfPublishersAsync()
+        public async Task<IActionResult> GetListAsync()
         {
             var allPublishers = await _publisherService.GetListOfPublishersAsync();
 
@@ -44,7 +44,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdatePublisherAsync([FromBody] UpdatePublisherDTO updatePublisherDTO)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdatePublisherDTO updatePublisherDTO)
         {
             var updatedPublisher = await _publisherService.UpdatePublisherAsync(updatePublisherDTO);
 
@@ -53,7 +53,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{id}")]
-        public async Task<IActionResult> RemovePublisherAsync([FromRoute] int id)
+        public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _publisherService.RemovePublisherAsync(id);
 

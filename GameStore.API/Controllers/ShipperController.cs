@@ -20,7 +20,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetListOfShippersAsync()
+        public async Task<IActionResult> GetListAsync()
         {
             var shippers = await _shipperService.GetListOfShippersAsync();
 

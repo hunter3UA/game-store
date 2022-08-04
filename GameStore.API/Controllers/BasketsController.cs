@@ -10,20 +10,20 @@ namespace GameStore.API.Controllers
     [ApiController]
     public class BasketsController : ControllerBase
     {
-        private readonly IBasketService _orderService;
+        private readonly IBasketService _basketService;
         private readonly ICustomerGenerator _customerGenerator;
 
         public BasketsController(IBasketService orderService,ICustomerGenerator customerGenerator)
         {
-            _orderService = orderService;
+            _basketService = orderService;
             _customerGenerator = customerGenerator;
         }
 
         [HttpGet]   
-        public async Task<IActionResult> GetBasketAsync()
+        public async Task<IActionResult> GetAsync()
         {     
             var customerId = _customerGenerator.GetCookies(HttpContext);
-            var orderByCustomer = await _orderService.GetBasketAsync(customerId);
+            var orderByCustomer = await _basketService.GetBasketAsync(customerId);
 
             return new JsonResult(orderByCustomer);
         }
@@ -34,28 +34,17 @@ namespace GameStore.API.Controllers
         {
             string customerId = string.Empty;
            
-            
-   
             customerId = _customerGenerator.GetCookies(HttpContext);
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
+            var addedOrderDetails = await _basketService.AddOrderDetailsAsync(gamekey, customerId);
 
             return new JsonResult(addedOrderDetails);
-        }
-
-        [HttpPut]
-        [Route("details/update")]
-        public async Task<IActionResult> ChangeQuantityOfOrderDetailsAsync([FromBody] ChangeQuantityDTO changeQuantityDTO)
-        {
-            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
-            
-            return new JsonResult(updatedOrderDetails);           
         }
 
         [HttpDelete]
         [Route("details/{id}")]
         public async Task<IActionResult> RemoveOrderDetailsAsync([FromRoute] int id) 
         {
-            await _orderService.RemoveOrderDetailsAsync(id);
+            await _basketService.RemoveOrderDetailsAsync(id);
             
             return Ok();
         }
