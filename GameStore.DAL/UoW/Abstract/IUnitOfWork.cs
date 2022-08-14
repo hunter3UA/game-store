@@ -20,7 +20,6 @@ namespace GameStore.DAL.UoW.Abstract
 
         IGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
-        IGenericRepository<UserRefreshToken> RefreshTokenRepository { get; }
 
         IUserRepository UserRepository { get; }
 

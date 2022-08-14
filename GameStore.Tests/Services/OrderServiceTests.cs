@@ -27,7 +27,7 @@ namespace GameStore.Tests.Services
             Order orderToUpdate = new Order()
             {
                 OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
+                CustomerId = "1",
                 OrderDetails = new List<OrderDetails>(),
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Opened
@@ -46,7 +46,7 @@ namespace GameStore.Tests.Services
                     OrderId = orderToUpdate.Id,
                     Discount = 0,
                     Quantity = 1,
-                    Price = item.Price,
+                    Price = (decimal?)Convert.ToDouble(item.Price),
                     IsDeleted = false
                 });
             }
@@ -78,7 +78,7 @@ namespace GameStore.Tests.Services
             Order orderToUpdate = new Order()
             {
                 OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
+                CustomerId = "1",
                 OrderDetails = null,
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Opened
@@ -127,7 +127,7 @@ namespace GameStore.Tests.Services
             Order orderToCanel = new Order()
             {
                 OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
+                CustomerId = "1",
                 OrderDetails = new List<OrderDetails>(),
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Processing
@@ -182,5 +182,7 @@ namespace GameStore.Tests.Services
 
             result.Should().BeOfType<ArgumentException>();
         }
+
+
     }
 }

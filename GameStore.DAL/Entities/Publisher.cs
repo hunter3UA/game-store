@@ -47,10 +47,5 @@ namespace GameStore.DAL.Entities
         [NotMapped, BsonDefaultValue(TypeOfBase.Northwind),IgnoreMongoUpdate]
         public TypeOfBase TypeOfBase { get; set; }
 
-        [IgnoreMongoUpdate]
-        public string UserId { get; set; }
-
-        [ForeignKey(nameof(UserId)), IgnoreMongoUpdate]
-        public User User { get; set; }
     }
 }

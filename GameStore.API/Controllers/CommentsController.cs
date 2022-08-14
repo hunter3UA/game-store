@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -47,6 +49,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("comments/remove/{id}")]
+        [Authorize(Roles =ApiRoles.ModeratorRole)]
         public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _commentService.RemoveCommentAsync(id);

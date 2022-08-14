@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -18,6 +20,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> AddAsync([FromBody] AddGenreDTO addGenreDTO)
         {
             var addedGenre = await _genreService.AddGenreAsync(addGenreDTO);
@@ -44,6 +47,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
+        [Authorize(Roles =ApiRoles.ManagerRole)]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateGenreDTO updateGenreDTO)
         {
             var updatedGenre = await _genreService.UpdateGenreAsync(updateGenreDTO);
@@ -53,11 +57,12 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{id}")]
+        [Authorize(Roles =ApiRoles.ManagerRole)]
         public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _genreService.RemoveGenreAsync(id);
 
             return Ok();
-        } 
+        }
     }
 }

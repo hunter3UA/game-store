@@ -204,7 +204,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             return northwindGames;
         }
 
-        private async Task<Game> SetGameAsync(string gameKey)
+        public async Task<Game> SetGameAsync(string gameKey)
         {
             Game gameByKey = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey, g => g.Genres, g => g.PlatformTypes);
             gameByKey ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);

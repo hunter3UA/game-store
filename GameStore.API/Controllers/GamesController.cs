@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -21,6 +23,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> AddAsync([FromBody] AddGameDTO addGameDTO)
         {
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
@@ -56,6 +59,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
+        [Authorize(Roles = ApiRoles.PublisherRole)]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
@@ -65,6 +69,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{key}")]
+        [Authorize(Roles =ApiRoles.ManagerRole)]
         public async Task<IActionResult> RemoveAsync([FromRoute] string key)
         {
             await _gameService.RemoveGameAsync(key);

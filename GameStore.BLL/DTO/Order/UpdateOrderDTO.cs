@@ -1,4 +1,5 @@
-﻿using GameStore.DAL.Entities;
+﻿using GameStore.BLL.DTO.OrderDetails;
+using GameStore.DAL.Entities;
 using GameStore.DAL.Enums;
 using GameStore.DAL.Migrations;
 using System;
@@ -14,7 +15,7 @@ namespace GameStore.BLL.DTO.Order
 
         public DateTime Expiration { get; set; }
 
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
 
         public string ShipperCompanyName { get; set; }
 
@@ -24,14 +25,13 @@ namespace GameStore.BLL.DTO.Order
 
         public string ShipCity { get; set; }
 
-        public decimal ShipPostalCode { get; set; }
+        public string ShipPostalCode { get; set; }
 
         public string ShipCountry { get; set; }
 
         public string ShipRegion { get; set; }
 
-
-        public List<UpdateOrderDetils> DetailsToUpdate { get; set; }
+        public List<OrderDetailsDTO> OrderDetails { get; set; }
 
         public OrderStatus Status { get; set; }
     }

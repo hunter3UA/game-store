@@ -12,5 +12,7 @@ namespace GameStore.BLL.DTO.User
 
         public string Role { get; set; }
 
+        public string PublisherName { get; set; }
+
     }
 }

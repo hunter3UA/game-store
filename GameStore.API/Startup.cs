@@ -27,6 +27,7 @@ using Microsoft.IdentityModel.Tokens;
 using GameStore.BLL.Models;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using GameStore.Common.Services.Abstract;
 
 namespace GameStore.API
 {
@@ -50,6 +51,7 @@ namespace GameStore.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
+       
          
             app.UseSerilogRequestLogging(options =>
             {
@@ -73,11 +75,12 @@ namespace GameStore.API
                 });
             }
 
-            app.UseRouting();
+            app.UseRouting();  
+            app.UseCors("AllowOrigin");
             app.UseAuthentication();
             app.UseAuthorization(); 
             
-            app.UseCors("AllowOrigin");
+          
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -167,7 +170,7 @@ namespace GameStore.API
             services.AddScoped<IPlatformTypeService, PlatformTypeService>();
             services.AddScoped<IPublisherService, PublisherService>();
             services.AddScoped<IBasketService, BasketService>();
-            services.AddScoped<ICustomerGenerator, CustomerGenerator>();
+            services.AddScoped<ICustomerHelper, CustomerHelper>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddHostedService<OrderExpirationService>();
             services.AddScoped<IPaymentContext, PaymentContext>();

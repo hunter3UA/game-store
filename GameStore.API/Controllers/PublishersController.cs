@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -18,12 +20,13 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> AddAsync([FromBody] AddPublisherDTO addPublisherDTO)
         {
             var addedPublisher = await _publisherService.AddPublisherAsync(addPublisherDTO);
 
             return new JsonResult(addedPublisher);
-        } 
+        }
 
         [HttpGet]
         [Route("{name}")]
@@ -44,6 +47,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
+        [Authorize(Roles = "Publisher")]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdatePublisherDTO updatePublisherDTO)
         {
             var updatedPublisher = await _publisherService.UpdatePublisherAsync(updatePublisherDTO);
@@ -53,6 +57,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{id}")]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _publisherService.RemovePublisherAsync(id);

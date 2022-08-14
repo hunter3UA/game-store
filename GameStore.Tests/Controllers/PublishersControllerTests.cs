@@ -22,7 +22,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPublisherService.Setup(m => m.AddPublisherAsync(It.IsAny<AddPublisherDTO>())).ReturnsAsync(new PublisherDTO());
 
-            var result = await publishersController.AddPublisherAsync(addPublisherDTO);
+            var result = await publishersController.AddAsync(addPublisherDTO);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -34,7 +34,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPublisherService.Setup(m => m.GetListOfPublishersAsync()).ReturnsAsync(publishers);
 
-            var result = await publishersController.GetListOfPublishersAsync();
+            var result = await publishersController.GetListAsync();
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -45,7 +45,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPublisherService.Setup(m => m.GetPublisherAsync(It.IsAny<string>())).ReturnsAsync(new PublisherDTO());
 
-            var result = await publishersController.GetPublisherAsync("MyPub");
+            var result = await publishersController.GetAsync("MyPub");
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -58,7 +58,7 @@ namespace GameStore.Tests.Controllers
                 return true;
             });
 
-            var result = await publishersController.RemovePublisherAsync(1);
+            var result = await publishersController.RemoveAsync(1);
 
             result.Should().BeOfType<OkResult>();
         }
@@ -69,7 +69,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPublisherService.Setup(m => m.UpdatePublisherAsync(It.IsAny<UpdatePublisherDTO>())).ReturnsAsync(new PublisherDTO());
 
-            var result = await publishersController.UpdatePublisherAsync(updatePublisherDTO);
+            var result = await publishersController.UpdateAsync(updatePublisherDTO);
 
             result.Should().BeOfType<JsonResult>();
 

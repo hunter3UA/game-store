@@ -7,7 +7,7 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface IUserService
     {
-        Task<AuthResponseDTO> RegisterUserAsync(RegisterDTO registerDTO);
+        Task<string> RegisterUserAsync(RegisterDTO registerDTO);
 
         Task<UserDTO> GetUserAsync(string userName);
 

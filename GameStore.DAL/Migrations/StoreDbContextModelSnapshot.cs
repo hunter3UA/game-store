@@ -123,7 +123,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(4330),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(2533),
                             Description = "New part of Stalker",
                             Discontinued = false,
                             IsDeleted = false,
@@ -131,7 +131,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Stalker2",
                             NumberOfViews = 0,
                             Price = 70m,
-                            PublishedAt = new DateTime(2022, 4, 24, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6099),
+                            PublishedAt = new DateTime(2022, 5, 5, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4272),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)10,
@@ -140,7 +140,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6345),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4519),
                             Description = "Best part",
                             Discontinued = false,
                             IsDeleted = false,
@@ -148,7 +148,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Dying light",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 6, 13, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6432),
+                            PublishedAt = new DateTime(2022, 6, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4654),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             UnitsInStock = (short)0,
@@ -157,7 +157,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 3,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6443),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4664),
                             Description = "Action ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -165,7 +165,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Left 4 Dead",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2021, 6, 28, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6446),
+                            PublishedAt = new DateTime(2021, 7, 9, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4667),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)3,
@@ -174,7 +174,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 4,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6448),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4669),
                             Description = "Description of cmv",
                             Discontinued = false,
                             IsDeleted = false,
@@ -182,7 +182,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Call of Duty:MV",
                             NumberOfViews = 0,
                             Price = 30m,
-                            PublishedAt = new DateTime(2022, 7, 26, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6450),
+                            PublishedAt = new DateTime(2022, 8, 6, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4670),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -191,7 +191,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 5,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6452),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4673),
                             Description = "Description of civ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -199,7 +199,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sid Meier`s Civilization VI",
                             NumberOfViews = 0,
                             Price = 60m,
-                            PublishedAt = new DateTime(2022, 7, 3, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6453),
+                            PublishedAt = new DateTime(2022, 7, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4674),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -208,7 +208,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 6,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6455),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4676),
                             Description = "Description of arma",
                             Discontinued = false,
                             IsDeleted = false,
@@ -216,7 +216,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Arma 3",
                             NumberOfViews = 0,
                             Price = 80m,
-                            PublishedAt = new DateTime(2022, 6, 3, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6457),
+                            PublishedAt = new DateTime(2022, 6, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4678),
                             PublisherName = "Bohemia Interactive",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -225,7 +225,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6459),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4680),
                             Description = "Description of nfs",
                             Discontinued = false,
                             IsDeleted = false,
@@ -233,7 +233,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Need for speed",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 6, 13, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6460),
+                            PublishedAt = new DateTime(2022, 6, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4681),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -242,7 +242,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 8,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6462),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4683),
                             Description = "Description of Sam",
                             Discontinued = false,
                             IsDeleted = false,
@@ -250,7 +250,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Serious Sam 4",
                             NumberOfViews = 0,
                             Price = 45m,
-                            PublishedAt = new DateTime(2022, 7, 18, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6463),
+                            PublishedAt = new DateTime(2022, 7, 29, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4685),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -259,7 +259,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 9,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6465),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4718),
                             Description = "Description of Sea",
                             Discontinued = false,
                             IsDeleted = false,
@@ -267,7 +267,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sea of Thieves",
                             NumberOfViews = 0,
                             Price = 90m,
-                            PublishedAt = new DateTime(2022, 6, 13, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6466),
+                            PublishedAt = new DateTime(2022, 6, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4720),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -276,7 +276,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 10,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6468),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4722),
                             Description = "Description of Battlefield",
                             Discontinued = false,
                             IsDeleted = false,
@@ -284,7 +284,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Battlefield 4",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 7, 3, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6470),
+                            PublishedAt = new DateTime(2022, 7, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4724),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -293,7 +293,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 11,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6472),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4725),
                             Description = "Description of Mass effect 1",
                             Discontinued = false,
                             IsDeleted = false,
@@ -301,7 +301,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Mass effect 1",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 7, 13, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6473),
+                            PublishedAt = new DateTime(2022, 7, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4727),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -310,7 +310,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 12,
-                            AddedAt = new DateTime(2022, 8, 2, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6475),
+                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4729),
                             Description = "Description of Command and conqurer",
                             Discontinued = false,
                             IsDeleted = false,
@@ -318,7 +318,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Command and conqurer",
                             NumberOfViews = 0,
                             Price = 150m,
-                            PublishedAt = new DateTime(2022, 6, 3, 14, 53, 55, 242, DateTimeKind.Utc).AddTicks(6476),
+                            PublishedAt = new DateTime(2022, 6, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4730),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -815,15 +815,10 @@ namespace GameStore.DAL.Migrations
                     b.Property<string>("Region")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyName")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Publishers");
 
@@ -831,7 +826,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            CompanyName = "DeepSiler",
+                            CompanyName = "DeepSilver",
                             Description = "Desc of Publisher 1 ",
                             HomePage = "Home",
                             IsDeleted = false
@@ -890,6 +885,9 @@ namespace GameStore.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("PublisherName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -905,43 +903,59 @@ namespace GameStore.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.UserRefreshToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsInvalidated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
+                    b.HasData(
+                        new
+                        {
+                            Id = "dd9d8aa6-a443-43f6-b840-e09c9f64c185",
+                            Email = "admin@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 125, 219, 75, 82, 52, 179, 6, 29, 204, 48, 110, 223, 40, 210, 224, 139, 133, 82, 189, 186, 208, 149, 20, 250, 198, 233, 167, 121, 251, 145, 222, 61, 36, 233, 75, 12, 77, 36, 32, 7, 210, 238, 85, 218, 37, 165, 222, 151, 92, 223, 202, 223, 162, 170, 37, 39, 222, 62, 119, 30, 162, 199, 227, 197 },
+                            PasswordSalt = new byte[] { 212, 62, 204, 165, 25, 114, 157, 187, 51, 81, 78, 180, 128, 214, 8, 5, 242, 98, 35, 5, 13, 76, 129, 96 },
+                            Role = "Admin",
+                            UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = "5343b58b-a88e-4e6c-b191-8c3c3cf85c82",
+                            Email = "user1@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 118, 90, 56, 77, 248, 56, 174, 239, 109, 0, 94, 2, 160, 68, 134, 229, 189, 61, 213, 164, 45, 126, 190, 176, 255, 249, 130, 129, 193, 118, 17, 247, 79, 231, 17, 74, 20, 165, 83, 4, 152, 62, 35, 4, 201, 1, 246, 174, 49, 91, 22, 197, 230, 192, 217, 249, 72, 255, 151, 254, 111, 141, 131, 39 },
+                            PasswordSalt = new byte[] { 29, 146, 241, 142, 24, 66, 78, 128, 17, 36, 21, 53, 98, 187, 199, 80, 220, 243, 125, 165, 99, 245, 33, 85 },
+                            Role = "User",
+                            UserName = "user1"
+                        },
+                        new
+                        {
+                            Id = "1437c530-183c-44ec-88aa-05481dfd38e1",
+                            Email = "manager1@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 60, 67, 97, 10, 149, 208, 227, 226, 139, 102, 70, 61, 66, 127, 22, 152, 117, 125, 7, 60, 76, 121, 165, 45, 121, 219, 119, 106, 33, 198, 8, 254, 37, 25, 186, 45, 123, 112, 19, 168, 80, 194, 5, 13, 18, 219, 244, 40, 66, 141, 5, 87, 39, 207, 175, 206, 39, 255, 180, 49, 166, 60, 113, 97 },
+                            PasswordSalt = new byte[] { 105, 104, 181, 152, 47, 147, 178, 246, 236, 236, 80, 38, 225, 177, 189, 245, 103, 77, 41, 93, 70, 57, 40, 151 },
+                            Role = "Manager",
+                            UserName = "manager1"
+                        },
+                        new
+                        {
+                            Id = "b98f612b-cef3-4978-bed6-2930cff0d367",
+                            Email = "moderator@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 46, 229, 35, 168, 165, 59, 234, 35, 91, 123, 171, 242, 240, 37, 22, 77, 161, 215, 232, 109, 240, 124, 236, 163, 181, 170, 214, 112, 234, 17, 184, 181, 48, 196, 61, 180, 15, 102, 92, 51, 148, 54, 123, 69, 105, 112, 230, 143, 204, 240, 67, 247, 138, 161, 173, 136, 158, 51, 138, 80, 220, 196, 22, 200 },
+                            PasswordSalt = new byte[] { 243, 187, 190, 159, 127, 76, 129, 171, 127, 94, 95, 53, 92, 112, 101, 10, 67, 75, 114, 151, 34, 132, 215, 249 },
+                            Role = "Moderator",
+                            UserName = "moderator1"
+                        },
+                        new
+                        {
+                            Id = "e0db10b0-d24c-44e6-86e6-686dcfd9eca2",
+                            Email = "publisher1@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 114, 127, 53, 204, 32, 234, 113, 66, 135, 87, 56, 200, 119, 178, 242, 229, 217, 233, 162, 211, 106, 137, 130, 180, 64, 229, 255, 243, 198, 211, 54, 66, 36, 100, 125, 5, 19, 193, 160, 73, 238, 33, 3, 253, 182, 56, 134, 138, 55, 5, 240, 100, 222, 61, 151, 7, 138, 72, 149, 90, 202, 154, 234, 167 },
+                            PasswordSalt = new byte[] { 162, 3, 236, 244, 193, 113, 121, 43, 86, 83, 70, 232, 160, 205, 83, 200, 15, 143, 133, 136, 127, 241, 76, 17 },
+                            PublisherName = "DeepSilver",
+                            Role = "Publisher",
+                            UserName = "publisher1"
+                        });
                 });
 
             modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
@@ -1015,26 +1029,6 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("PlatformType");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Publisher", b =>
-                {
-                    b.HasOne("GameStore.DAL.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.UserRefreshToken", b =>
-                {
-                    b.HasOne("GameStore.DAL.Entities.User", "User")
-                        .WithMany("UserRefreshTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
                 {
                     b.Navigation("Answers");
@@ -1053,11 +1047,6 @@ namespace GameStore.DAL.Migrations
             modelBuilder.Entity("GameStore.DAL.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.User", b =>
-                {
-                    b.Navigation("UserRefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

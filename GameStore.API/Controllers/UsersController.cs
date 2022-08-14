@@ -1,5 +1,7 @@
-﻿using GameStore.BLL.DTO.User;
+﻿using GameStore.API.Auth;
+using GameStore.BLL.DTO.User;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -12,7 +14,7 @@ namespace GameStore.API.Controllers
         private readonly IUserService _userService;
         private readonly IAuthenticationService _authService;
 
-        public UsersController(IUserService userService,IAuthenticationService authService)
+        public UsersController(IUserService userService, IAuthenticationService authService)
         {
             _userService = userService;
             _authService = authService;
@@ -36,11 +38,12 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody]UpdateUserDTO updateUserDTO)
+        [Authorize(Roles = ApiRoles.UserRole)]
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateUserDTO updateUserDTO)
         {
             var updatedUser = await _userService.UpdateUserAsync(updateUserDTO);
 
-            return new JsonResult(updateUserDTO);
+            return new JsonResult(updatedUser);
         }
 
         [HttpGet]

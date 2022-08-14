@@ -1,7 +1,9 @@
 ﻿using GameStore.BLL.DTO.Auth;
 using GameStore.BLL.Models;
 using GameStore.BLL.Services.Abstract;
+using GameStore.Common.Services.Abstract;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -25,68 +27,24 @@ namespace GameStore.BLL.Services.Implementation
             _passwordService = passwordService;
         }
 
-        public async Task<AuthResponseDTO> GetJwtTokenAsync(AuthRequestDTO authRequestDTO)
+        public async Task<string> GetJwtTokenAsync(AuthRequestDTO authRequestDTO)
         {
             User userByEmail = await _unitOfWork.UserRepository.GetAsync(u => u.Email == authRequestDTO.Email);
             if (userByEmail == null)
                 throw new KeyNotFoundException("User does not exist");
 
-            bool isCorrectPassword = _passwordService.CheckPassword(userByEmail, authRequestDTO.Password);
+            bool isCorrectPassword = _passwordService.CheckPassword(userByEmail.PasswordHash, userByEmail.PasswordSalt, authRequestDTO.Password);
             if (!isCorrectPassword)
                 throw new ArgumentException("Incorrect password");
 
-            return await GenerateTokens(userByEmail);
+            return GenerateAccessToken(userByEmail);
         }
 
-        public async Task<AuthResponseDTO> GetJwtTokenAsync(User user)
+        public JwtSecurityToken ReadJwtToken(string expiredToken)
         {
-            return await GenerateTokens(user);
-        }
+            var securityTokenHandler = new JwtSecurityTokenHandler();
 
-        public async Task<AuthResponseDTO> RefreshTokenAsync(RefreshTokenRequestDTO refreshTokenRequestDTO)
-        {
-            if (refreshTokenRequestDTO.ExpiredAccessToken == null)
-                throw new ArgumentException("Expired token can not be null");
-            if (refreshTokenRequestDTO.RefreshToken == null)
-                throw new ArgumentException("Refresh token can not be null");
-
-            var token = ReadJwtToken(refreshTokenRequestDTO.ExpiredAccessToken);
-            var userRefreshToken = await _unitOfWork.RefreshTokenRepository.GetAsync(
-                t => !t.IsInvalidated && t.Token == refreshTokenRequestDTO.ExpiredAccessToken &&
-                t.RefreshToken == refreshTokenRequestDTO.RefreshToken, t => t.User);
-
-            var authResponse = ValidateDetails(token, userRefreshToken);
-            userRefreshToken.IsInvalidated = true;
-            await _unitOfWork.SaveAsync();
-
-            var response = await GetJwtTokenAsync(userRefreshToken.User);
-
-            return response;
-           
-        }
-
-        private async Task<AuthResponseDTO> SaveTokenDetailsAsync(User user, string accessToken, string refreshToken)
-        {
-            var userRefreshToken = new UserRefreshToken
-            {
-                ExpirationDate = DateTime.UtcNow.AddMinutes(5),
-                IsInvalidated = false,
-                RefreshToken = refreshToken,
-                Token = accessToken,
-                UserId = user.Id
-            };
-
-            await _unitOfWork.RefreshTokenRepository.AddAsync(userRefreshToken);
-            await _unitOfWork.SaveAsync();
-
-            return new AuthResponseDTO { Token = accessToken, RefreshToken = refreshToken, IsSuccess = true };
-        }
-
-        private async Task<AuthResponseDTO> GenerateTokens(User userByEmail)
-        {
-            var refreshToken = GenerateRefreshToken();
-            var accessToken = GenerateAccessToken(userByEmail);
-            return await SaveTokenDetailsAsync(userByEmail, accessToken, refreshToken);
+            return securityTokenHandler.ReadJwtToken(expiredToken);
         }
 
         private string GenerateAccessToken(User userOfToken)
@@ -103,44 +61,17 @@ namespace GameStore.BLL.Services.Implementation
                     new Claim(ClaimTypes.Email, userOfToken.Email),
                     new Claim(ClaimTypes.Role, userOfToken.Role.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(3),
+                Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
             };
+
+            if (userOfToken.Role == Roles.Publisher)
+                descriptor.Subject.AddClaim(new Claim("PublisherName", userOfToken.PublisherName));
 
             var token = tokenHandler.CreateToken(descriptor);
             string tokenString = tokenHandler.WriteToken(token);
 
             return tokenString;
-        }
-
-        private string GenerateRefreshToken()
-        {
-            var byteArray = new byte[64];
-            using (var cryptoProvider = new RNGCryptoServiceProvider())
-            {
-                cryptoProvider.GetBytes(byteArray);
-             
-                return Convert.ToBase64String(byteArray);
-            }
-        }
-
-        public JwtSecurityToken ReadJwtToken(string expiredToken)
-        {
-            var securityTokenHandler = new JwtSecurityTokenHandler();
-
-            return securityTokenHandler.ReadJwtToken(expiredToken);
-        }
-
-        private AuthResponseDTO ValidateDetails(JwtSecurityToken token, UserRefreshToken userRerfreshToken)
-        {
-            if (userRerfreshToken == null)
-                throw new ArgumentException("Invalid token details");
-            if (token.ValidTo > DateTime.UtcNow)
-                throw new ArgumentException("Access token is not expired");
-            if (!userRerfreshToken.IsActive)
-                throw new ArgumentException("Refresh token is expired");
-
-            return new AuthResponseDTO { IsSuccess = true };
         }
     }
 }

@@ -23,7 +23,7 @@ namespace GameStore.BLL.Mapper
         {
             CreateMap<Game, GameDTO>();
             CreateMap<AddGameDTO, Game>()
-                .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)));
+                .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt))).ReverseMap();
             CreateMap<Game, AddGameDTO>();
             CreateMap<UpdateGameDTO, Game>()
                 .ForMember((m) => m.Genres, mapper => mapper.Ignore())
@@ -49,9 +49,10 @@ namespace GameStore.BLL.Mapper
 
             CreateMap<AddOrderDetailsDTO, OrderDetails>();
             CreateMap<OrderDetails, OrderDetailsDTO>();
+            CreateMap<OrderDetailsDTO,OrderDetails>().ForMember(od=>od.Game,mapper=>mapper.Ignore());
 
             CreateMap<Order, OrderDTO>();
-            CreateMap<UpdateOrderDTO, Order>();
+            CreateMap<UpdateOrderDTO, Order>().ForMember(o=>o.OrderDetails,mapper=>mapper.Ignore());
 
             CreateMap<Shipper, ShipperDTO>();
 

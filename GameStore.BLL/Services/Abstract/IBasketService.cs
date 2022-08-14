@@ -8,8 +8,12 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, string customerId);
 
+        Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO);
+
         Task<OrderDTO> GetBasketAsync(string cusomerId);
 
         Task<bool> RemoveOrderDetailsAsync(int id);
+
+        Task MergeOrdersAsync(string oldUserId, string newUserId);
     }
 }

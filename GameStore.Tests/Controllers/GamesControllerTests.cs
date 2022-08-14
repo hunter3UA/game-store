@@ -32,7 +32,7 @@ namespace GameStore.Tests.Controllers
                     return mapper.Map<GameDTO>(gameToAdd);
                 });
 
-            var result = await gameController.AddGameAsync(addGameDTO);
+            var result = await gameController.AddAsync(addGameDTO);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -44,7 +44,7 @@ namespace GameStore.Tests.Controllers
         {
             mockGameService.Setup(m => m.GetRangeOfGamesAsync(It.IsAny<GameFilterDTO>())).ReturnsAsync(new ItemPageDTO<GameDTO>());
 
-            var result = await gamesController.GetRangeOfGamesAsync(new GameFilterDTO());
+            var result = await gamesController.GetRangeAsync(new GameFilterDTO());
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -70,7 +70,7 @@ namespace GameStore.Tests.Controllers
                     return mapper.Map<GameDTO>(game);
                 });
 
-            var result = await gamesController.GetGameAsync(game.Key,false);
+            var result = await gamesController.GetAsync(game.Key,false);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -83,7 +83,7 @@ namespace GameStore.Tests.Controllers
         {
             mockGameService.Setup(m => m.RemoveGameAsync(It.IsAny<string>())).ReturnsAsync(true);
 
-            var result = await gamesController.RemoveGameAsync(key);
+            var result = await gamesController.RemoveAsync(key);
 
             result.Should().BeOfType<OkResult>();
         }
@@ -96,7 +96,7 @@ namespace GameStore.Tests.Controllers
         {
             mockGameService.Setup(m => m.UpdateGameAsync(It.IsAny<UpdateGameDTO>())).ReturnsAsync(new GameDTO());
 
-            var result = await gamesController.UpdateGameAsync(updateGameDTO);
+            var result = await gamesController.UpdateAsync(updateGameDTO);
 
             result.Should().BeOfType<JsonResult>();
         }

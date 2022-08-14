@@ -1,4 +1,4 @@
-﻿namespace GameStore.BLL.Models
+﻿namespace GameStore.Common.Models
 {
     public class SaltedHash
     {

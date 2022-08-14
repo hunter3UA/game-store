@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.API.Helpers;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Order;
@@ -7,6 +8,7 @@ using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Implementation.PaymentServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,26 +19,26 @@ namespace GameStore.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly ICustomerGenerator _customerGenerator;
+        private readonly ICustomerHelper _customerHelper;
         private readonly IPaymentContext _paymentContext;
 
-        public OrdersController(IOrderService orderService,ICustomerGenerator customerGenerator,IPaymentContext paymentContext)
+        public OrdersController(IOrderService orderService, ICustomerHelper customerGenerator, IPaymentContext paymentContext)
         {
             _orderService = orderService;
-            _customerGenerator = customerGenerator;
+            _customerHelper = customerGenerator;
             _paymentContext = paymentContext;
         }
 
         [HttpPost]
         [Route("pay")]
         public async Task<IActionResult> PayAsync([FromBody] OrderPaymentDTO orderPayment)
-        {       
+        {
             switch (orderPayment.PaymentType)
             {
                 case PaymentType.BankPayment:
                     _paymentContext.SetStrategy(new BankPayment());
-                    object stream = await _paymentContext.ExecutePay(orderPayment.OrderId);                 
-                    return File((byte[])stream, Constants.TextPlainContentType,$"{orderPayment.OrderId}{DateTime.Now.Ticks}");
+                    object stream = await _paymentContext.ExecutePay(orderPayment.OrderId);
+                    return File((byte[])stream, Constants.TextPlainContentType, $"{orderPayment.OrderId}{DateTime.Now.Ticks}");
                 case PaymentType.IBoxPayment:
                     _paymentContext.SetStrategy(new IBoxPayment());
                     await _paymentContext.ExecutePay(orderPayment.OrderId);
@@ -51,16 +53,18 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("history")]
-        public async Task<IActionResult> GetListAsync([FromQuery] OrderFilterDTO orderFilterDTO)
+        [Authorize(Roles = ApiRoles.ManagerRole)]
+        public async Task<IActionResult> GetOrderHistoryAsync([FromQuery] OrderFilterDTO orderFilterDTO)
         {
-            var orders = await _orderService.GetListOfOrdersAsync(orderFilterDTO);
+            var orders = await _orderService.GetOrderHistoryAsync(orderFilterDTO);
             return new JsonResult(orders);
         }
 
         [HttpGet]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> GetStoreOrdersAsync([FromQuery] OrderFilterDTO orderFilterDTO)
         {
-            var storeOrders = await _orderService.GetStoreOrdersAsync();
+            var storeOrders = await _orderService.GetStoreOrdersAsync(orderFilterDTO);
 
             return new JsonResult(storeOrders);
         }
@@ -71,15 +75,6 @@ namespace GameStore.API.Controllers
             var createdOrder = await _orderService.MakeOrderAsync(orderId);
 
             return new JsonResult(createdOrder);
-        }
-
-        [HttpPut]
-        [Route("details/update")]
-        public async Task<IActionResult> ChangeQuantityOfOrderDetailsAsync([FromBody] ChangeQuantityDTO changeQuantityDTO)
-        {
-            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
-
-            return new JsonResult(updatedOrderDetails);
         }
 
         [HttpPut]
@@ -101,9 +96,9 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("/api/order")]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetByCustomerAsync()
         {
-            var customerId = _customerGenerator.GetCookies(HttpContext);
+            var customerId = _customerHelper.GetUserId(HttpContext);
             var orderByCustomer = await _orderService.GetOrderAsync(customerId);
 
             return new JsonResult(orderByCustomer);
@@ -111,11 +106,20 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{orderId}")]
-        public async Task<IActionResult> GetAsync([FromRoute] int orderId)
+        public async Task<IActionResult> GetByOrderIdAsync([FromRoute] int orderId)
         {
             var orderById = await _orderService.GetOrderAsync(orderId);
 
             return new JsonResult(orderById);
+        }
+
+        [HttpDelete]
+        [Route("details/{detailsId}")]
+        public async Task<IActionResult> RemoveDetailsAsync([FromRoute] int detailsId)
+        {
+            await _orderService.RemoveOrderDetailsAsync(detailsId);
+
+            return Ok();
         }
     }
 }

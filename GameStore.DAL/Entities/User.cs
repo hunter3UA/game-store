@@ -26,9 +26,9 @@ namespace GameStore.DAL.Entities
         [Required]
         public string Role { get; set; }
 
-        public IEnumerable<UserRefreshToken> UserRefreshTokens { get; set; }
-
         public bool IsDeleted { get; set; }
+
+        public string PublisherName { get; set; }
 
         public User()
         {
