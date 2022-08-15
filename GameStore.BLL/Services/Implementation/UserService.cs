@@ -36,7 +36,7 @@ namespace GameStore.BLL.Services.Implementation
             _mongoLogger = mongoLogger;
         }
 
-        public async Task<string> RegisterUserAsync(RegisterDTO registerDTO)
+        public async Task<AuthRequestDTO> RegisterUserAsync(RegisterDTO registerDTO)
         {
             if (registerDTO == null)
                 throw new ArgumentException();
@@ -54,11 +54,9 @@ namespace GameStore.BLL.Services.Implementation
             _logger.LogInformation($"User has been created with id:{addedUser.Id}");
             await _mongoLogger.LogInformation<User>(Enums.ActionType.Create);
 
-
             var authRequest = new AuthRequestDTO { Email = newUser.Email, Password = registerDTO.Password };
-            var response = await _authService.GetJwtTokenAsync(authRequest);
-
-            return response;
+         
+            return authRequest;
 
         }
 

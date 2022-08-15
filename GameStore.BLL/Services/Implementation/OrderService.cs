@@ -255,8 +255,6 @@ namespace GameStore.BLL.Services.Implementation
                 }
                 else
                 {
-                    var oldVersion = gameToReserve.ToBsonDocument();
-
                     gameToReserve.UnitsInStock -= item.Quantity;
                     item.Price = gameToReserve.Price;
 
@@ -266,7 +264,7 @@ namespace GameStore.BLL.Services.Implementation
                         await _northwindDbContext.ProductRepository.UpdateAsync(gameToReserve);
 
                     _logger.LogInformation($"Game has been update{gameToReserve.Id}");
-                    await _mongoLogger.LogInformation<Game>(ActionType.Update, oldVersion, gameToReserve.ToBsonDocument());
+               
                 }
             }
 

@@ -27,7 +27,9 @@ namespace GameStore.API.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterAsync(RegisterDTO registerDTO)
         {
-            var jwtToken = await _userService.RegisterUserAsync(registerDTO);
+            var authRequest = await _userService.RegisterUserAsync(registerDTO);
+
+            var jwtToken = await _authService.GetJwtTokenAsync(authRequest);
            
             return new JsonResult(jwtToken);
         }

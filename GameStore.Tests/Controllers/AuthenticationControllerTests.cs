@@ -16,9 +16,9 @@ namespace GameStore.Tests.Controllers
     {
 
         [Theory, AutoDomainData]
-        public async Task RegisterAsync_GivenValidUser_ReturnJsonResult([NoAutoProperties] AuthenticationController authenticationController, Mock<IUserService> mockUserService, string jwtToken)
+        public async Task RegisterAsync_GivenValidUser_ReturnJsonResult([NoAutoProperties] AuthenticationController authenticationController,Mock<IAuthenticationService> mockAuthService,string jwtToken)
         {
-            mockUserService.Setup(m => m.RegisterUserAsync(It.IsAny<RegisterDTO>())).ReturnsAsync(jwtToken);
+            mockAuthService.Setup(m => m.GetJwtTokenAsync(It.IsAny<AuthRequestDTO>())).ReturnsAsync(jwtToken);
 
             var result = await authenticationController.RegisterAsync(new RegisterDTO());
 
