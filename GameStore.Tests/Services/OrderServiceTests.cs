@@ -176,7 +176,7 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task UpdateOrderAsync_GivenNull_ThrowArgumentException([Frozen]Mock<IUnitOfWork> mockUnitOfWork,OrderService orderService)
+        public async Task UpdateOrderAsync_GivenNull_ThrowArgumentException(OrderService orderService)
         {
             Exception result = await  Record.ExceptionAsync(()=>orderService.UpdateOrderAsync(null));
 

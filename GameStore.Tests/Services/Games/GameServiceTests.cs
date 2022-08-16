@@ -57,7 +57,7 @@ namespace GameStore.Tests.Services
 
 
         [Theory, AutoDomainData]
-        public async Task GetRangeOfGamesAsync_GivenValidFilter_ReturnListOfGames([Frozen] Mock<IUnitOfWork> mockUnitOfWork,List<Game> testList, GameService gameService)
+        public async Task GetRangeOfGamesAsync_GivenValidFilter_ReturnListOfGames([Frozen] Mock<IUnitOfWork> mockUnitOfWork, GameService gameService)
         {
             mockUnitOfWork.Setup(m => m.GameRepository.CountListAsync(It.IsAny<List<Expression<Func<Game, bool>>>>())).ReturnsAsync(3);
 

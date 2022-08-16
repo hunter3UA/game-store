@@ -7,6 +7,7 @@ using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enums;
+using GameStore.BLL.Extensions;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Abstract.Games;
@@ -114,6 +115,7 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<List<OrderDTO>> GetStoreOrdersAsync(OrderFilterDTO orderFilterDTO)
         {
             var filter = BuildFilter(orderFilterDTO);
+            filter = filter.AndAlso(o => o.Status != OrderStatus.Succeeded);
             var storeOrders = await _unitOfWork.OrderRepository.GetRangeAsync(filter, g => g.OrderDetails);
             
             return _mapper.Map<List<OrderDTO>>(storeOrders);
@@ -146,7 +148,7 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(updatedOrder);
         }
 
-        public async Task UpdateOrderDetailsAsync(List<OrderDetailsDTO> detailsToUpdate)
+        private async Task UpdateOrderDetailsAsync(List<OrderDetailsDTO> detailsToUpdate)
         {
             var mappedDetails = _mapper.Map<List<OrderDetails>>(detailsToUpdate);
             var detailsToCancel = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(o => o.OrderId == detailsToUpdate.First().OrderId);
@@ -304,5 +306,6 @@ namespace GameStore.BLL.Services.Implementation
                     throw new KeyNotFoundException($"Games of order with id:{order.Id} not found");
             }
         }
+
     }
 }

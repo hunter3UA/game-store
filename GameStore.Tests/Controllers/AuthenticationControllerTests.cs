@@ -27,7 +27,7 @@ namespace GameStore.Tests.Controllers
 
 
         [Theory, AutoDomainData]
-        public async Task LoginAsync_GivenInValidUser_ReturnUnauthorizedResult([Frozen] Mock<IAuthenticationService> mockAuthService, [NoAutoProperties] AuthenticationController authenticationController, string jwtToken)
+        public async Task LoginAsync_GivenInValidUser_ReturnUnauthorizedResult([Frozen] Mock<IAuthenticationService> mockAuthService, [NoAutoProperties] AuthenticationController authenticationController)
         {
             mockAuthService.Setup(m => m.GetJwtTokenAsync(It.IsAny<AuthRequestDTO>())).ReturnsAsync(() => { return null; });
 

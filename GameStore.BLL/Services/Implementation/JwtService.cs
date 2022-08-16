@@ -1,17 +1,17 @@
 ﻿using GameStore.BLL.DTO.Auth;
+using GameStore.BLL.Helpers;
 using GameStore.BLL.Models;
 using GameStore.BLL.Services.Abstract;
+using GameStore.Common.Extensions;
 using GameStore.Common.Services.Abstract;
 using GameStore.DAL.Entities;
-using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GameStore.BLL.Services.Implementation
@@ -20,11 +20,12 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IPasswordService _passwordService;
-
-        public JwtService(IUnitOfWork unitOfWork, IPasswordService passwordService)
+        private readonly IConfiguration _config;
+        public JwtService(IUnitOfWork unitOfWork, IPasswordService passwordService, IConfiguration config)
         {
             _unitOfWork = unitOfWork;
             _passwordService = passwordService;
+            _config = config;
         }
 
         public async Task<string> GetJwtTokenAsync(AuthRequestDTO authRequestDTO)
@@ -49,8 +50,7 @@ namespace GameStore.BLL.Services.Implementation
 
         private string GenerateAccessToken(User userOfToken)
         {
-            var symmetricSecurityKey = AuthOptions.GetSymmetricSecurityKey();
-
+            var symmetricSecurityKey = _config.GetJsonSection<AuthOptions>(nameof(AuthOptions)).GetSymmetricSecurityKey();
             var tokenHandler = new JwtSecurityTokenHandler();
             var descriptor = new SecurityTokenDescriptor()
             {

@@ -89,6 +89,7 @@ namespace GameStore.BLL.Services.Implementation
 
             userById.Role = updateUserDTO.Role;
             userById.UserName = updateUserDTO.UserName;
+            userById.PublisherName = updateUserDTO.PublisherName;
 
             await _unitOfWork.SaveAsync();
 

@@ -28,6 +28,10 @@ using GameStore.BLL.Models;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using GameStore.Common.Services.Abstract;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using GameStore.BLL.Helpers;
+using GameStore.Common.Extensions;
 
 namespace GameStore.API
 {
@@ -38,6 +42,7 @@ namespace GameStore.API
         public Startup(IConfiguration config)
         {
             _config = config;
+           
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -48,7 +53,7 @@ namespace GameStore.API
             ConfigureAuthenticationService(services);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
        
@@ -160,6 +165,7 @@ namespace GameStore.API
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
             services.AddScoped<IMongoLoggerProvider, MongoLoggerProvider>();
+        
         }
 
         private void ConfigureBllServices(IServiceCollection services)
@@ -182,14 +188,17 @@ namespace GameStore.API
 
         private void ConfigureAuthenticationService(IServiceCollection services)
         {
+            var authOptions = _config.GetJsonSection<AuthOptions>(nameof(AuthOptions));
+                
             TokenValidationParameters tokenValidationParameters = new TokenValidationParameters
             {
-                IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                IssuerSigningKey = authOptions.GetSymmetricSecurityKey(),
                 ValidateLifetime = true,
                 ValidateAudience = false,
                 ValidateIssuer = false,
-                ClockSkew = TimeSpan.Zero
+                ClockSkew = TimeSpan.Zero,              
             };
+
             services.AddSingleton(tokenValidationParameters);
             services.AddAuthentication(authOptions =>
             {

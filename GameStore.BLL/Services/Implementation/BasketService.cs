@@ -102,12 +102,12 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task MergeOrdersAsync(string oldUserId, string newUserId)
         {
-            Order oldOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == oldUserId && o.Status == OrderStatus.Opened || o.Status == OrderStatus.Canceled, o => o.OrderDetails);
-            Order newOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == newUserId && o.Status == OrderStatus.Opened || o.Status == OrderStatus.Canceled, o => o.OrderDetails);
-            if (oldOrder == null)
+            Order oldOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == oldUserId && (o.Status==OrderStatus.Opened || o.Status==OrderStatus.Canceled), o => o.OrderDetails);
+            Order newOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == newUserId && (o.Status == OrderStatus.Opened || o.Status == OrderStatus.Canceled), o => o.OrderDetails);
+            if (oldOrder == null || !oldOrder.OrderDetails.Any() || oldUserId==newUserId) 
                 return;
 
-            if (newOrder == null)
+            if (newOrder == null || !newOrder.OrderDetails.Any())
             {
                 oldOrder.CustomerId = newUserId;
                 await _unitOfWork.SaveAsync();

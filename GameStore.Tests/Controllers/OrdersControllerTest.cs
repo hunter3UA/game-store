@@ -38,7 +38,7 @@ namespace GameStore.Tests.Controllers
         }
 
         [Theory, AutoDomainData]
-        public async Task GetByOrderIdAsync_GivenValidOrder_ReturnJsonResult([Frozen] Mock<IOrderService> mockOrderService, Mock<ICustomerHelper> mockCustomerGenerator, [NoAutoProperties] OrdersController ordersController)
+        public async Task GetByOrderIdAsync_GivenValidOrder_ReturnJsonResult([Frozen] Mock<IOrderService> mockOrderService, [NoAutoProperties] OrdersController ordersController)
         {
 
             mockOrderService.Setup(m => m.GetOrderAsync(It.IsAny<int>())).ReturnsAsync(new OrderDTO());
