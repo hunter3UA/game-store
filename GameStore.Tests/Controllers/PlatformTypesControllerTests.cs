@@ -37,7 +37,7 @@ namespace GameStore.Tests.Controllers
                     return mapper.Map<PlatformTypeDTO>(platformToAdd);
                 });
 
-            var result = await platformController.AddPlatformTypeAsync(addPlatformDTO);
+            var result = await platformController.AddAsync(addPlatformDTO);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -50,7 +50,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPlatformService.Setup(m => m.GetListOfPlatformsAsync()).ReturnsAsync(new List<PlatformTypeDTO>());
 
-            var result = await platformController.GetListOfPlatformsAsync();
+            var result = await platformController.GetListAsync();
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -67,7 +67,7 @@ namespace GameStore.Tests.Controllers
                 {
                     return mapper.Map<PlatformTypeDTO>(platformType);
                 });
-            var result = await platformsController.GetPlatformAsync(platformType.Id);
+            var result = await platformsController.GetAsync(platformType.Id);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -80,7 +80,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPlatformService.Setup(m => m.RemovePlatformAsync(It.IsAny<int>())).ReturnsAsync(true);
 
-            var result = await platformsController.RemovePlatformAsync(id);
+            var result = await platformsController.RemoveAsync(id);
 
             result.Should().BeOfType<OkResult>();
         }
@@ -92,7 +92,7 @@ namespace GameStore.Tests.Controllers
         {
             mockPlatformService.Setup(m => m.UpdatePlatformAsync(It.IsAny<UpdatePlatformTypeDTO>())).ReturnsAsync(new PlatformTypeDTO());
 
-            var result = await platformTypesController.UpdatePlatformAsync(updatePlatformTypeDTO);
+            var result = await platformTypesController.UpdateAsync(updatePlatformTypeDTO);
 
             result.Should().BeOfType<JsonResult>();
         }

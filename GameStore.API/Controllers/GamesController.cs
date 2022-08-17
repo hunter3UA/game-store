@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -21,7 +23,8 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("new")]
-        public async Task<IActionResult> AddGameAsync([FromBody] AddGameDTO addGameDTO)
+        [Authorize(Roles = ApiRoles.ManagerRole)]
+        public async Task<IActionResult> AddAsync([FromBody] AddGameDTO addGameDTO)
         {
             var addedGame = await _gameService.AddGameAsync(addGameDTO);
 
@@ -38,7 +41,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetRangeOfGamesAsync([FromQuery] GameFilterDTO gameFilterDTO)
+        public async Task<IActionResult> GetRangeAsync([FromQuery] GameFilterDTO gameFilterDTO)
         {
             var listOfGames = await _gameService.GetRangeOfGamesAsync(gameFilterDTO);
 
@@ -47,7 +50,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{key}")]
-        public async Task<IActionResult> GetGameAsync([FromRoute] string key, [FromQuery] bool isView)
+        public async Task<IActionResult> GetAsync([FromRoute] string key, [FromQuery] bool isView)
         {
             var gameByKey = await _gameService.GetGameAsync(key, isView);
 
@@ -56,7 +59,8 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> UpdateGameAsync([FromBody] UpdateGameDTO gameToUpdate)
+        [Authorize(Roles = ApiRoles.PublisherRole)]
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
 
@@ -65,7 +69,8 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{key}")]
-        public async Task<IActionResult> RemoveGameAsync([FromRoute] string key)
+        [Authorize(Roles =ApiRoles.ManagerRole)]
+        public async Task<IActionResult> RemoveAsync([FromRoute] string key)
         {
             await _gameService.RemoveGameAsync(key);
 

@@ -10,20 +10,23 @@ namespace GameStore.API.Controllers
     [ApiController]
     public class BasketsController : ControllerBase
     {
-        private readonly IBasketService _orderService;
-        private readonly ICustomerGenerator _customerGenerator;
+        private readonly IBasketService _basketService;
+        private readonly ICustomerHelper _customerHelper;
+        private readonly IAuthenticationService _jwtService;
 
-        public BasketsController(IBasketService orderService,ICustomerGenerator customerGenerator)
+        public BasketsController(IAuthenticationService authenticationService,IBasketService orderService,ICustomerHelper customerHelper)
         {
-            _orderService = orderService;
-            _customerGenerator = customerGenerator;
+            _basketService = orderService;
+            _customerHelper = customerHelper;
+            _jwtService = authenticationService;
         }
 
         [HttpGet]   
-        public async Task<IActionResult> GetBasketAsync()
-        {     
-            var customerId = _customerGenerator.GetCookies(HttpContext);
-            var orderByCustomer = await _orderService.GetBasketAsync(customerId);
+        public async Task<IActionResult> GetAsync()
+        {
+            string customerId = _customerHelper.GetUserId(HttpContext);
+           
+            var orderByCustomer = await _basketService.GetBasketAsync(customerId);
 
             return new JsonResult(orderByCustomer);
         }
@@ -31,27 +34,30 @@ namespace GameStore.API.Controllers
         [HttpGet]
         [Route("games/{gamekey}/buy")]
         public async Task<IActionResult> AddOrderDetailsAsync([FromRoute] string gamekey)
-        {
-            var customerId = _customerGenerator.GetCookies(HttpContext);
-            var addedOrderDetails = await _orderService.AddOrderDetailsAsync(gamekey, customerId);
+        {        
+            string customerId = _customerHelper.GetUserId(HttpContext);
+
+            var addedOrderDetails = await _basketService.AddOrderDetailsAsync(gamekey, customerId);
 
             return new JsonResult(addedOrderDetails);
         }
+
 
         [HttpPut]
         [Route("details/update")]
         public async Task<IActionResult> ChangeQuantityOfOrderDetailsAsync([FromBody] ChangeQuantityDTO changeQuantityDTO)
         {
-            var updatedOrderDetails = await _orderService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
-            
-            return new JsonResult(updatedOrderDetails);           
+            var updatedOrderDetails = await _basketService.ChangeQuantityOfDetailsAsync(changeQuantityDTO);
+
+            return new JsonResult(updatedOrderDetails);
         }
+
 
         [HttpDelete]
         [Route("details/{id}")]
         public async Task<IActionResult> RemoveOrderDetailsAsync([FromRoute] int id) 
         {
-            await _orderService.RemoveOrderDetailsAsync(id);
+            await _basketService.RemoveOrderDetailsAsync(id);
             
             return Ok();
         }

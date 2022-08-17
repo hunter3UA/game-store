@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
+using GameStore.API.Auth;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -20,7 +22,7 @@ namespace GameStore.API.Controllers
 
         [HttpPost]
         [Route("{gameKey}/new-comment")]
-        public async Task<IActionResult> AddCommentAsync([FromRoute] string gameKey, [FromBody] AddCommentDTO addCommentDTO)
+        public async Task<IActionResult> AddAsync([FromRoute] string gameKey, [FromBody] AddCommentDTO addCommentDTO)
         {
             var addedComment = await _commentService.AddCommentAsync(gameKey, addCommentDTO);
 
@@ -29,7 +31,7 @@ namespace GameStore.API.Controllers
 
         [HttpGet]
         [Route("{gameKey}/comments")]
-        public async Task<IActionResult> GetCommentsAsync([FromRoute] string gameKey)
+        public async Task<IActionResult> GetAsync([FromRoute] string gameKey)
         {
             var commentsByGameKey = await _commentService.GetListOfCommentsAsync(gameKey);
 
@@ -38,7 +40,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("comments/update")]
-        public async Task<IActionResult> UpdateCommentAsync([FromBody] UpdateCommentDTO updateCommentDTO)
+        public async Task<IActionResult> UpdateAsync([FromBody] UpdateCommentDTO updateCommentDTO)
         {
             var updatedComment = await _commentService.UpdateCommentAsync(updateCommentDTO);
 
@@ -47,7 +49,8 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("comments/remove/{id}")]
-        public async Task<IActionResult> RemoveCommentAsync([FromRoute] int id)
+        [Authorize(Roles =ApiRoles.ModeratorRole)]
+        public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _commentService.RemoveCommentAsync(id);
 

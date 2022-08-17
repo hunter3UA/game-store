@@ -8,8 +8,6 @@ namespace GameStore.BLL.DTO.OrderDetails
 
         public short Quantity { get; set; }
 
-        public int CustomerId { get; set; }
-
         public double Price { get; set; }
 
         public double Discount { get; set; }
@@ -24,7 +22,7 @@ namespace GameStore.BLL.DTO.OrderDetails
         { 
             get
             {
-                return Quantity * Price;
+                return Quantity * Price -Discount;
             }
         }
     }

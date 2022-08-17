@@ -18,7 +18,7 @@ namespace GameStore.Tests.Controllers
         public async Task GetListOfShippersAsync_ShippersExist_RetrunJsonResult([NoAutoProperties]ShipperController shipperController
             )
         {
-            var result = await shipperController.GetListOfShippersAsync();
+            var result = await shipperController.GetListAsync();
 
             result.Should().BeOfType<JsonResult>();
         }

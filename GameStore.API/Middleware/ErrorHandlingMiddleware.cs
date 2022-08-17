@@ -54,7 +54,7 @@ namespace GameStore.API.Middleware
                 case KeyNotFoundException e:
                     return (int)HttpStatusCode.NotFound;                 
                 case DbUpdateException e:
-                    return (int)HttpStatusCode.BadRequest;                
+                    return (int)HttpStatusCode.BadRequest;
                 default:
                     return (int)HttpStatusCode.InternalServerError;
             }

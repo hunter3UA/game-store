@@ -27,7 +27,7 @@ namespace GameStore.Tests.Controllers
             mockCommentService.Setup(m => m.AddCommentAsync(It.IsAny<string>(), It.IsAny<AddCommentDTO>()))
                 .ReturnsAsync(() => { return mapper.Map<CommentDTO>(commentToAdd); });
 
-            var result = await commentsController.AddCommentAsync("myKey", addCommentDTO);
+            var result = await commentsController.AddAsync("myKey", addCommentDTO);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -45,7 +45,7 @@ namespace GameStore.Tests.Controllers
                     return mapper.Map<List<CommentDTO>>(comments);
                 });
 
-            var result = await commentsController.GetCommentsAsync("gameKey");
+            var result = await commentsController.GetAsync("gameKey");
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -53,7 +53,7 @@ namespace GameStore.Tests.Controllers
         [Theory,AutoDomainData]
         public async Task RemoveCommentAsync_CommentIsDeleted_ReturnOkResult([NoAutoProperties]CommentsController commentController)
         {
-            var result = await commentController.RemoveCommentAsync(1);
+            var result = await commentController.RemoveAsync(1);
 
             result.Should().BeOfType<OkResult>();
         }
@@ -63,7 +63,7 @@ namespace GameStore.Tests.Controllers
         {
             mockCommentService.Setup(m => m.UpdateCommentAsync(It.IsAny<UpdateCommentDTO>())).ReturnsAsync(new CommentDTO());
 
-            var result = await commentController.UpdateCommentAsync(new UpdateCommentDTO());
+            var result = await commentController.UpdateAsync(new UpdateCommentDTO());
 
             result.Should().BeOfType<JsonResult>();
         }

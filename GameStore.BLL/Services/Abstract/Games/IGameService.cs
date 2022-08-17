@@ -21,5 +21,7 @@ namespace GameStore.BLL.Services.Abstract.Games
         Task<ItemPageDTO<GameDTO>> GetRangeOfGamesAsync(GameFilterDTO gameFilterDTO);
 
         Task<int> GetCountAsync();
+
+        Task<Game> SetGameAsync(string gameKey);
     }
 }

@@ -8,6 +8,7 @@ using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
 using Moq;
@@ -40,7 +41,7 @@ namespace GameStore.Tests.Services
                 return orderOfDetails;
             });
           
-            var result = await orderService.AddOrderDetailsAsync(gameOfDetails.Key, 1);
+            var result = await orderService.AddOrderDetailsAsync(gameOfDetails.Key, "1");
 
             result.Game.Key.Should().NotBeNullOrEmpty();
         }
@@ -66,7 +67,7 @@ namespace GameStore.Tests.Services
             {
                 return detailsToAdd;
             });
-            Exception result = await Record.ExceptionAsync(() => orderService.AddOrderDetailsAsync(gameOfDetails.Key, 1));
+            Exception result = await Record.ExceptionAsync(() => orderService.AddOrderDetailsAsync(gameOfDetails.Key, "1"));
 
             result.Should().BeOfType<ArgumentException>();
         }
@@ -95,7 +96,7 @@ namespace GameStore.Tests.Services
             {
                 return detailsToAdd;
             });
-            Exception result = await Record.ExceptionAsync(() => orderService.AddOrderDetailsAsync(gameOfDetails.Key, 1));
+            Exception result = await Record.ExceptionAsync(() => orderService.AddOrderDetailsAsync(gameOfDetails.Key, "1"));
 
             result.Should().BeOfType<ArgumentException>();
         }
@@ -145,7 +146,7 @@ namespace GameStore.Tests.Services
         [Theory, AutoDomainData]
         public async Task GetOrderAsync_RequesteOrderExist_ReturnOrder(BasketService orderService)
         {
-            var result = await orderService.GetBasketAsync(1);
+            var result = await orderService.GetBasketAsync("1");
 
             result.Should().BeOfType<OrderDTO>();
         }
@@ -157,7 +158,7 @@ namespace GameStore.Tests.Services
             It.IsAny<Expression<Func<Order, bool>>>(),
             It.IsAny<Expression<Func<Order, object>>[]>())).ReturnsAsync(() => { return null; });
 
-            var result =  await orderService.GetBasketAsync(1);
+            var result =  await orderService.GetBasketAsync("1");
           
             result.Should().BeOfType<OrderDTO>();
         }

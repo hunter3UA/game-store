@@ -11,14 +11,14 @@ using Xunit;
 
 namespace GameStore.Tests.Controllers
 {
-    public class BasketsControllerTest
+    public class BasketsControllerTests
     {
         [Theory, AutoDomainData]
         public async Task AddOrderDetailsAsync_AddValidOrderDetails_ReturnJsonResult(
             [Frozen] Mock<IBasketService> mockOrderService,
             [NoAutoProperties] BasketsController ordersController)
         {
-            mockOrderService.Setup(m => m.AddOrderDetailsAsync(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(new BLL.DTO.OrderDetails.OrderDetailsDTO());
+            mockOrderService.Setup(m => m.AddOrderDetailsAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new BLL.DTO.OrderDetails.OrderDetailsDTO());
 
             var result = await ordersController.AddOrderDetailsAsync("Test");
 
@@ -28,9 +28,9 @@ namespace GameStore.Tests.Controllers
         [Theory, AutoDomainData]
         public async Task GetBasketAsync_RequestExistingOrder_ReturnJsonResult([Frozen] Mock<IBasketService> mockOrderService, [NoAutoProperties] BasketsController ordersController)
         {
-            mockOrderService.Setup(m => m.GetBasketAsync(1)).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
+            mockOrderService.Setup(m => m.GetBasketAsync("1")).ReturnsAsync(new BLL.DTO.Order.OrderDTO());
 
-            var result = await ordersController.GetBasketAsync();
+            var result = await ordersController.GetAsync();
 
             result.Should().BeOfType<JsonResult>();
         }

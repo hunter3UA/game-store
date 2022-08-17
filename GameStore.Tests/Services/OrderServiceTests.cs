@@ -3,6 +3,7 @@ using FluentAssertions;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
 using Moq;
@@ -26,7 +27,7 @@ namespace GameStore.Tests.Services
             Order orderToUpdate = new Order()
             {
                 OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
+                CustomerId = "1",
                 OrderDetails = new List<OrderDetails>(),
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Opened
@@ -45,7 +46,7 @@ namespace GameStore.Tests.Services
                     OrderId = orderToUpdate.Id,
                     Discount = 0,
                     Quantity = 1,
-                    Price = item.Price,
+                    Price = (decimal?)Convert.ToDouble(item.Price),
                     IsDeleted = false
                 });
             }
@@ -77,7 +78,7 @@ namespace GameStore.Tests.Services
             Order orderToUpdate = new Order()
             {
                 OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
+                CustomerId = "1",
                 OrderDetails = null,
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Opened
@@ -126,7 +127,7 @@ namespace GameStore.Tests.Services
             Order orderToCanel = new Order()
             {
                 OrderDate = DateTime.UtcNow,
-                CustomerId = 1,
+                CustomerId = "1",
                 OrderDetails = new List<OrderDetails>(),
                 Expiration = DateTime.UtcNow.AddMinutes(60),
                 Status = OrderStatus.Processing
@@ -175,11 +176,13 @@ namespace GameStore.Tests.Services
         }
 
         [Theory, AutoDomainData]
-        public async Task UpdateOrderAsync_GivenNull_ThrowArgumentException([Frozen]Mock<IUnitOfWork> mockUnitOfWork,OrderService orderService)
+        public async Task UpdateOrderAsync_GivenNull_ThrowArgumentException(OrderService orderService)
         {
             Exception result = await  Record.ExceptionAsync(()=>orderService.UpdateOrderAsync(null));
 
             result.Should().BeOfType<ArgumentException>();
         }
+
+
     }
 }

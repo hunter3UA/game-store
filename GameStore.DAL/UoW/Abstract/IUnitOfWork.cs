@@ -20,6 +20,9 @@ namespace GameStore.DAL.UoW.Abstract
 
         IGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
+
+        IUserRepository UserRepository { get; }
+
         Task SaveAsync();
     }
 }

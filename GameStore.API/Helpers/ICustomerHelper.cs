@@ -2,8 +2,8 @@
 
 namespace GameStore.API.Helpers
 {
-    public interface ICustomerGenerator
+    public interface ICustomerHelper
     {
-        int GetCookies(HttpContext context);
+        string GetUserId(HttpContext context);
     }
 }

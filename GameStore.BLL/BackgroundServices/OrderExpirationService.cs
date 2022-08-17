@@ -1,6 +1,7 @@
 ﻿using Calabonga.Microservices.BackgroundWorkers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

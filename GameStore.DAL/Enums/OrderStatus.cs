@@ -1,4 +1,4 @@
-﻿namespace GameStore.DAL.Entities
+﻿namespace GameStore.DAL.Enums
 {
     public enum OrderStatus
     {

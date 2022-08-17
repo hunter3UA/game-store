@@ -33,7 +33,7 @@ namespace GameStore.Tests.Controllers
                     return mapper.Map<GenreDTO>(genreToAdd);
                 });
 
-            var result = await genresController.AddGenreAsync(addGenreDTO);
+            var result = await genresController.AddAsync(addGenreDTO);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -45,7 +45,7 @@ namespace GameStore.Tests.Controllers
         {
             mockGenreService.Setup(m => m.GetListOfGenresAsync()).ReturnsAsync(new List<GenreDTO>());
 
-            var result = await genresController.GetAllGenresAsync();
+            var result = await genresController.GetListAsync();
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -61,7 +61,7 @@ namespace GameStore.Tests.Controllers
         {
             mockGenreService.Setup(m => m.GetGenreAsync(It.IsAny<int>()))
                 .ReturnsAsync(() => { return mapper.Map<GenreDTO>(genre); });
-            var result = await genresController.GetGenreAsync(genre.Id);
+            var result = await genresController.GetAsync(genre.Id);
 
             result.Should().BeOfType<JsonResult>();
         }
@@ -74,7 +74,7 @@ namespace GameStore.Tests.Controllers
         {
             mockGenreService.Setup(m => m.RemoveGenreAsync(It.IsAny<int>())).ReturnsAsync(true);
 
-            var result = await genresController.RemoveGenreAsync(id);
+            var result = await genresController.RemoveAsync(id);
 
             result.Should().BeOfType<OkResult>();
         }
@@ -87,7 +87,7 @@ namespace GameStore.Tests.Controllers
                 return new GenreDTO();
             });
 
-            var result = await genresController.UpdateGenreAsync(updateGenreDTO);
+            var result = await genresController.UpdateAsync(updateGenreDTO);
 
             result.Should().BeOfType<JsonResult>();
         }

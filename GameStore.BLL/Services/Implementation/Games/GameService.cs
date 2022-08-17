@@ -15,6 +15,7 @@ using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -182,6 +183,7 @@ namespace GameStore.BLL.Services.Implementation.Games
 
             filteredGames = filteredGames.DistinctBy(g => g.Key).ToList();
             filteredGames = filteredGames.Where(g => !g.IsDeleted).ToList();
+            filteredGames = _gameFilterService.FilterByPlatforms(filteredGames, gameFilterDTO.Platforms);
 
             return filteredGames;
         }
@@ -202,7 +204,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             return northwindGames;
         }
 
-        private async Task<Game> SetGameAsync(string gameKey)
+        public async Task<Game> SetGameAsync(string gameKey)
         {
             Game gameByKey = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey, g => g.Genres, g => g.PlatformTypes);
             gameByKey ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);

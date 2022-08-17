@@ -1,5 +1,5 @@
 ﻿using GameStore.BLL.DTO.Order;
-using GameStore.BLL.Enum;
+
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,10 +11,16 @@ namespace GameStore.BLL.Services.Abstract
 
         Task<bool> CancelOrderAsync(int orderId);
 
+        Task<OrderDTO> GetOrderAsync(string customerId);
+
+        Task<bool> RemoveOrderDetailsAsync(int id);
+
         Task<OrderDTO> GetOrderAsync(int orderId);
 
-        Task<List<OrderDTO>> GetListOfOrdersAsync(OrderHistoryDTO orderHistoryDTO);
+        Task<List<OrderDTO>> GetOrderHistoryAsync(OrderFilterDTO orderHistoryDTO);
 
         Task<OrderDTO> UpdateOrderAsync(UpdateOrderDTO updateOrderDTO);
+
+        Task<List<OrderDTO>> GetStoreOrdersAsync(OrderFilterDTO orderFilterDTO);
     }
 }

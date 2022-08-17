@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using GameStore.BLL.DTO.Auth;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enums;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
+using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 
@@ -19,27 +22,26 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindFactory _northwindDbContext;
+        private readonly INorthwindFactory _northwindFactory;
+        private readonly IGameService _gameService;
         private readonly ILogger<BasketService> _logger;
         private readonly IMongoLoggerProvider _mongoLogger;
 
-        public BasketService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public BasketService(IGameService gameService, IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _northwindDbContext = northwindDbContext;
+            _northwindFactory = northwindDbContext;
             _mongoLogger = mongoLogger;
+            _gameService = gameService;
         }
 
-        public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId)
+        public async Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, string customerId)
         {
-            Game gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey && !g.IsDeleted);
-            gameOfDetails ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
+            Game gameOfDetails = await _gameService.SetGameAsync(gameKey);
 
-            if (gameOfDetails == null)
-                throw new KeyNotFoundException("Game does not exist");
-            else if (gameOfDetails.UnitsInStock <= 0)
+            if (gameOfDetails.UnitsInStock <= 0)
                 throw new ArgumentException("Value must be greater than 0");
 
             Order orderOfCustomer = await _unitOfWork.OrderRepository.GetAsync(g => g.CustomerId == customerId && g.Status != OrderStatus.Succeeded);
@@ -55,26 +57,6 @@ namespace GameStore.BLL.Services.Implementation
             OrderDetails addedOrderDetails = await CreateOrderDetailsAsync(orderOfCustomer.Id, gameOfDetails.Key);
 
             return _mapper.Map<OrderDetailsDTO>(addedOrderDetails);
-        }
-
-        public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
-        {
-            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
-            Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-            gameByDetails ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-
-            if (orderDetailsToUpdate == null)
-                throw new KeyNotFoundException("Order details not found");
-
-            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
-            if (orderDetailsToUpdate.Quantity > gameByDetails.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
-                throw new ArgumentException("Quantity is invalid");
-
-            if (gameByDetails.TypeOfBase == TypeOfBase.Northwind)
-                await _northwindDbContext.ProductRepository.UpdateAsync(gameByDetails);
-
-            await _unitOfWork.SaveAsync();
-            return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);
         }
 
         public async Task<bool> RemoveOrderDetailsAsync(int id)
@@ -93,7 +75,7 @@ namespace GameStore.BLL.Services.Implementation
             return isDeletedOrderDetails;
         }
 
-        public async Task<OrderDTO> GetBasketAsync(int customerId)
+        public async Task<OrderDTO> GetBasketAsync(string customerId)
         {
             Order orderByCustomer = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == customerId && o.Status != OrderStatus.Succeeded, od => od.OrderDetails.Where(o => !o.IsDeleted));
 
@@ -104,7 +86,7 @@ namespace GameStore.BLL.Services.Implementation
             for (int i = 0; i < orderByCustomer.OrderDetails.Count(); i++)
             {
                 var gameOfDetais = await _unitOfWork.GameRepository.GetAsync(g => g.Key == details[i].GameKey);
-                gameOfDetais ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == details[i].GameKey);
+                gameOfDetais ??= await _northwindFactory.ProductRepository.GetAsync(g => g.Key == details[i].GameKey);
                 details[i].Game = gameOfDetais;
                 details[i].Price = gameOfDetais.Price;
                 if (orderByCustomer.Status != OrderStatus.Processing && details[i].Game != null && details[i].Game.IsDeleted)
@@ -118,7 +100,67 @@ namespace GameStore.BLL.Services.Implementation
             return _mapper.Map<OrderDTO>(orderByCustomer);
         }
 
-        private async Task<Order> CreateOrderAsync(int customerId)
+        public async Task MergeOrdersAsync(string oldUserId, string newUserId)
+        {
+            Order oldOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == oldUserId && (o.Status==OrderStatus.Opened || o.Status==OrderStatus.Canceled), o => o.OrderDetails);
+            Order newOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.CustomerId == newUserId && (o.Status == OrderStatus.Opened || o.Status == OrderStatus.Canceled), o => o.OrderDetails);
+            if (oldOrder == null || !oldOrder.OrderDetails.Any() || oldUserId==newUserId) 
+                return;
+
+            if (newOrder == null || !newOrder.OrderDetails.Any())
+            {
+                oldOrder.CustomerId = newUserId;
+                await _unitOfWork.SaveAsync();
+                return;
+            }
+
+            foreach (var orderDetails in oldOrder.OrderDetails)
+            {
+
+                if (IsOrderContainsSameOrderDetails(newOrder, orderDetails))
+                {
+                    var detailsOfNewOrder = newOrder.OrderDetails.FirstOrDefault(o => o.GameKey == orderDetails.GameKey);
+                    var gameOfDetails = await _gameService.SetGameAsync(orderDetails.GameKey);
+                    short newQuantity = (short)(detailsOfNewOrder.Quantity + orderDetails.Quantity);
+                    detailsOfNewOrder.Quantity = newQuantity <= gameOfDetails.UnitsInStock ? newQuantity : gameOfDetails.UnitsInStock;
+                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(o => o.Id == orderDetails.Id);
+                }
+                else
+                {
+                    orderDetails.OrderId = newOrder.Id;
+                }
+                
+            }
+
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
+        {
+            OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
+            Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
+            gameByDetails ??= await _northwindFactory.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
+
+            if (orderDetailsToUpdate == null)
+                throw new KeyNotFoundException("Order details not found");
+
+            orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
+            if (orderDetailsToUpdate.Quantity > gameByDetails.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
+                throw new ArgumentException("Quantity is invalid");
+
+            if (gameByDetails.TypeOfBase == TypeOfBase.Northwind)
+                await _northwindFactory.ProductRepository.UpdateAsync(gameByDetails);
+
+            await _unitOfWork.SaveAsync();
+            return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);
+        }
+
+        private static bool IsOrderContainsSameOrderDetails(Order targetOrder, OrderDetails orderDetail)
+        {
+            return targetOrder.OrderDetails.Any(details => details.GameKey == orderDetail.GameKey);
+        }
+
+        private async Task<Order> CreateOrderAsync(string customerId)
         {
             Order orderToAdd = new Order()
             {
@@ -157,5 +199,6 @@ namespace GameStore.BLL.Services.Implementation
 
             return addedOrderDetails;
         }
+
     }
 }

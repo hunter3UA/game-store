@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GameStore.DAL.Attributes;
+using GameStore.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
@@ -45,5 +46,6 @@ namespace GameStore.DAL.Entities
 
         [NotMapped, BsonDefaultValue(TypeOfBase.Northwind),IgnoreMongoUpdate]
         public TypeOfBase TypeOfBase { get; set; }
+
     }
 }

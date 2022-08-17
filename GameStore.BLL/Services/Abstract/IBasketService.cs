@@ -6,12 +6,14 @@ namespace GameStore.BLL.Services.Abstract
 {
     public interface IBasketService
     {
-        Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, int customerId);
-
-        Task<OrderDTO> GetBasketAsync(int cusomerId);
+        Task<OrderDetailsDTO> AddOrderDetailsAsync(string gameKey, string customerId);
 
         Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO);
 
+        Task<OrderDTO> GetBasketAsync(string cusomerId);
+
         Task<bool> RemoveOrderDetailsAsync(int id);
+
+        Task MergeOrdersAsync(string oldUserId, string newUserId);
     }
 }

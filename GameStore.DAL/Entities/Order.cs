@@ -1,4 +1,5 @@
 ﻿using GameStore.DAL.Attributes;
+using GameStore.DAL.Enums;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using System;
@@ -14,7 +15,7 @@ namespace GameStore.DAL.Entities
     public class Order : BaseEntity
     {
         [Required]
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
 
         [Required]
         public DateTime OrderDate { get; set; }

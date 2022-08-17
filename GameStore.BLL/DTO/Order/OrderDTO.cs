@@ -4,6 +4,7 @@ using System.Linq;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enum;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Enums;
 
 namespace GameStore.BLL.DTO.Order
 {
@@ -11,7 +12,7 @@ namespace GameStore.BLL.DTO.Order
     {
         public int Id { get; set; }
 
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
 
         public DateTime OrderDate { get; set; }
 
