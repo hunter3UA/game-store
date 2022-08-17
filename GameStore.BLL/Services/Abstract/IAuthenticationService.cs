@@ -9,7 +9,6 @@ namespace GameStore.BLL.Services.Abstract
     {
         Task<string> GetJwtTokenAsync(AuthRequestDTO authRequestDTO);
 
-
         JwtSecurityToken ReadJwtToken(string expiredToken);
     }
 }

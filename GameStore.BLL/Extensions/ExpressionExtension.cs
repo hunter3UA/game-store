@@ -14,6 +14,7 @@ namespace GameStore.BLL.Extensions
                     Expression.Invoke(right, param)
                 );
             var lambda = Expression.Lambda<Func<T, bool>>(body, param);
+
             return lambda;
         }
     }

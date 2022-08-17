@@ -41,13 +41,13 @@ namespace GameStore.DAL.Context.Configuration
                 new Genre { Id = 16, Name = "Misc" }
             };
 
-            //var categories = _northwindDbContext.CategoryRepository.GetListAsync().GetAwaiter().GetResult();
-            //int id = 17;
-            //for (int i = 0; i < categories.Count(); i++)
-            //{
-            //    categories[i].Id = id++;
-            //}
-            //genres.AddRange(categories);
+            var categories = _northwindDbContext.CategoryRepository.GetListAsync().GetAwaiter().GetResult();
+            int id = 17;
+            for (int i = 0; i < categories.Count(); i++)
+            {
+                categories[i].Id = id++;
+            }
+            genres.AddRange(categories);
             builder.HasData(genres);
         }
     }

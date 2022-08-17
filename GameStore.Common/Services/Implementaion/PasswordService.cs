@@ -35,11 +35,11 @@ namespace GameStore.BLL.Services.Implementation
         private bool CheckSaltedHash(string stringToCheck, SaltedHash saltedHash)
         {
             if (stringToCheck == null)
-                throw new ArgumentNullException("password");
+                throw new ArgumentNullException("Password can not be null");
             else if (saltedHash.Hash == null)
-                throw new ArgumentNullException("hash");
+                throw new ArgumentNullException("Hash can not be null");
             else if (saltedHash.Salt == null)
-                throw new ArgumentNullException("Salt");
+                throw new ArgumentNullException("Salt can not be null");
 
             byte[] hashGenerated = null;
             using (Rfc2898DeriveBytes hashDriver = new Rfc2898DeriveBytes(stringToCheck, saltedHash.Salt, _iterations))

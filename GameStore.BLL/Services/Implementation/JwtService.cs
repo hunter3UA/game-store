@@ -50,6 +50,7 @@ namespace GameStore.BLL.Services.Implementation
 
         private string GenerateAccessToken(User userOfToken)
         {
+            const string ClaimTypesPublisherName = "PublisherName";
             var symmetricSecurityKey = _config.GetJsonSection<AuthOptions>(nameof(AuthOptions)).GetSymmetricSecurityKey();
             var tokenHandler = new JwtSecurityTokenHandler();
             var descriptor = new SecurityTokenDescriptor()
@@ -66,7 +67,7 @@ namespace GameStore.BLL.Services.Implementation
             };
 
             if (userOfToken.Role == Roles.Publisher)
-                descriptor.Subject.AddClaim(new Claim("PublisherName", userOfToken.PublisherName));
+                descriptor.Subject.AddClaim(new Claim(ClaimTypesPublisherName, userOfToken.PublisherName));
 
             var token = tokenHandler.CreateToken(descriptor);
             string tokenString = tokenHandler.WriteToken(token);
