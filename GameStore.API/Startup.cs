@@ -24,14 +24,15 @@ using Microsoft.Extensions.Configuration;
 using GameStore.DAL.Context.Abstract;
 using GameStore.BLL.Providers;
 using Microsoft.IdentityModel.Tokens;
-using GameStore.BLL.Models;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using GameStore.Common.Services.Abstract;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using GameStore.BLL.Helpers;
 using GameStore.Common.Extensions;
+using GameStore.BLL.Models;
+using GameStore.BLL.Services.Implementation.Orders;
+using GameStore.API.Permissions.Publisher;
 
 namespace GameStore.API
 {
@@ -154,10 +155,14 @@ namespace GameStore.API
             });
             services.AddCors(options =>
             {
-
                 options.AddPolicy(
                     "AllowOrigin",
-                    builder => builder.AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("Content-Disposition").SetIsOriginAllowed(origin => true).AllowCredentials()
+                    builder => 
+                    builder.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithExposedHeaders("Content-Disposition")
+                    .SetIsOriginAllowed(origin => true)
+                    .AllowCredentials()
                     );
             });
 
@@ -165,6 +170,8 @@ namespace GameStore.API
             services.AddAutoMapper(typeof(AutoMapperConfig));
 
             services.AddScoped<IMongoLoggerProvider, MongoLoggerProvider>();
+
+            services.AddTransient<IPublisherPermission, PublisherPermission>();
         
         }
 

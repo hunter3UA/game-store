@@ -38,7 +38,7 @@ namespace GameStore.API.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = ApiRoles.UserRole)]
+        [Authorize]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateUserDTO updateUserDTO)
         {
             var updatedUser = await _userService.UpdateUserAsync(updateUserDTO);

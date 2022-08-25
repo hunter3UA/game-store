@@ -1,5 +1,5 @@
 ﻿using GameStore.BLL.DTO.Auth;
-using GameStore.BLL.Helpers;
+using GameStore.BLL.Enums;
 using GameStore.BLL.Models;
 using GameStore.BLL.Services.Abstract;
 using GameStore.Common.Extensions;
@@ -50,24 +50,23 @@ namespace GameStore.BLL.Services.Implementation
 
         private string GenerateAccessToken(User userOfToken)
         {
-            const string ClaimTypesPublisherName = "PublisherName";
             var symmetricSecurityKey = _config.GetJsonSection<AuthOptions>(nameof(AuthOptions)).GetSymmetricSecurityKey();
             var tokenHandler = new JwtSecurityTokenHandler();
             var descriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Sid,userOfToken.Id),
-                    new Claim(ClaimTypes.Name, userOfToken.UserName),
-                    new Claim(ClaimTypes.Email, userOfToken.Email),
-                    new Claim(ClaimTypes.Role, userOfToken.Role.ToString()),
+                    new Claim(CustomClaimTypes.Sid, userOfToken.Id),
+                    new Claim(CustomClaimTypes.Name, userOfToken.UserName),
+                    new Claim(CustomClaimTypes.Email, userOfToken.Email),
+                    new Claim(CustomClaimTypes.Role, userOfToken.Role.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
             };
 
             if (userOfToken.Role == Roles.Publisher)
-                descriptor.Subject.AddClaim(new Claim(ClaimTypesPublisherName, userOfToken.PublisherName));
+                descriptor.Subject.AddClaim(new Claim(CustomClaimTypes.Publisher, userOfToken.PublisherName));
 
             var token = tokenHandler.CreateToken(descriptor);
             string tokenString = tokenHandler.WriteToken(token);

@@ -15,13 +15,13 @@ namespace GameStore.DAL.Entities
 
         public int? ParentCommentId { get; set; }
 
-        [ForeignKey("ParentCommentId")]
+        [ForeignKey(nameof(ParentCommentId))]
         public IEnumerable<Comment> Answers { get; set; }
 
         [Required]
         public int? GameId { get; set; }
 
-        [ForeignKey("GameId")]
+        [ForeignKey(nameof(GameId))]
         public Game Game { get; set; }
 
         [Required, DefaultValue(false)]

@@ -29,7 +29,7 @@ namespace GameStore.DAL.Entities
         [Required, BsonElement("OrderID")]
         public int OrderId { get; set; }
 
-        [ForeignKey("OrderId"), IgnoreMongoUpdate, BsonIgnore]
+        [ForeignKey(nameof(OrderId)), IgnoreMongoUpdate, BsonIgnore]
         public Order Order { get; set; }
     }
 }

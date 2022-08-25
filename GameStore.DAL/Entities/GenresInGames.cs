@@ -6,12 +6,12 @@ namespace GameStore.DAL.Entities
     {
         public int GenreId { get; set; }
 
-        [ForeignKey("GenreId")]
+        [ForeignKey(nameof(GenreId))]
         public Genre Genre { get; set; }
 
         public int GameId { get; set; }
 
-        [ForeignKey("GameId")]
+        [ForeignKey(nameof(GameId))]
         public Game Game { get; set; }
     }
 }

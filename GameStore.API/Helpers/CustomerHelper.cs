@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using GameStore.API.Extensions;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 
@@ -10,7 +11,6 @@ namespace GameStore.API.Helpers
     {
         private readonly IAuthenticationService _jwtService;
         private const string CustomerIdKey = "CustomerId";
-        private const string AuthTokenHeader = "Authorization";
 
         public CustomerHelper(IAuthenticationService jwtService)
         {
@@ -22,9 +22,8 @@ namespace GameStore.API.Helpers
             string customerId;
         
             if (context.User.Identity.IsAuthenticated)
-            {
-                var accessToken = context.Request.Headers[AuthTokenHeader].ToString();
-                accessToken = accessToken.Substring(accessToken.IndexOf(" ")+1);
+            {               
+                var accessToken = context.GetAuthToken();
                 var decodedToken = _jwtService.ReadJwtToken(accessToken);
                 customerId = decodedToken.Claims.First(c=>c.Type==ClaimTypes.Sid).Value;
                 return customerId;
@@ -36,7 +35,6 @@ namespace GameStore.API.Helpers
             else
                 context.Request.Cookies.TryGetValue(CustomerIdKey, out customerId);
             
-
             return customerId;
         }
 

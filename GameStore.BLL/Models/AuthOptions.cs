@@ -5,7 +5,7 @@ namespace GameStore.BLL.Models
 {
     public class AuthOptions
     {
-        private string Issuer { get; set; }
+        public string Issuer { get; set; }
 
         public string Audience { get; set; }
 

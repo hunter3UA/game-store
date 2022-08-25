@@ -9,12 +9,12 @@ namespace GameStore.DAL.Entities
     {
         public int GameId { get; set; }
 
-        [ForeignKey("GameId")]
+        [ForeignKey(nameof(GameId))]
         public Game Game { get; set; }
 
         public int PlatformTypeId { get; set; }
 
-        [ForeignKey("PlatformTypeId")]
+        [ForeignKey(nameof(PlatformTypeId))]
         public PlatformType PlatformType { get; set; }
     }
 }

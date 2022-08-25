@@ -19,7 +19,7 @@ using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 
 
-namespace GameStore.BLL.Services.Implementation
+namespace GameStore.BLL.Services.Implementation.Orders
 {
     public class OrderService : IOrderService
     {
@@ -30,7 +30,7 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IGameService _gameService;
         private readonly IMongoLoggerProvider _mongoLogger;
 
-        public OrderService(IGameService gameService,IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext, IMapper mapper, ILogger<OrderService> logger, IMongoLoggerProvider mongoLogger)
+        public OrderService(IGameService gameService, IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext, IMapper mapper, ILogger<OrderService> logger, IMongoLoggerProvider mongoLogger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -64,7 +64,7 @@ namespace GameStore.BLL.Services.Implementation
             Order updatedOrder = await _unitOfWork.OrderRepository.UpdateAsync(orderById, od => od.OrderDetails);
             await _unitOfWork.SaveAsync();
 
-            _logger.LogInformation($"Status of order with id { updatedOrder.Id } has been changed to Processing");
+            _logger.LogInformation($"Status of order with id {updatedOrder.Id} has been changed to Processing");
 
             return _mapper.Map<OrderDTO>(updatedOrder);
         }
@@ -117,7 +117,7 @@ namespace GameStore.BLL.Services.Implementation
             var filter = BuildFilter(orderFilterDTO);
             filter = filter.AndAlso(o => o.Status != OrderStatus.Succeeded);
             var storeOrders = await _unitOfWork.OrderRepository.GetRangeAsync(filter, g => g.OrderDetails);
-            
+
             return _mapper.Map<List<OrderDTO>>(storeOrders);
         }
 
@@ -153,7 +153,7 @@ namespace GameStore.BLL.Services.Implementation
             var mappedDetails = _mapper.Map<List<OrderDetails>>(detailsToUpdate);
             var detailsToCancel = await _unitOfWork.OrderDetailsRepository.GetRangeAsync(o => o.OrderId == detailsToUpdate.First().OrderId);
             await CancelReservedGamesAsync(detailsToCancel);
-            
+
             foreach (var details in mappedDetails)
             {
                 await _unitOfWork.OrderDetailsRepository.UpdateAsync(details);
@@ -266,7 +266,7 @@ namespace GameStore.BLL.Services.Implementation
                         await _northwindDbContext.ProductRepository.UpdateAsync(gameToReserve);
 
                     _logger.LogInformation($"Game has been update{gameToReserve.Id}");
-               
+
                 }
             }
 
@@ -301,9 +301,13 @@ namespace GameStore.BLL.Services.Implementation
             foreach (var item in order.OrderDetails)
             {
                 item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                item.Game = item.Game ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
+                item.Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
+                
                 if (item.Game == null)
                     throw new KeyNotFoundException($"Games of order with id:{order.Id} not found");
+
+                if (item.Price == null)
+                    item.Price = item.Game.Price;
             }
         }
 

@@ -34,5 +34,7 @@ namespace GameStore.BLL.DTO.Order
         public List<OrderDetailsDTO> OrderDetails { get; set; }
 
         public OrderStatus Status { get; set; }
+
+        public OrderStatus OldStatus { get; set; }
     }
 }

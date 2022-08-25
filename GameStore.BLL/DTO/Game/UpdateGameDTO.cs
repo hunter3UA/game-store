@@ -25,6 +25,8 @@ namespace GameStore.BLL.DTO.Game
 
         public List<int> PlatformsId { get; set; }
 
+        public string OldPublisherName { get; set; }
+
         public string PublisherName { get; set; }
 
         public decimal Price { get; set; }
