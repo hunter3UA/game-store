@@ -8,7 +8,7 @@ using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.Enums;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Platforms;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -52,7 +52,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
         {
-            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id);
+            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id,p=>p.Translations);
 
             return searchedPlatform != null ? _mapper.Map<PlatformTypeDTO>(searchedPlatform) : throw new KeyNotFoundException("Platform not found");
         }
@@ -60,6 +60,7 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<PlatformTypeDTO> UpdatePlatformAsync(UpdatePlatformTypeDTO updatePlatformDTO)
         {
             PlatformType mappedPlatform = _mapper.Map<PlatformType>(updatePlatformDTO);
+
             PlatformType oldPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == updatePlatformDTO.Id);
             var oldVersion = mappedPlatform.ToBsonDocument();
             PlatformType updatedPlatform = await _unitOfWork.PlatformTypeRepository.UpdateAsync(mappedPlatform);

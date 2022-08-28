@@ -7,7 +7,7 @@ using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Enums;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;

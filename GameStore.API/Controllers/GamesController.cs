@@ -20,10 +20,12 @@ namespace GameStore.API.Controllers
         private readonly IGameService _gameService;
         private readonly IPublisherPermission _publisherPermission;
 
-        public GamesController(IGameService gameService, IPublisherPermission publisherPermission = null)
+        public GamesController(IGameService gameService
+            //IPublisherPermission publisherPermission = null
+            )
         {
             _gameService = gameService;
-            _publisherPermission = publisherPermission;
+          //  _publisherPermission = publisherPermission;
         }
 
         [HttpPost]
@@ -67,9 +69,9 @@ namespace GameStore.API.Controllers
         [Authorize(Roles = ApiRoles.PublisherRole)]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
-            bool canEdit = _publisherPermission.CanEditPublisher(HttpContext, gameToUpdate.OldPublisherName);
-            if (!canEdit)
-                return StatusCode(StatusCodes.Status403Forbidden);
+            //bool canEdit = _publisherPermission.CanEditPublisher(HttpContext, gameToUpdate.OldPublisherName);
+            //if (!canEdit)
+            //    return StatusCode(StatusCodes.Status403Forbidden);
             
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
 

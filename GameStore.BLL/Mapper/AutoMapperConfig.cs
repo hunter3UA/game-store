@@ -11,7 +11,11 @@ using GameStore.BLL.DTO.PlatformType;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.DTO.Shipper;
 using GameStore.BLL.DTO.User;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.GameStore;
+using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Platforms;
+using GameStore.DAL.Entities.Publishers;
 using System;
 using System.Linq;
 
@@ -49,15 +53,20 @@ namespace GameStore.BLL.Mapper
 
             CreateMap<AddOrderDetailsDTO, OrderDetails>();
             CreateMap<OrderDetails, OrderDetailsDTO>();
-            CreateMap<OrderDetailsDTO,OrderDetails>().ForMember(od=>od.Game,mapper=>mapper.Ignore());
+            CreateMap<OrderDetailsDTO, OrderDetails>().ForMember(od => od.Game, mapper => mapper.Ignore());
 
             CreateMap<Order, OrderDTO>();
-            CreateMap<UpdateOrderDTO, Order>().ForMember(o=>o.OrderDetails,mapper=>mapper.Ignore());
+            CreateMap<UpdateOrderDTO, Order>().ForMember(o => o.OrderDetails, mapper => mapper.Ignore());
 
             CreateMap<Shipper, ShipperDTO>();
 
             CreateMap<RegisterDTO, User>();
             CreateMap<User, UserDTO>();
+
+            CreateMap<GameTranslateDTO, GameTranslate>().ReverseMap();
+            CreateMap<GenreTranslateDTO, GenreTranslate>().ReverseMap();
+            CreateMap<PlatformTypeTranslateDTO, PlatformTypeTranslate>().ReverseMap();
+            CreateMap<PublisherTranslateDTO, PublisherTranslate>().ReverseMap();
         }
     }
 }

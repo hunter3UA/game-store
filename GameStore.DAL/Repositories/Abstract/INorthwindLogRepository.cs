@@ -1,4 +1,4 @@
-﻿using GameStore.DAL.Entities;
+﻿using GameStore.DAL.Entities.GameStore;
 using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Abstract

@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GameStore.DAL.Attributes;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.GameStore;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.Genres
 {
     [MongoCollection("categories")]
     [Index("Name", IsUnique = true)]
@@ -29,5 +31,8 @@ namespace GameStore.DAL.Entities
 
         [BsonElement("CategoryID"), DefaultValue(null)]
         public int? CategoryId { get; set; }
+
+        public IEnumerable<GenreTranslate> Translations { get; set; }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace GameStore.BLL.DTO.Publisher
+﻿using System.Collections.Generic;
+
+namespace GameStore.BLL.DTO.Publisher
 {
     public class UpdatePublisherDTO
     {
@@ -29,5 +31,7 @@
         public string Country { get; set; }
 
         public string Fax { get; set; }
+
+        public List<PublisherTranslateDTO> Translations { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using GameStore.DAL.Entities;
+﻿using GameStore.DAL.Entities.GameStore;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

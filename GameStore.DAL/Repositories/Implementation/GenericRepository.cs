@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using GameStore.DAL.Entities;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using GameStore.DAL.Context;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Dynamic.Core;
+using GameStore.DAL.Entities.GameStore;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
@@ -29,6 +29,11 @@ namespace GameStore.DAL.Repositories.Implementation
             var addedEntity = await _dbSet.AddAsync(entityToAdd);
             
             return addedEntity.Entity;
+        }
+
+        public async Task AddRangeAsync(IEnumerable<TEntity> entities)
+        {
+            await _dbSet.AddRangeAsync(entities);
         }
 
         public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
@@ -95,6 +100,14 @@ namespace GameStore.DAL.Repositories.Implementation
             return false;
         }
 
+        public async Task UpdateRangeAsync(IEnumerable<TEntity> entitiesToUpdate)
+        {
+            foreach(var entity in entitiesToUpdate)
+            {
+                await UpdateAsync(entity);
+            }
+        }
+
         public async Task<TEntity> UpdateAsync(TEntity entityToUpdate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
@@ -135,6 +148,6 @@ namespace GameStore.DAL.Repositories.Implementation
             }
         }
 
-
+        
     }
 }

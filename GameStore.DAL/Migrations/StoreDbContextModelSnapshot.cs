@@ -58,7 +58,7 @@ namespace GameStore.DAL.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Game", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,7 +123,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(1410),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 438, DateTimeKind.Utc).AddTicks(9964),
                             Description = "New part of Stalker",
                             Discontinued = false,
                             IsDeleted = false,
@@ -131,7 +131,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Stalker2",
                             NumberOfViews = 0,
                             Price = 70m,
-                            PublishedAt = new DateTime(2022, 5, 10, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3266),
+                            PublishedAt = new DateTime(2022, 5, 19, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2174),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)10,
@@ -140,7 +140,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3513),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2433),
                             Description = "Best part",
                             Discontinued = false,
                             IsDeleted = false,
@@ -148,7 +148,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Dying light",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 6, 29, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3584),
+                            PublishedAt = new DateTime(2022, 7, 8, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2578),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             UnitsInStock = (short)0,
@@ -157,7 +157,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 3,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3594),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2588),
                             Description = "Action ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -165,7 +165,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Left 4 Dead",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2021, 7, 14, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3597),
+                            PublishedAt = new DateTime(2021, 7, 23, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2590),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)3,
@@ -174,7 +174,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 4,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3599),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2593),
                             Description = "Description of cmv",
                             Discontinued = false,
                             IsDeleted = false,
@@ -182,7 +182,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Call of Duty:MV",
                             NumberOfViews = 0,
                             Price = 30m,
-                            PublishedAt = new DateTime(2022, 8, 11, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3600),
+                            PublishedAt = new DateTime(2022, 8, 20, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2594),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -191,7 +191,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 5,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3602),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2596),
                             Description = "Description of civ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -199,7 +199,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sid Meier`s Civilization VI",
                             NumberOfViews = 0,
                             Price = 60m,
-                            PublishedAt = new DateTime(2022, 7, 19, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3604),
+                            PublishedAt = new DateTime(2022, 7, 28, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2597),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -208,7 +208,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 6,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3606),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2600),
                             Description = "Description of arma",
                             Discontinued = false,
                             IsDeleted = false,
@@ -216,7 +216,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Arma 3",
                             NumberOfViews = 0,
                             Price = 80m,
-                            PublishedAt = new DateTime(2022, 6, 19, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3607),
+                            PublishedAt = new DateTime(2022, 6, 28, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2601),
                             PublisherName = "Bohemia Interactive",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -225,7 +225,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3610),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2603),
                             Description = "Description of nfs",
                             Discontinued = false,
                             IsDeleted = false,
@@ -233,7 +233,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Need for speed",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 6, 29, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3612),
+                            PublishedAt = new DateTime(2022, 7, 8, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2604),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -242,7 +242,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 8,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3614),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2606),
                             Description = "Description of Sam",
                             Discontinued = false,
                             IsDeleted = false,
@@ -250,7 +250,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Serious Sam 4",
                             NumberOfViews = 0,
                             Price = 45m,
-                            PublishedAt = new DateTime(2022, 8, 3, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3615),
+                            PublishedAt = new DateTime(2022, 8, 12, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2607),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -259,7 +259,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 9,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3617),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2610),
                             Description = "Description of Sea",
                             Discontinued = false,
                             IsDeleted = false,
@@ -267,7 +267,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sea of Thieves",
                             NumberOfViews = 0,
                             Price = 90m,
-                            PublishedAt = new DateTime(2022, 6, 29, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3618),
+                            PublishedAt = new DateTime(2022, 7, 8, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2612),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -276,7 +276,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 10,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3620),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2614),
                             Description = "Description of Battlefield",
                             Discontinued = false,
                             IsDeleted = false,
@@ -284,7 +284,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Battlefield 4",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 7, 19, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3621),
+                            PublishedAt = new DateTime(2022, 7, 28, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2615),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -293,7 +293,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 11,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3623),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2617),
                             Description = "Description of Mass effect 1",
                             Discontinued = false,
                             IsDeleted = false,
@@ -301,7 +301,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Mass effect 1",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 7, 29, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3625),
+                            PublishedAt = new DateTime(2022, 8, 7, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2618),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -310,7 +310,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 12,
-                            AddedAt = new DateTime(2022, 8, 18, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3626),
+                            AddedAt = new DateTime(2022, 8, 27, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2620),
                             Description = "Description of Command and conqurer",
                             Discontinued = false,
                             IsDeleted = false,
@@ -318,7 +318,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Command and conqurer",
                             NumberOfViews = 0,
                             Price = 150m,
-                            PublishedAt = new DateTime(2022, 6, 19, 13, 40, 48, 140, DateTimeKind.Utc).AddTicks(3628),
+                            PublishedAt = new DateTime(2022, 6, 28, 12, 55, 51, 439, DateTimeKind.Utc).AddTicks(2621),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -326,7 +326,47 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.GameTranslate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuantityPerUnit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GameTranslates");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -531,6 +571,35 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.GenreTranslate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("GenreTranslates");
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.GenresInGames", b =>
                 {
                     b.Property<int>("GenreId")
@@ -697,7 +766,7 @@ namespace GameStore.DAL.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.PlatformType", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -744,6 +813,32 @@ namespace GameStore.DAL.Migrations
                             IsDeleted = false,
                             Type = "Console"
                         });
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformTypeTranslate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlatformTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlatformTypeId");
+
+                    b.ToTable("PlatformTypeTranslates");
                 });
 
             modelBuilder.Entity("GameStore.DAL.Entities.PlatformsInGames", b =>
@@ -828,7 +923,7 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Publisher", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.Publisher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -929,6 +1024,56 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.PublisherTranslate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HomePage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Region")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PublisherId");
+
+                    b.ToTable("PublisherTranslates");
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -971,51 +1116,51 @@ namespace GameStore.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8940be39-a642-43cf-8f3e-8233dee7f516",
+                            Id = "a207038d-70ee-496b-abe7-c7dc262b94dd",
                             Email = "admin@gmail.com",
                             IsDeleted = false,
-                            PasswordHash = new byte[] { 18, 27, 201, 111, 222, 138, 18, 116, 137, 46, 119, 44, 245, 251, 150, 196, 17, 199, 159, 75, 11, 210, 168, 183, 227, 17, 243, 201, 75, 1, 143, 154, 232, 19, 2, 6, 9, 162, 90, 201, 136, 142, 146, 161, 243, 48, 71, 136, 56, 27, 91, 54, 64, 21, 227, 135, 71, 237, 41, 79, 211, 57, 174, 25 },
-                            PasswordSalt = new byte[] { 186, 191, 152, 2, 137, 119, 71, 176, 109, 27, 175, 178, 23, 146, 93, 166, 105, 169, 104, 224, 99, 177, 122, 194 },
+                            PasswordHash = new byte[] { 226, 96, 107, 61, 75, 119, 30, 68, 74, 180, 221, 44, 160, 39, 72, 207, 208, 110, 138, 119, 134, 173, 21, 249, 144, 62, 77, 250, 29, 160, 122, 132, 118, 133, 170, 246, 8, 48, 132, 44, 200, 21, 40, 31, 76, 51, 128, 78, 72, 180, 186, 218, 245, 249, 74, 37, 140, 142, 188, 199, 58, 119, 16, 217 },
+                            PasswordSalt = new byte[] { 168, 101, 183, 51, 97, 8, 53, 253, 18, 215, 200, 98, 7, 93, 161, 33, 129, 54, 195, 67, 60, 93, 176, 9 },
                             Role = "Admin",
                             UserName = "admin"
                         },
                         new
                         {
-                            Id = "36a985c1-b496-4d9a-8333-aaea40ebc3ef",
+                            Id = "617a717c-4e4b-464f-ba51-a355a305b172",
                             Email = "user1@gmail.com",
                             IsDeleted = false,
-                            PasswordHash = new byte[] { 0, 193, 67, 80, 65, 9, 40, 156, 101, 48, 151, 19, 129, 198, 122, 245, 227, 180, 40, 45, 158, 200, 113, 112, 171, 161, 211, 38, 214, 236, 63, 34, 7, 109, 93, 170, 160, 142, 56, 242, 43, 227, 49, 249, 84, 250, 76, 199, 95, 57, 224, 126, 176, 124, 172, 66, 206, 238, 95, 152, 179, 247, 142, 57 },
-                            PasswordSalt = new byte[] { 58, 160, 68, 70, 48, 106, 6, 123, 41, 250, 214, 235, 183, 139, 45, 186, 167, 18, 132, 141, 19, 148, 84, 154 },
+                            PasswordHash = new byte[] { 220, 253, 58, 21, 155, 31, 27, 101, 15, 192, 26, 239, 115, 247, 75, 90, 110, 78, 227, 200, 153, 239, 72, 101, 4, 253, 164, 63, 135, 1, 184, 231, 57, 124, 207, 71, 133, 251, 68, 208, 147, 18, 60, 103, 153, 133, 154, 206, 246, 175, 23, 54, 235, 232, 76, 232, 12, 110, 95, 215, 214, 226, 205, 13 },
+                            PasswordSalt = new byte[] { 115, 45, 201, 80, 22, 24, 13, 151, 134, 103, 40, 62, 189, 175, 72, 215, 170, 88, 245, 73, 101, 255, 189, 234 },
                             Role = "User",
                             UserName = "user1"
                         },
                         new
                         {
-                            Id = "aa740e0d-9b6f-456c-840b-dda5a5195eae",
+                            Id = "9ac9bede-9072-4798-ba23-1dc6d2ef23b2",
                             Email = "manager1@gmail.com",
                             IsDeleted = false,
-                            PasswordHash = new byte[] { 152, 97, 139, 63, 226, 119, 78, 40, 109, 117, 80, 5, 189, 60, 44, 155, 143, 173, 80, 211, 142, 168, 41, 117, 169, 250, 199, 151, 215, 96, 19, 16, 150, 28, 100, 225, 63, 152, 94, 193, 213, 71, 8, 203, 159, 137, 249, 160, 105, 176, 172, 146, 211, 68, 28, 75, 212, 15, 235, 3, 141, 176, 78, 148 },
-                            PasswordSalt = new byte[] { 98, 33, 93, 14, 216, 77, 166, 151, 198, 81, 156, 181, 58, 150, 10, 254, 128, 121, 152, 242, 24, 31, 183, 227 },
+                            PasswordHash = new byte[] { 241, 19, 39, 66, 12, 253, 194, 230, 182, 59, 37, 6, 227, 71, 64, 162, 47, 33, 27, 41, 232, 228, 44, 169, 54, 8, 53, 102, 229, 234, 123, 239, 197, 175, 128, 156, 13, 99, 46, 41, 50, 83, 252, 56, 72, 145, 125, 133, 66, 173, 62, 247, 21, 112, 86, 11, 114, 72, 239, 74, 6, 71, 186, 211 },
+                            PasswordSalt = new byte[] { 13, 165, 181, 1, 43, 165, 177, 163, 10, 6, 32, 206, 175, 93, 200, 101, 208, 57, 247, 157, 215, 47, 213, 143 },
                             Role = "Manager",
                             UserName = "manager1"
                         },
                         new
                         {
-                            Id = "98a461f4-37a4-41bf-bf05-0559c7e9e012",
+                            Id = "c73e3451-c0b8-4b64-90e0-98882971d9bf",
                             Email = "moderator@gmail.com",
                             IsDeleted = false,
-                            PasswordHash = new byte[] { 10, 241, 88, 1, 28, 22, 83, 9, 93, 101, 179, 20, 209, 130, 43, 182, 235, 191, 8, 128, 11, 199, 245, 164, 135, 202, 5, 210, 157, 219, 4, 16, 164, 84, 9, 155, 67, 41, 171, 158, 252, 2, 121, 165, 226, 147, 229, 212, 138, 132, 244, 124, 27, 70, 35, 166, 20, 3, 44, 127, 245, 141, 241, 161 },
-                            PasswordSalt = new byte[] { 228, 11, 86, 193, 29, 179, 38, 9, 210, 177, 196, 89, 113, 5, 207, 46, 151, 174, 164, 219, 51, 15, 230, 6 },
+                            PasswordHash = new byte[] { 247, 174, 164, 237, 8, 154, 34, 158, 125, 25, 103, 101, 244, 252, 140, 199, 198, 62, 254, 203, 128, 212, 239, 20, 28, 196, 161, 131, 253, 59, 131, 176, 10, 136, 131, 37, 162, 156, 47, 101, 175, 199, 206, 162, 191, 104, 252, 127, 98, 144, 120, 164, 250, 26, 111, 235, 151, 233, 30, 18, 36, 111, 136, 153 },
+                            PasswordSalt = new byte[] { 197, 233, 171, 99, 42, 46, 124, 63, 126, 204, 53, 32, 201, 68, 49, 219, 157, 213, 87, 59, 114, 5, 232, 177 },
                             Role = "Moderator",
                             UserName = "moderator1"
                         },
                         new
                         {
-                            Id = "4892ac46-f076-464d-8abf-c3d17700ce22",
+                            Id = "3f8e3979-706e-4064-b987-65b8c83166eb",
                             Email = "publisher1@gmail.com",
                             IsDeleted = false,
-                            PasswordHash = new byte[] { 203, 152, 135, 38, 46, 31, 88, 224, 186, 119, 173, 13, 227, 208, 246, 246, 133, 48, 163, 223, 184, 147, 144, 190, 4, 207, 79, 43, 15, 205, 55, 40, 125, 90, 154, 224, 181, 108, 122, 47, 163, 32, 210, 130, 175, 0, 84, 23, 135, 43, 150, 16, 8, 74, 36, 0, 186, 60, 192, 4, 169, 211, 253, 61 },
-                            PasswordSalt = new byte[] { 233, 250, 170, 151, 160, 217, 218, 34, 219, 175, 222, 170, 200, 75, 241, 80, 245, 163, 136, 217, 229, 42, 129, 48 },
+                            PasswordHash = new byte[] { 54, 176, 234, 71, 198, 159, 241, 16, 222, 219, 31, 63, 223, 126, 23, 250, 171, 14, 135, 242, 120, 114, 26, 214, 73, 240, 67, 224, 220, 218, 204, 227, 47, 213, 73, 6, 151, 61, 24, 24, 57, 31, 183, 97, 203, 62, 135, 134, 53, 190, 58, 168, 95, 152, 161, 202, 139, 220, 175, 116, 91, 50, 24, 5 },
+                            PasswordSalt = new byte[] { 85, 250, 12, 199, 166, 34, 144, 41, 223, 196, 7, 163, 129, 93, 245, 124, 221, 24, 21, 246, 253, 246, 199, 127 },
                             PublisherName = "DeepSilver",
                             Role = "Publisher",
                             UserName = "publisher1"
@@ -1024,7 +1169,7 @@ namespace GameStore.DAL.Migrations
 
             modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
                         .WithMany("Comments")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1037,22 +1182,44 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.GameTranslate", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Genre", null)
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
+                        .WithMany("Translations")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.Genre", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Genres.Genre", null)
                         .WithMany("SubGenres")
                         .HasForeignKey("ParentGenreId");
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.GenreTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Genres.Genre", "Genre")
+                        .WithMany("Translations")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.GenresInGames", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStore.DAL.Entities.Genre", "Genre")
+                    b.HasOne("GameStore.DAL.Entities.Genres.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1074,15 +1241,26 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformTypeTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Platforms.PlatformType", "PlatformType")
+                        .WithMany("Translations")
+                        .HasForeignKey("PlatformTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PlatformType");
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.PlatformsInGames", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStore.DAL.Entities.PlatformType", "PlatformType")
+                    b.HasOne("GameStore.DAL.Entities.Platforms.PlatformType", "PlatformType")
                         .WithMany()
                         .HasForeignKey("PlatformTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1093,24 +1271,49 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("PlatformType");
                 });
 
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.PublisherTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Publishers.Publisher", "Publisher")
+                        .WithMany("Translations")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Publisher");
+                });
+
             modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
                 {
                     b.Navigation("Answers");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Game", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.Game", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Translations");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.Genre", b =>
                 {
                     b.Navigation("SubGenres");
+
+                    b.Navigation("Translations");
                 });
 
             modelBuilder.Entity("GameStore.DAL.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformType", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.Publisher", b =>
+                {
+                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }

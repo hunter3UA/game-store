@@ -1,6 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.Genres;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.GameStore
 {
     public class GenresInGames
     {

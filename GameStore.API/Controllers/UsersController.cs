@@ -24,7 +24,7 @@ namespace GameStore.API.Controllers
         public async Task<IActionResult> GetListAsync()
         {
             var users = await _userService.GetListOfUsersAsync();
-
+            
             return new JsonResult(users);
         }
 

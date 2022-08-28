@@ -1,4 +1,5 @@
-﻿using GameStore.DAL.Entities;
+﻿using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.GameStore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;

@@ -1,11 +1,12 @@
 ﻿using GameStore.DAL.Attributes;
+using GameStore.DAL.Entities.Games;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.GameStore
 {
     [MongoCollection("order-details")]
     [BsonIgnoreExtraElements]

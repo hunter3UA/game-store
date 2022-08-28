@@ -7,7 +7,8 @@ using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.Genres;
 using GameStore.DAL.UoW.Abstract;
 
 namespace GameStore.BLL.Services.Implementation.Games

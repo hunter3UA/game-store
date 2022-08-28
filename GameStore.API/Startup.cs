@@ -171,7 +171,7 @@ namespace GameStore.API
 
             services.AddScoped<IMongoLoggerProvider, MongoLoggerProvider>();
 
-            services.AddTransient<IPublisherPermission, PublisherPermission>();
+          //  services.AddScoped<IPublisherPermission, PublisherPermission>();
         
         }
 

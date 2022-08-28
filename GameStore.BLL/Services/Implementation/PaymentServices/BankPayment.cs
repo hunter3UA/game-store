@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 

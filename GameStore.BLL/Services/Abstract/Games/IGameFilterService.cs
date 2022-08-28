@@ -1,6 +1,6 @@
 ﻿using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Enum;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;

@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
 
 namespace GameStore.BLL.Services.Abstract.Games
 {

@@ -1,7 +1,7 @@
 ﻿using GameStore.DAL.Attributes;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.GameStore
 {
     [MongoCollection("shippers")]
     [BsonIgnoreExtraElements]

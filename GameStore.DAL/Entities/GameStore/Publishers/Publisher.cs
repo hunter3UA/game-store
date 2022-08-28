@@ -2,12 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using GameStore.DAL.Attributes;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.Publishers
 {
     [Index("CompanyName", IsUnique = true)]
     [MongoCollection("suppliers")]
@@ -39,13 +40,15 @@ namespace GameStore.DAL.Entities
         public string Region { get; set; }
 
         public string Fax { get; set; }
- 
+
         public string Phone { get; set; }
-    
+
         public string PostalCode { get; set; }
 
-        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind),IgnoreMongoUpdate]
+        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind), IgnoreMongoUpdate]
         public TypeOfBase TypeOfBase { get; set; }
+
+        public IEnumerable<PublisherTranslate> Translations { get; set; } 
 
     }
 }

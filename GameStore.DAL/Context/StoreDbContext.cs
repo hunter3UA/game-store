@@ -1,7 +1,11 @@
 ﻿using GameStore.Common.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Context.Configuration;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.GameStore;
+using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Platforms;
+using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.Static;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +39,14 @@ namespace GameStore.DAL.Context
         public DbSet<Order> Orders { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<GameTranslate> GameTranslates { get; set; }
+
+        public DbSet<PlatformTypeTranslate> PlatformTypeTranslates { get; set; }
+
+        public DbSet<GenreTranslate> GenreTranslates { get; set; }
+
+        public DbSet<PublisherTranslate> PublisherTranslates { get; set; }
 
 
         public StoreDbContext(INorthwindFactory northwindFactory, IPasswordService passwordService)

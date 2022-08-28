@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.GameStore
 {
     [MongoCollection("orders")]
     [BsonIgnoreExtraElements]
@@ -47,7 +47,7 @@ namespace GameStore.DAL.Entities
 
         [NotMapped]
         public int ShipVia { get; set; }
-       
+
         public string ShipperCompanyName { get; set; }
 
         [NotMapped]

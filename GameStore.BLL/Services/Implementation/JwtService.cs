@@ -4,7 +4,7 @@ using GameStore.BLL.Models;
 using GameStore.BLL.Services.Abstract;
 using GameStore.Common.Extensions;
 using GameStore.Common.Services.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;

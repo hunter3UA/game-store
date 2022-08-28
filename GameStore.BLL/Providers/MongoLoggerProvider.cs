@@ -1,6 +1,6 @@
 ﻿using GameStore.BLL.Enums;
 using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using MongoDB.Bson;
 using Newtonsoft.Json;
 using System;

@@ -1,5 +1,5 @@
 ﻿using GameStore.DAL.Context;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System;

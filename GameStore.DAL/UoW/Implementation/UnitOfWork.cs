@@ -2,7 +2,11 @@
 using System.Threading.Tasks;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Context;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.Platforms;
+using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Publishers;
+using GameStore.DAL.Entities.GameStore;
 
 namespace GameStore.DAL.UoW.Abstract
 {
@@ -19,7 +23,11 @@ namespace GameStore.DAL.UoW.Abstract
             IGenericRepository<Publisher> publisherRepository,
             IGenericRepository<Order> orderRepository,
             IGenericRepository<OrderDetails> orderDetailsRepository,
-            IUserRepository userRepository)              
+            IUserRepository userRepository,
+            IGenericRepository<PlatformTypeTranslate> platformTypeTranslateRepository,
+            IGenericRepository<GenreTranslate> genreTranslateRepository,
+            IGenericRepository<GameTranslate> gameTranslateRepository,
+            IGenericRepository<PublisherTranslate> publisherTranslateRepository)
         {
             _dbContext = dbContext;
             GameRepository = gameRepository;
@@ -30,6 +38,10 @@ namespace GameStore.DAL.UoW.Abstract
             OrderRepository = orderRepository;
             OrderDetailsRepository = orderDetailsRepository;
             UserRepository = userRepository;
+            PlatformTypeTranslateRepository = platformTypeTranslateRepository;
+            GenreTranslateRepository = genreTranslateRepository;
+            GameTranslateRepository = gameTranslateRepository;
+            PublisherTranslateRepository = publisherTranslateRepository;
         }
 
         public IGenericRepository<Game> GameRepository { get; }
@@ -46,8 +58,16 @@ namespace GameStore.DAL.UoW.Abstract
 
         public IGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
-
         public IUserRepository UserRepository { get; }
+
+        public IGenericRepository<GameTranslate> GameTranslateRepository { get; }
+
+        public IGenericRepository<GenreTranslate> GenreTranslateRepository { get; }
+
+        public IGenericRepository<PlatformTypeTranslate> PlatformTypeTranslateRepository { get; }
+
+        public IGenericRepository<PublisherTranslate> PublisherTranslateRepository { get; }
+
 
         public void Dispose()
         {

@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.GameStore
 {
     [MongoCollection("logs")]
     public class Log

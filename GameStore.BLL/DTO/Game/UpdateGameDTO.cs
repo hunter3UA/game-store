@@ -37,5 +37,7 @@ namespace GameStore.BLL.DTO.Game
 
         public string QuantityPerUnit { get; set; }
 
+        public List<GameTranslateDTO> Translations { get; set; }
+
     }
 }

@@ -1,5 +1,8 @@
 ﻿using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.GameStore;
+using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.Repositories.Abstract;
 
 namespace GameStore.DAL.Context

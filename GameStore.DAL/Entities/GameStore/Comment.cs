@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using GameStore.DAL.Entities.Games;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GameStore.DAL.Entities
+namespace GameStore.DAL.Entities.GameStore
 {
     public class Comment : BaseEntity
     {

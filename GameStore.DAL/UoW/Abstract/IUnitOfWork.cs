@@ -1,5 +1,9 @@
 ﻿using System.Threading.Tasks;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
+using GameStore.DAL.Entities.GameStore;
+using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Platforms;
+using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.Repositories.Abstract;
 
 namespace GameStore.DAL.UoW.Abstract
@@ -20,6 +24,13 @@ namespace GameStore.DAL.UoW.Abstract
 
         IGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
+        IGenericRepository<GameTranslate> GameTranslateRepository { get; }
+
+        IGenericRepository<GenreTranslate> GenreTranslateRepository { get; }
+
+        IGenericRepository<PlatformTypeTranslate> PlatformTypeTranslateRepository { get; }
+
+        IGenericRepository<PublisherTranslate> PublisherTranslateRepository { get; }
 
         IUserRepository UserRepository { get; }
 

@@ -14,7 +14,7 @@ using GameStore.BLL.Helpers;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
 using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -47,6 +47,8 @@ namespace GameStore.BLL.Services.Implementation.Games
             Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
             Game initializedGame = await InitializeGameAsync(mappedGame, gameToAddDTO.GenresId, gameToAddDTO.PlatformsId, gameToAddDTO.Key);
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
+            var translates = _mapper.Map<List<GameTranslate>>(gameToAddDTO.Translations);
+            await _unitOfWork.GameTranslateRepository.AddRangeAsync(translates);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation("Game has been created");
@@ -116,7 +118,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             else if (gameById.TypeOfBase == TypeOfBase.Northwind)
             {
                 gameById.IsDeleted = true;
-                Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameById);           
+                Game addedGame = await _unitOfWork.GameRepository.AddAsync(gameById);
                 isGameRemoved = gameById.IsDeleted;
             }
 
@@ -143,7 +145,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 Game mappedGame = _mapper.Map<Game>(updateGameDTO);
                 Game initializedGame = await InitializeGameAsync(mappedGame, updateGameDTO.GenresId, updateGameDTO.PlatformsId, updateGameDTO.NewGameKey);
-                updatedGame = await _unitOfWork.GameRepository.UpdateAsync(initializedGame, g => g.Genres, p => p.PlatformTypes);       
+                updatedGame = await _unitOfWork.GameRepository.UpdateAsync(initializedGame, g => g.Genres, p => p.PlatformTypes);
             }
             else
             {
@@ -206,7 +208,7 @@ namespace GameStore.BLL.Services.Implementation.Games
 
         public async Task<Game> SetGameAsync(string gameKey)
         {
-            Game gameByKey = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey, g => g.Genres, g => g.PlatformTypes);
+            Game gameByKey = await _unitOfWork.GameRepository.GetAsync(g => g.Key == gameKey, g => g.Genres, g => g.PlatformTypes, g => g.Translations);
             gameByKey ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == gameKey);
 
             return gameByKey != null && !gameByKey.IsDeleted ? gameByKey : throw new KeyNotFoundException();

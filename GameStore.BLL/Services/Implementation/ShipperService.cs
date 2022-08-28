@@ -2,7 +2,7 @@
 using GameStore.BLL.DTO.Shipper;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
