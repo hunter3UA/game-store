@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Remove="Services\Abstract\IPasswordService.cs" />
+    <Compile Remove="Services\Implementation\Orders\OrderUpdateService.cs" />
     <Compile Remove="Services\Implementation\PasswordService.cs" />
   </ItemGroup>
 
@@ -21,6 +22,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging.File" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Logger\" />
   </ItemGroup>
 
 </Project>

@@ -1,34 +1,19 @@
 ﻿using GameStore.DAL.Attributes;
-using GameStore.DAL.Enums;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GameStore.DAL.Entities.GameStore
+namespace GameStore.DAL.Entities.Northwind
 {
     [MongoCollection("orders")]
     [BsonIgnoreExtraElements]
-    public class Order : BaseEntity
+    public class Order : NorthwindBaseEntity
     {
-        [Required]
         public string CustomerId { get; set; }
 
-        [Required]
+        [BsonElement("RequiredDate")]
         public DateTime OrderDate { get; set; }
 
-        [DefaultValue(null)]
-        public DateTime? Expiration { get; set; }
-
-        [Required, DefaultValue(OrderStatus.Opened)]
-        public OrderStatus Status { get; set; }
-
-        public IEnumerable<OrderDetails> OrderDetails { get; set; }
-
-        [DefaultValue(0)]
         public decimal? Freight { get; set; }
 
         public string ShipAddress { get; set; }
@@ -45,17 +30,13 @@ namespace GameStore.DAL.Entities.GameStore
 
         public string ShipRegion { get; set; }
 
-        [NotMapped]
         public int ShipVia { get; set; }
 
         public string ShipperCompanyName { get; set; }
 
-        [NotMapped]
         public int OrderID { get; set; }
 
-        public Order()
-        {
-            OrderDate = DateTime.UtcNow;
-        }
+        [IgnoreMongoUpdate]
+        public IEnumerable<OrderDetails> OrderDetails { get; set; }
     }
 }

@@ -1,19 +1,16 @@
 ﻿using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities.Games;
-using GameStore.DAL.Entities.GameStore;
-using GameStore.DAL.Entities.Genres;
-using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.Repositories.Abstract;
+using GameStore.DAL.Entities.Northwind;
 
 namespace GameStore.DAL.Context
 {
     public class NorthwindFactory : INorthwindFactory
     {
         public NorthwindFactory(
-            INorthwindGenericRepository<Game> products,
-            INorthwindGenericRepository<Genre> categories,
+            INorthwindGenericRepository<Product> products,
+            INorthwindGenericRepository<Category> categories,
             INorthwindGenericRepository<Order> orders,
-            INorthwindGenericRepository<Publisher> suppliers,
+            INorthwindGenericRepository<Supplier> suppliers,
             INorthwindGenericRepository<OrderDetails> orderDetails,
             INorthwindGenericRepository<Shipper> shippers,
             INorthwindLogRepository logs
@@ -28,13 +25,13 @@ namespace GameStore.DAL.Context
             LogRepository = logs;
         }
 
-        public INorthwindGenericRepository<Game> ProductRepository { get; }
+        public INorthwindGenericRepository<Product> ProductRepository { get; }
 
-        public INorthwindGenericRepository<Genre> CategoryRepository { get; }
+        public INorthwindGenericRepository<Category> CategoryRepository { get; }
 
         public INorthwindGenericRepository<Order> OrderRepository { get; }
 
-        public INorthwindGenericRepository<Publisher> SupplierRepository { get; }
+        public INorthwindGenericRepository<Supplier> SupplierRepository { get; }
 
         public INorthwindGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 

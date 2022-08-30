@@ -21,9 +21,9 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 
             foreach (var item in orderToPay.OrderDetails)
             {
-                item.Game = await unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                item.Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
-                if (item.Game == null)
+                var gameOfDetails = await unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+                var productOfDetails = item.Game == null ? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey) : null;
+                if (gameOfDetails == null && productOfDetails == null)
                 {
                     orderToPay.Status = OrderStatus.Canceled;
                     await unitOfWork.SaveAsync();

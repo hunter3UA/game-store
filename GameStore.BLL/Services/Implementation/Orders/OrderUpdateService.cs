@@ -72,81 +72,81 @@ namespace GameStore.BLL.Services.Implementation.Orders
         }
 
 
-        private async Task<bool> ReserveGamesAsync(List<OrderDetails> detailsOfOrder)
-        {
-            bool isCompletedReserving = true;
-            foreach (var item in detailsOfOrder)
-            {
-                Game gameToReserve = await _gameService.SetGameAsync(item.GameKey);
+    ////    private async Task<bool> ReserveGamesAsync(List<OrderDetails> detailsOfOrder)
+    ////    {
+    ////        bool isCompletedReserving = true;
+    ////        foreach (var item in detailsOfOrder)
+    ////        {
+    ////            Game gameToReserve = await _gameService.SetGameAsync(item.GameKey);
 
-                if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
-                {
-                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
-                    isCompletedReserving = false;
+    ////            if (gameToReserve == null || gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock == 0)
+    ////            {
+    ////                await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+    ////                isCompletedReserving = false;
 
-                    await _unitOfWork.SaveAsync();
-                }
-                else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
-                {
-                    item.Quantity = gameToReserve.UnitsInStock;
-                    gameToReserve.UnitsInStock = 0;
-                    item.Price = gameToReserve.Price;
-                    isCompletedReserving = false;
+    ////                await _unitOfWork.SaveAsync();
+    ////            }
+    ////            else if (gameToReserve.UnitsInStock < item.Quantity && gameToReserve.UnitsInStock != 0)
+    ////            {
+    ////                item.Quantity = gameToReserve.UnitsInStock;
+    ////                gameToReserve.UnitsInStock = 0;
+    ////                item.Price = gameToReserve.Price;
+    ////                isCompletedReserving = false;
 
-                    await _unitOfWork.SaveAsync();
-                }
-                else
-                {
-                    gameToReserve.UnitsInStock -= item.Quantity;
-                    item.Price = gameToReserve.Price;
+    ////                await _unitOfWork.SaveAsync();
+    ////            }
+    ////            else
+    ////            {
+    ////                gameToReserve.UnitsInStock -= item.Quantity;
+    ////                item.Price = gameToReserve.Price;
 
-                    if (gameToReserve.TypeOfBase == TypeOfBase.GameStore)
-                        await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
-                    else if (gameToReserve.TypeOfBase == TypeOfBase.Northwind)
-                        await _northwindDbContext.ProductRepository.UpdateAsync(gameToReserve);
+    ////                if (gameToReserve.TypeOfBase == TypeOfBase.GameStore)
+    ////                    await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
+    ////                else if (gameToReserve.TypeOfBase == TypeOfBase.Northwind)
+    ////                    await _northwindDbContext.ProductRepository.UpdateAsync(gameToReserve);
 
-                    _logger.LogInformation($"Game has been update{gameToReserve.Id}");
+    ////                _logger.LogInformation($"Game has been update{gameToReserve.Id}");
 
-                }
-            }
+    ////            }
+    ////        }
 
-            return isCompletedReserving;
-        }
+    ////        return isCompletedReserving;
+    ////    }
 
-        private async Task CancelReservedGamesAsync(List<OrderDetails> detailsToCancel)
-        {
-            foreach (var item in detailsToCancel)
-            {
-                Game gameOfItem = await _gameService.SetGameAsync(item.GameKey);
+    ////    private async Task CancelReservedGamesAsync(List<OrderDetails> detailsToCancel)
+    ////    {
+    ////        foreach (var item in detailsToCancel)
+    ////        {
+    ////            Game gameOfItem = await _gameService.SetGameAsync(item.GameKey);
 
-                if (gameOfItem == null)
-                {
-                    await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
-                }
-                else
-                {
-                    gameOfItem.UnitsInStock += item.Quantity;
-                    item.Price = null;
-                    if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
-                        await _northwindDbContext.ProductRepository.UpdateAsync(gameOfItem);
-                }
+    ////            if (gameOfItem == null)
+    ////            {
+    ////                await _unitOfWork.OrderDetailsRepository.RemoveAsync(od => od.Id == item.Id);
+    ////            }
+    ////            else
+    ////            {
+    ////                gameOfItem.UnitsInStock += item.Quantity;
+    ////                item.Price = null;
+    ////                if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
+    ////                    await _northwindDbContext.ProductRepository.UpdateAsync(gameOfItem);
+    ////            }
 
-                _logger.LogInformation($"OrderDetails with Id :{gameOfItem.Id} has been deleted");
-                await _mongoLogger.LogInformation<OrderDetails>(ActionType.Delete);
-            }
-        }
+    ////            _logger.LogInformation($"OrderDetails with Id :{gameOfItem.Id} has been deleted");
+    ////            await _mongoLogger.LogInformation<OrderDetails>(ActionType.Delete);
+    ////        }
+    ////    }
 
-        private async Task GetDetailsByOrderAsync(Order order)
-        {
-            foreach (var item in order.OrderDetails)
-            {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                item.Game = item.Game ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
-                if (item.Game == null)
-                    throw new KeyNotFoundException($"Games of order with id:{order.Id} not found");
-            }
-        }
-    }
+    ////    private async Task GetDetailsByOrderAsync(Order order)
+    ////    {
+    ////        foreach (var item in order.OrderDetails)
+    ////        {
+    ////            item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+    ////            item.Game = item.Game ?? await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
+    ////            if (item.Game == null)
+    ////                throw new KeyNotFoundException($"Games of order with id:{order.Id} not found");
+    ////        }
+    ////    }
+   }
 }
 /*
  Opened -> Opened  - 

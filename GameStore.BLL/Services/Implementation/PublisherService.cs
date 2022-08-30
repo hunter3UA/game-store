@@ -7,6 +7,7 @@ using GameStore.BLL.Enums;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
+using GameStore.DAL.Entities.Northwind;
 using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -46,17 +47,19 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<PublisherDTO>> GetListOfPublishersAsync()
         {
-            List<Publisher> publishersFromStore = await _unitOfWork.PublisherRepository.GetListAsync();
-            List<Publisher> publishersFromNorthwind = await _northwindDbContext.SupplierRepository.GetListAsync();
-            publishersFromStore.AddRange(publishersFromNorthwind);
+            List<Publisher> publishers = await _unitOfWork.PublisherRepository.GetListAsync();
+            List<Supplier> suppliers = await _northwindDbContext.SupplierRepository.GetListAsync();
+            var mappedSuppliers = _mapper.Map<List<Publisher>>(suppliers);
+            publishers.AddRange(mappedSuppliers);
 
-            return _mapper.Map<List<PublisherDTO>>(publishersFromStore);
+            return _mapper.Map<List<PublisherDTO>>(publishers);
         }
 
         public async Task<PublisherDTO> GetPublisherAsync(string name)
         {
             Publisher searchedPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == name);
-            searchedPublisher ??= await _northwindDbContext.SupplierRepository.GetAsync(p => p.CompanyName == name);
+            Supplier supplier = searchedPublisher == null ? await _northwindDbContext.SupplierRepository.GetAsync(p => p.CompanyName == name) : null;
+            searchedPublisher = searchedPublisher==null && supplier!=null ? _mapper.Map<Publisher>(supplier) : null;
 
             return searchedPublisher != null ? _mapper.Map<PublisherDTO>(searchedPublisher) : throw new KeyNotFoundException("Publisher not found");
         }

@@ -2,6 +2,7 @@
 using AutoFixture.AutoMoq;
 using AutoFixture.Community.AutoMapper;
 using AutoFixture.Xunit2;
+using GameStore.BLL.Extensions;
 using GameStore.BLL.Mapper;
 using MongoDB.Bson;
 
@@ -22,7 +23,7 @@ namespace GameStore.Tests.Attributes
             fixture.Customize(
              new CompositeCustomization(
                  new AutoMoqCustomization { ConfigureMembers = true, },
-                 new AutoMapperCustomization(x => x.AddProfile<AutoMapperConfig>())));
+                 new AutoMapperCustomization(x => x.AddCustomProfiles())));
 
             return fixture;
         }

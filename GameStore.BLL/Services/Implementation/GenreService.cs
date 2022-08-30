@@ -26,7 +26,6 @@ namespace GameStore.BLL.Services.Implementation
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-
             _mongoLogger = mongoLogger;
         }
 
@@ -35,8 +34,6 @@ namespace GameStore.BLL.Services.Implementation
             Genre mappedGenre = _mapper.Map<Genre>(addGenreDTO);
 
             Genre addedGenre = await _unitOfWork.GenreRepository.AddAsync(mappedGenre);
-            var translations = _mapper.Map<List<GenreTranslate>>(addGenreDTO.Translations);
-            await _unitOfWork.GenreTranslateRepository.AddRangeAsync(translations);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Genre with Id {addedGenre.Id} has been added");
@@ -54,7 +51,7 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
-            List<Genre> genresFromStore = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
+            List<Genre> genresFromStore = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres, g => g.Translations);
 
             return _mapper.Map<List<GenreDTO>>(genresFromStore);
         }

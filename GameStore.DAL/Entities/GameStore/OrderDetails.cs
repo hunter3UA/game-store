@@ -1,6 +1,4 @@
-﻿using GameStore.DAL.Attributes;
-using GameStore.DAL.Entities.Games;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using GameStore.DAL.Entities.Games;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -8,17 +6,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities.GameStore
 {
-    [MongoCollection("order-details")]
-    [BsonIgnoreExtraElements]
     public class OrderDetails : BaseEntity
     {
-        [Required, Column(name: "GameKey"), BsonIgnore]
+        [Required, Column(name: "GameKey")]
         public string GameKey { get; set; }
 
-        [NotMapped, IgnoreMongoUpdate]
+        [NotMapped]
         public Game Game { get; set; }
 
-        [Range(0.1, 10000), BsonElement("UnitPrice")]
+        [Range(0.1, 10000)]
         public decimal? Price { get; set; }
 
         [Required, Range(1, short.MaxValue)]
@@ -27,10 +23,10 @@ namespace GameStore.DAL.Entities.GameStore
         [Required, DefaultValue(0)]
         public double Discount { get; set; }
 
-        [Required, BsonElement("OrderID")]
+        [Required]
         public int OrderId { get; set; }
 
-        [ForeignKey(nameof(OrderId)), IgnoreMongoUpdate, BsonIgnore]
+        [ForeignKey(nameof(OrderId))]
         public Order Order { get; set; }
     }
 }

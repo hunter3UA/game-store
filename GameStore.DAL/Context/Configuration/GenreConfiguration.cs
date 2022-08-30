@@ -1,5 +1,6 @@
 ﻿using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Northwind;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -42,13 +43,28 @@ namespace GameStore.DAL.Context.Configuration
             };
 
             var categories = _northwindDbContext.CategoryRepository.GetListAsync().GetAwaiter().GetResult();
-            int id = 17;
+            List<Genre> genresFromNorthwind = new List<Genre>();
+            int id = genres.Count();
             for (int i = 0; i < categories.Count(); i++)
             {
-                categories[i].Id = id++;
+                var newGenre = CreateGenre(categories[i],++id);
             }
-            genres.AddRange(categories);
+
+            genres.AddRange(genresFromNorthwind);
             builder.HasData(genres);
+        }
+
+
+        private Genre CreateGenre(Category category,int id)
+        {
+            Genre newGenre = new Genre
+            {
+                Id = id,
+                Name = category.Name,
+                Description = category.Description,
+            };
+
+            return newGenre;
         }
     }
 }

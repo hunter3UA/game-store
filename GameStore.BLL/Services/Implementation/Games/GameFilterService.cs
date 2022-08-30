@@ -9,6 +9,7 @@ using GameStore.BLL.Services.Abstract.Games;
 using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities.Games;
 using GameStore.DAL.Entities.Genres;
+using GameStore.DAL.Entities.Northwind;
 using GameStore.DAL.UoW.Abstract;
 
 namespace GameStore.BLL.Services.Implementation.Games
@@ -24,10 +25,19 @@ namespace GameStore.BLL.Services.Implementation.Games
             _northwindDbContext = northwindDbContext;
         }
 
-        public async Task<List<Expression<Func<Game, bool>>>> GetFiltersForNorthwind(GameFilterDTO gameFilterDTO)
+        public async Task<List<Expression<Func<Product, bool>>>> GetFiltersForNorthwind(GameFilterDTO gameFilterDTO)
         {
-            List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
-            filters.AddRange(GetCommonFilters(gameFilterDTO));
+            List<Expression<Func<Product, bool>>> filters = new List<Expression<Func<Product, bool>>>();
+         //   filters.AddRange(GetCommonFilters(gameFilterDTO));
+
+            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
+                filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
+
+            if (gameFilterDTO.MinPrice != null)
+                filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
+
+            if (gameFilterDTO.MaxPrice != null)
+                filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
 
             if (gameFilterDTO.Genres != null)
             {
@@ -54,7 +64,16 @@ namespace GameStore.BLL.Services.Implementation.Games
         public async Task<List<Expression<Func<Game, bool>>>> GetFiltersForGameStore(GameFilterDTO gameFilterDTO)
         {
             List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
-            filters.AddRange(GetCommonFilters(gameFilterDTO));
+            //  filters.AddRange(GetCommonFilters(gameFilterDTO));
+
+            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
+                filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
+
+            if (gameFilterDTO.MinPrice != null)
+                filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
+
+            if (gameFilterDTO.MaxPrice != null)
+                filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
 
             if (gameFilterDTO.Genres != null)
             {
@@ -170,20 +189,20 @@ namespace GameStore.BLL.Services.Implementation.Games
             return filter;
         }
 
-        private List<Expression<Func<Game, bool>>> GetCommonFilters(GameFilterDTO gameFilterDTO)
-        {
-            List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
-            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
-                filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
+        //private List<Expression<Func<T, bool>>> GetCommonFilters<T>(GameFilterDTO gameFilterDTO)
+        //{
+        //    List<Expression<Func<T, bool>>> filters = new List<Expression<Func<T, bool>>>();
+        //    if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
+        //        filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
 
-            if (gameFilterDTO.MinPrice != null)
-                filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
+        //    if (gameFilterDTO.MinPrice != null)
+        //        filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
 
-            if (gameFilterDTO.MaxPrice != null)
-                filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
+        //    if (gameFilterDTO.MaxPrice != null)
+        //        filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
 
-            return filters;
-        }
+        //    return filters;
+        //}
 
 
     }

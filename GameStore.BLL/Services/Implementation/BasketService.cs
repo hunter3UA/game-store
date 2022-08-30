@@ -87,7 +87,8 @@ namespace GameStore.BLL.Services.Implementation
             for (int i = 0; i < orderByCustomer.OrderDetails.Count(); i++)
             {
                 var gameOfDetais = await _unitOfWork.GameRepository.GetAsync(g => g.Key == details[i].GameKey);
-                gameOfDetais ??= await _northwindFactory.ProductRepository.GetAsync(g => g.Key == details[i].GameKey);
+                var gameOfDetailsFromNorthwind = gameOfDetais == null ? await _northwindFactory.ProductRepository.GetAsync(g => g.Key == details[i].GameKey) : null;
+                gameOfDetais ??= _mapper.Map<Game>(gameOfDetailsFromNorthwind);
                 details[i].Game = gameOfDetais;
                 details[i].Price = gameOfDetais.Price;
                 if (orderByCustomer.Status != OrderStatus.Processing && details[i].Game != null && details[i].Game.IsDeleted)
@@ -139,18 +140,13 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<OrderDetailsDTO> ChangeQuantityOfDetailsAsync(ChangeQuantityDTO changeQuantityDTO)
         {
             OrderDetails orderDetailsToUpdate = await _unitOfWork.OrderDetailsRepository.GetAsync(o => o.Id == changeQuantityDTO.OrderDetailsId);
-            Game gameByDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-            gameByDetails ??= await _northwindFactory.ProductRepository.GetAsync(g => g.Key == orderDetailsToUpdate.GameKey);
-
+            Game gameByDetails = await _gameService.SetGameAsync(orderDetailsToUpdate.GameKey);
             if (orderDetailsToUpdate == null)
                 throw new KeyNotFoundException("Order details not found");
 
             orderDetailsToUpdate.Quantity = (short)changeQuantityDTO.Quantity;
             if (orderDetailsToUpdate.Quantity > gameByDetails.UnitsInStock || orderDetailsToUpdate.Quantity < 0)
-                throw new ArgumentException("Quantity is invalid");
-
-            if (gameByDetails.TypeOfBase == TypeOfBase.Northwind)
-                await _northwindFactory.ProductRepository.UpdateAsync(gameByDetails);
+                throw new ArgumentException("Quantity is invalid");    
 
             await _unitOfWork.SaveAsync();
             return _mapper.Map<OrderDetailsDTO>(orderDetailsToUpdate);

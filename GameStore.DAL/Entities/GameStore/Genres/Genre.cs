@@ -16,7 +16,7 @@ namespace GameStore.DAL.Entities.Genres
     [BsonIgnoreExtraElements]
     public class Genre : BaseEntity
     {
-        [Required, MaxLength(150), BsonElement("CategoryName")]
+        [Required, MaxLength(150)]
         public string Name { get; set; }
 
         public IEnumerable<Game> Games { get; set; }
@@ -29,7 +29,7 @@ namespace GameStore.DAL.Entities.Genres
         [MaxLength(200)]
         public string Description { get; set; }
 
-        [BsonElement("CategoryID"), DefaultValue(null)]
+        [DefaultValue(null)]
         public int? CategoryId { get; set; }
 
         public IEnumerable<GenreTranslate> Translations { get; set; }

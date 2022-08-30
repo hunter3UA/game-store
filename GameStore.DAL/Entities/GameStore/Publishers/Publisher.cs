@@ -5,14 +5,11 @@ using GameStore.DAL.Attributes;
 using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameStore.DAL.Entities.Publishers
 {
     [Index("CompanyName", IsUnique = true)]
-    [MongoCollection("suppliers")]
-    [BsonIgnoreExtraElements]
     public class Publisher : BaseEntity
     {
         [NotMapped]
@@ -45,7 +42,7 @@ namespace GameStore.DAL.Entities.Publishers
 
         public string PostalCode { get; set; }
 
-        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind), IgnoreMongoUpdate]
+        [NotMapped, BsonDefaultValue(TypeOfBase.Northwind)]
         public TypeOfBase TypeOfBase { get; set; }
 
         public IEnumerable<PublisherTranslate> Translations { get; set; } 

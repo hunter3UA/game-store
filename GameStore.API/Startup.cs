@@ -33,6 +33,7 @@ using GameStore.Common.Extensions;
 using GameStore.BLL.Models;
 using GameStore.BLL.Services.Implementation.Orders;
 using GameStore.API.Permissions.Publisher;
+using GameStore.BLL.Extensions;
 
 namespace GameStore.API
 {
@@ -57,8 +58,7 @@ namespace GameStore.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-       
-         
+             
             app.UseSerilogRequestLogging(options =>
             {
                 options.MessageTemplate =
@@ -167,11 +167,14 @@ namespace GameStore.API
             });
 
             services.AddSingleton(Log.Logger);
-            services.AddAutoMapper(typeof(AutoMapperConfig));
+            services.AddAutoMapper(configuration =>
+            {
+                configuration.AddCustomProfiles();
+            });
 
             services.AddScoped<IMongoLoggerProvider, MongoLoggerProvider>();
 
-          //  services.AddScoped<IPublisherPermission, PublisherPermission>();
+            services.AddScoped<IPublisherPermission, PublisherPermission>();
         
         }
 
@@ -185,7 +188,7 @@ namespace GameStore.API
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICustomerHelper, CustomerHelper>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddHostedService<OrderExpirationService>();
+          //  services.AddHostedService<OrderExpirationService>();
             services.AddScoped<IPaymentContext, PaymentContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameFilterService, GameFilterService>();

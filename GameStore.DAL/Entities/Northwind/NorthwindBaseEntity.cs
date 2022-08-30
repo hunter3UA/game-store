@@ -1,14 +1,11 @@
-﻿namespace GameStore.DAL.Entities.Northwind
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace GameStore.DAL.Entities.Northwind
 {
     public abstract class NorthwindBaseEntity
     {
-        //[NotMapped, BsonId, BsonElement("_id")]
-        //public ObjectId ObjectId { get; set; } = ObjectId.GenerateNewId();
-
-        //[Key, IgnoreMongoUpdate]
-        //public int Id { get; set; }
-
-        //[Required, DefaultValue(false), IgnoreMongoUpdate]
-        //public bool IsDeleted { get; set; }
+        [BsonId, BsonElement("_id")]
+        public ObjectId ObjectId { get; set; } = ObjectId.GenerateNewId();
     }
 }

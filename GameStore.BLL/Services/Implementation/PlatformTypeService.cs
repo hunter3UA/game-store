@@ -45,14 +45,14 @@ namespace GameStore.BLL.Services.Implementation
 
         public async Task<List<PlatformTypeDTO>> GetListOfPlatformsAsync()
         {
-            var allPlatforms = await _unitOfWork.PlatformTypeRepository.GetListAsync();
+            var allPlatforms = await _unitOfWork.PlatformTypeRepository.GetListAsync(t => t.Translations);
 
             return _mapper.Map<List<PlatformTypeDTO>>(allPlatforms);
         }
 
         public async Task<PlatformTypeDTO> GetPlatformAsync(int id)
         {
-            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id,p=>p.Translations);
+            var searchedPlatform = await _unitOfWork.PlatformTypeRepository.GetAsync(p => p.Id == id, p => p.Translations);
 
             return searchedPlatform != null ? _mapper.Map<PlatformTypeDTO>(searchedPlatform) : throw new KeyNotFoundException("Platform not found");
         }

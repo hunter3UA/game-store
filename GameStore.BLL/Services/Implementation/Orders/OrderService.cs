@@ -115,8 +115,7 @@ namespace GameStore.BLL.Services.Implementation.Orders
 
         public async Task<List<OrderDTO>> GetStoreOrdersAsync(OrderFilterDTO orderFilterDTO)
         {
-            var filter = BuildFilter(orderFilterDTO);
-            filter = filter.AndAlso(o => o.Status != OrderStatus.Succeeded);
+            Expression<Func<Order,bool>> filter = o=>o.Status!=OrderStatus.Succeeded && o.OrderDate>orderFilterDTO.From && o.OrderDate <= orderFilterDTO.To;  
             var storeOrders = await _unitOfWork.OrderRepository.GetRangeAsync(filter, g => g.OrderDetails);
 
             return _mapper.Map<List<OrderDTO>>(storeOrders);
@@ -183,11 +182,11 @@ namespace GameStore.BLL.Services.Implementation.Orders
             return isDeletedOrderDetails;
         }
 
-        private async Task<List<Order>> FilterOrdersAsync(OrderFilterDTO orderHistoryDTO)
+        private async Task<List<DAL.Entities.GameStore.Order>> FilterOrdersAsync(OrderFilterDTO orderHistoryDTO)
         {
-            var filter = BuildFilter(orderHistoryDTO);
-            List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(filter, o => o.OrderDetails);
-            List<Order> ordersFromNorthwind = await _northwindDbContext.OrderRepository.GetRangeAsync(filter);
+
+            List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(o=>o.OrderDate>=orderHistoryDTO.From && o.OrderDate<=orderHistoryDTO.To, o => o.OrderDetails);
+            List<DAL.Entities.Northwind.Order> ordersFromNorthwind = await _northwindDbContext.OrderRepository.GetRangeAsync(o => o.OrderDate >= orderHistoryDTO.From && o.OrderDate <= orderHistoryDTO.To);
 
             foreach (var order in ordersFromStore)
             {
@@ -205,32 +204,15 @@ namespace GameStore.BLL.Services.Implementation.Orders
                 foreach (var item in ordersFromNorthwind)
                 {
                     var detailsByOrderId = await _northwindDbContext.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == item.OrderID);
+
                     var shipper = await _northwindDbContext.ShipperRepository.GetAsync(s => s.ShipperID == item.ShipVia);
                     item.ShipperCompanyName = shipper.CompanyName;
                     item.OrderDetails = detailsByOrderId;
                 }
             }
-            ordersFromStore.AddRange(ordersFromNorthwind);
+            var mappedOrders = _mapper.Map<List<Order>>(ordersFromNorthwind);
+            ordersFromStore.AddRange(mappedOrders);
             return ordersFromStore;
-        }
-
-        private Expression<Func<Order, bool>> BuildFilter(OrderFilterDTO orderHistoryDTO)
-        {
-            var type = typeof(Order);
-            var parameter = Expression.Parameter(type, "o");
-            BinaryExpression expression = null;
-            foreach (var property in orderHistoryDTO.GetType().GetProperties())
-            {
-                var value = Expression.Constant(property.GetValue(orderHistoryDTO));
-                if (value.Value != null)
-                {
-                    var operation = property.Name == "From" ? ExpressionType.GreaterThanOrEqual : ExpressionType.LessThanOrEqual;
-                    var newBinary = Expression.MakeBinary(operation, Expression.Property(parameter, type.GetProperty("OrderDate")), value);
-
-                    expression = expression == null ? newBinary : Expression.MakeBinary(ExpressionType.AndAlso, expression, newBinary);
-                }
-            }
-            return expression != null ? Expression.Lambda<Func<Order, bool>>(expression, parameter) : null;
         }
 
         private async Task<bool> ReserveGamesAsync(List<OrderDetails> detailsOfOrder)
@@ -264,8 +246,11 @@ namespace GameStore.BLL.Services.Implementation.Orders
                     if (gameToReserve.TypeOfBase == TypeOfBase.GameStore)
                         await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
                     else if (gameToReserve.TypeOfBase == TypeOfBase.Northwind)
-                        await _northwindDbContext.ProductRepository.UpdateAsync(gameToReserve);
-
+                    {
+                        var reservedProduct = _mapper.Map<DAL.Entities.Northwind.Product>(gameToReserve);
+                           await _northwindDbContext.ProductRepository.UpdateAsync(reservedProduct);
+                    }
+                     
                     _logger.LogInformation($"Game has been update{gameToReserve.Id}");
 
                 }
@@ -289,7 +274,11 @@ namespace GameStore.BLL.Services.Implementation.Orders
                     gameOfItem.UnitsInStock += item.Quantity;
                     item.Price = null;
                     if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
-                        await _northwindDbContext.ProductRepository.UpdateAsync(gameOfItem);
+                    {
+                        var productOfItem = _mapper.Map<DAL.Entities.Northwind.Product>(gameOfItem);
+                        await _northwindDbContext.ProductRepository.UpdateAsync(productOfItem);
+                    }
+                        
                 }
 
                 _logger.LogInformation($"OrderDetails with Id :{gameOfItem.Id} has been deleted");
@@ -301,11 +290,7 @@ namespace GameStore.BLL.Services.Implementation.Orders
         {
             foreach (var item in order.OrderDetails)
             {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                item.Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
-                
-                if (item.Game == null)
-                    throw new KeyNotFoundException($"Games of order with id:{order.Id} not found");
+                item.Game = await _gameService.SetGameAsync(item.GameKey);
 
                 if (item.Price == null)
                     item.Price = item.Game.Price;

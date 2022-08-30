@@ -1,5 +1,6 @@
 ﻿using GameStore.DAL.Attributes;
 using GameStore.DAL.Entities.GameStore;
+using GameStore.DAL.Entities.Northwind;
 using GameStore.DAL.Repositories.Abstract;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace GameStore.DAL.Repositories.Implementation
 {
-    public class NorthwindGenericRepository<TDocument> : INorthwindGenericRepository<TDocument> where TDocument : BaseEntity
+    public class NorthwindGenericRepository<TDocument> : INorthwindGenericRepository<TDocument> where TDocument : NorthwindBaseEntity
     {
         private readonly IMongoDatabase _db;
         private readonly IMongoCollection<TDocument> _collection;
@@ -43,7 +44,6 @@ namespace GameStore.DAL.Repositories.Implementation
 
         public async Task<List<TDocument>> GetListAsync()
         {
-
             var result = await _dbSet.ToListAsync();
 
             return result;

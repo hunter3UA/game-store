@@ -1,6 +1,5 @@
-﻿using GameStore.DAL.Entities.Games;
-using GameStore.DAL.Entities.GameStore;
-using GameStore.DAL.Entities.Genres;
+﻿
+using GameStore.DAL.Entities.Northwind;
 using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.Repositories.Abstract;
 
@@ -8,13 +7,13 @@ namespace GameStore.DAL.Context.Abstract
 {
     public interface INorthwindFactory
     {
-        INorthwindGenericRepository<Game> ProductRepository { get; }
+        INorthwindGenericRepository<Product> ProductRepository { get; }
 
-        INorthwindGenericRepository<Genre> CategoryRepository { get; }
+        INorthwindGenericRepository<Category> CategoryRepository { get; }
 
         INorthwindGenericRepository<Order> OrderRepository { get; }
 
-        INorthwindGenericRepository<Publisher> SupplierRepository { get; }
+        INorthwindGenericRepository<Supplier> SupplierRepository { get; }
 
         INorthwindGenericRepository<OrderDetails> OrderDetailsRepository { get; }
 
