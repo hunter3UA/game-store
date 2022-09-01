@@ -9,7 +9,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace GameStore.DAL.Entities.Publishers
 {
-    [Index("CompanyName", IsUnique = true)]
+    [Index(nameof(CompanyName), IsUnique = true)]
     public class Publisher : BaseEntity
     {
         [NotMapped]

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Enums;
+using GameStore.BLL.Extensions;
 using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.DAL.Context.Abstract;
@@ -84,14 +85,14 @@ namespace GameStore.BLL.Services.Implementation
         {
             Genre mappedGenre = _mapper.Map<Genre>(updateGenreDTO);
             Genre oldGenre = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == updateGenreDTO.Id);
-            var oldVersion = oldGenre.ToBsonDocument();
+            var oldVersion = oldGenre.SerializeToBsonDocument();
             Genre updatedGenre = await _unitOfWork.GenreRepository.UpdateAsync(mappedGenre);
             await _unitOfWork.SaveAsync();
 
             if (updatedGenre != null)
             {
                 _logger.LogInformation($"Genre with id {updatedGenre.Id} has been updated");
-                await _mongoLogger.LogInformation<Genre>(ActionType.Update, oldVersion, updatedGenre.ToBsonDocument());
+                await _mongoLogger.LogInformation<Genre>(ActionType.Update, oldVersion, updatedGenre.SerializeToBsonDocument());
             }
             else
                 throw new ArgumentException("Genre can not be updated");

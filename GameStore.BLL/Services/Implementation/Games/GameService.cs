@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
@@ -48,9 +49,11 @@ namespace GameStore.BLL.Services.Implementation.Games
         {
             Game mappedGame = _mapper.Map<Game>(gameToAddDTO);
             Game initializedGame = await InitializeGameAsync(mappedGame, gameToAddDTO.GenresId, gameToAddDTO.PlatformsId, gameToAddDTO.Key);
+            bool keyExist = await _unitOfWork.GameRepository.AnyAsync(g => g.Key == initializedGame.Key);
+            if (keyExist)
+                throw new ValidationException("Game with this key already,please exsit enter another key");
+
             Game addedGame = await _unitOfWork.GameRepository.AddAsync(initializedGame);
-            var translates = _mapper.Map<List<GameTranslate>>(gameToAddDTO.Translations);
-            await _unitOfWork.GameTranslateRepository.AddRangeAsync(translates);
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation("Game has been created");
@@ -150,6 +153,10 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 Game mappedGame = _mapper.Map<Game>(updateGameDTO);
                 Game initializedGame = await InitializeGameAsync(mappedGame, updateGameDTO.GenresId, updateGameDTO.PlatformsId, updateGameDTO.NewGameKey);
+                bool keyExist = await _unitOfWork.GameRepository.AnyAsync(g => g.Key == initializedGame.Key);
+                if(keyExist)
+                    throw new ValidationException("Game with this key already,please exsit enter another key");
+
                 updatedGame = await _unitOfWork.GameRepository.UpdateAsync(initializedGame, g => g.Genres, p => p.PlatformTypes);
             }
             else
@@ -231,7 +238,7 @@ namespace GameStore.BLL.Services.Implementation.Games
             {
                 var publisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == searchedGame.PublisherName);
                 var supplier = publisher == null ? await _northwindDbContext.SupplierRepository.GetAsync(p => p.SupplierID == searchedGame.SupplierID || p.CompanyName == searchedGame.PublisherName) : null;
-                
+
                 searchedGame.Publisher = publisher != null ? publisher : _mapper.Map<Publisher>(supplier);
             }
 

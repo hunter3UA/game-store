@@ -85,6 +85,12 @@ namespace GameStore.DAL.Repositories.Implementation
         }
 
 
+
+        public async Task<bool> AnyAsync(Expression<Func<TEntity,bool>> expression)
+        {
+            return await _dbSet.AnyAsync(expression);
+        }
+
         public async Task<bool> RemoveAsync(Expression<Func<TEntity, bool>> predicate)
         {
             var entityToRemove = await _dbSet.FirstOrDefaultAsync(predicate);

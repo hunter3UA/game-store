@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using GameStore.API.Extensions;
+using GameStore.BLL.Enums;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Http;
 
@@ -25,7 +26,7 @@ namespace GameStore.API.Helpers
             {               
                 var accessToken = context.GetAuthToken();
                 var decodedToken = _jwtService.ReadJwtToken(accessToken);
-                customerId = decodedToken.Claims.First(c=>c.Type==ClaimTypes.Sid).Value;
+                customerId = decodedToken.Claims.First(c=>c.Type==CustomClaimTypes.Sid)?.Value;
                 return customerId;
             }
 

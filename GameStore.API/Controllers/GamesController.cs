@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Auth;
@@ -6,6 +7,7 @@ using GameStore.API.Extensions;
 using GameStore.API.Permissions.Publisher;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
+using GameStore.BLL.Exceptions;
 using GameStore.BLL.Services.Abstract.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -13,16 +13,12 @@ namespace GameStore.DAL.Entities.Games
         [ForeignKey(nameof(GameId))]
         public Game Game { get; set; }
 
-        [Required]
         public string Name { get; set; }
 
-        [Required]
         public string PublisherName { get; set; }
 
-        [Required]
         public string Description { get; set; }
 
-        [Required]
         public string QuantityPerUnit { get; set; }
 
         [Required]

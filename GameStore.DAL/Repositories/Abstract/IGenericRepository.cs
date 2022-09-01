@@ -11,6 +11,8 @@ namespace GameStore.DAL.Repositories.Abstract
 
         Task AddRangeAsync(IEnumerable<TEntity> entities);
 
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression);
+
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
 
         Task<List<TEntity>> GetListAsync(params Expression<Func<TEntity, object>>[] includeProperties);

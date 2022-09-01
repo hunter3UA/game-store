@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using GameStore.API.Static;
@@ -38,11 +38,11 @@ namespace GameStore.API.Middleware
 
         }
 
-        private async Task HandleException(Exception error,HttpContext context ,bool isDevelopment)
-        {      
+        private async Task HandleException(Exception error, HttpContext context, bool isDevelopment)
+        {
             context.Response.ContentType = Constants.JsonContentType;
             context.Response.StatusCode = GetCode(error);
-            var responseBody = GetResponseBody(error,isDevelopment,context.Response.StatusCode);
+            var responseBody = GetResponseBody(error, isDevelopment, context.Response.StatusCode);
 
             await context.Response.WriteAsync(responseBody);
         }
@@ -52,9 +52,11 @@ namespace GameStore.API.Middleware
             switch (error)
             {
                 case KeyNotFoundException e:
-                    return (int)HttpStatusCode.NotFound;                 
+                    return (int)HttpStatusCode.NotFound;
                 case DbUpdateException e:
                     return (int)HttpStatusCode.BadRequest;
+                case ValidationException e:
+                    return (int)HttpStatusCode.UnprocessableEntity;
                 default:
                     return (int)HttpStatusCode.InternalServerError;
             }
@@ -69,7 +71,7 @@ namespace GameStore.API.Middleware
                 errorMessage = "Something wrong Happened";
             else
                 errorMessage = ex.Message;
-            
+
             errorMessage = JsonConvert.SerializeObject(new { error = errorMessage });
 
             return errorMessage;

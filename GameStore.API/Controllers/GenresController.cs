@@ -47,7 +47,7 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        [Authorize(Roles =ApiRoles.ManagerRole)]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateGenreDTO updateGenreDTO)
         {
             var updatedGenre = await _genreService.UpdateGenreAsync(updateGenreDTO);
@@ -57,7 +57,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{id}")]
-        [Authorize(Roles =ApiRoles.ManagerRole)]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> RemoveAsync([FromRoute] int id)
         {
             await _genreService.RemoveGenreAsync(id);
