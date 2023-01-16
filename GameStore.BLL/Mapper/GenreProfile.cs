@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Genre;
 using GameStore.DAL.Entities.Genres;
-using GameStore.DAL.Entities.Northwind;
 
 namespace GameStore.BLL.Mapper
 {
@@ -12,7 +11,6 @@ namespace GameStore.BLL.Mapper
             CreateMap<AddGenreDTO, Genre>();
             CreateMap<Genre, GenreDTO>().ReverseMap();
             CreateMap<UpdateGenreDTO, Genre>();
-            CreateMap<Category, Genre>().ReverseMap();
         }
     }
 }

@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using GameStore.BLL.DTO.Auth;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enums;
-using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Abstract.Games;
-using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities.Games;
 using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
@@ -23,18 +20,14 @@ namespace GameStore.BLL.Services.Implementation
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindFactory _northwindFactory;
         private readonly IGameService _gameService;
         private readonly ILogger<BasketService> _logger;
-        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public BasketService(IGameService gameService, IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public BasketService(IGameService gameService, IMapper mapper, IUnitOfWork unitOfWork, ILogger<BasketService> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _northwindFactory = northwindDbContext;
-            _mongoLogger = mongoLogger;
             _gameService = gameService;
         }
 
@@ -68,7 +61,6 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedOrderDetails)
             {
                 _logger.LogInformation($"Order details with id: {id} has been deleted");
-                await _mongoLogger.LogInformation<OrderDetails>(ActionType.Delete);
             }
             else
                 throw new ArgumentException("Order has not been deleted");
@@ -87,8 +79,6 @@ namespace GameStore.BLL.Services.Implementation
             for (int i = 0; i < orderByCustomer.OrderDetails.Count(); i++)
             {
                 var gameOfDetais = await _unitOfWork.GameRepository.GetAsync(g => g.Key == details[i].GameKey);
-                var gameOfDetailsFromNorthwind = gameOfDetais == null ? await _northwindFactory.ProductRepository.GetAsync(g => g.Key == details[i].GameKey) : null;
-                gameOfDetais ??= _mapper.Map<Game>(gameOfDetailsFromNorthwind);
                 details[i].Game = gameOfDetais;
                 details[i].Price = gameOfDetais.Price;
                 if (orderByCustomer.Status != OrderStatus.Processing && details[i].Game != null && details[i].Game.IsDeleted)
@@ -168,7 +158,6 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Order with id: {addedOrder.Id} has added");
-            await _mongoLogger.LogInformation<Order>(ActionType.Create);
 
             return addedOrder;
         }
@@ -189,7 +178,6 @@ namespace GameStore.BLL.Services.Implementation
             if (addedOrderDetails != null)
             {
                 _logger.LogInformation($"OrderDetails with id: {addedOrderDetails.Id} has added");
-                await _mongoLogger.LogInformation<OrderDetails>(ActionType.Create);
             }
             else
                 throw new ArgumentException("Order details can not be created");

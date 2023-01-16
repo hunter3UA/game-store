@@ -1,9 +1,9 @@
 ﻿using GameStore.API.Helpers;
 using GameStore.API.Permissions.Publisher;
 using GameStore.API.Static;
+using GameStore.BLL.BackgroundServices;
 using GameStore.BLL.Extensions;
 using GameStore.BLL.Models;
-using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Abstract.Games;
 using GameStore.BLL.Services.Implementation;
@@ -12,7 +12,6 @@ using GameStore.BLL.Services.Implementation.Orders;
 using GameStore.Common.Extensions;
 using GameStore.Common.Services.Abstract;
 using GameStore.DAL.Context;
-using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Repositories.Abstract;
 using GameStore.DAL.Repositories.Implementation;
 using GameStore.DAL.UoW.Abstract;
@@ -22,7 +21,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MongoDB.Driver;
 using Serilog;
 using System;
 
@@ -32,12 +30,8 @@ namespace GameStore.API.Extensions
     {
         public static void AddDbServices(this IServiceCollection services, IConfiguration config)
         {
-            services.AddScoped<StoreDbContext>();
-            services.AddSingleton<IMongoClient, MongoClient>(m => new MongoClient(config.GetConnectionString("NorthwindDb")));
-            services.AddScoped<INorthwindFactory, NorthwindFactory>();
-            services.AddScoped(typeof(INorthwindGenericRepository<>), typeof(NorthwindGenericRepository<>));
+            services.AddScoped<StoreDbContext>();         
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped<INorthwindLogRepository, NorthwindLogRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
@@ -52,7 +46,7 @@ namespace GameStore.API.Extensions
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICustomerHelper, CustomerHelper>();
             services.AddScoped<IOrderService, OrderService>();
-            //  services.AddHostedService<OrderExpirationService>();
+            services.AddHostedService<OrderExpirationService>();
             services.AddScoped<IPaymentContext, PaymentContext>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IGameFilterService, GameFilterService>();
@@ -153,7 +147,6 @@ namespace GameStore.API.Extensions
                 configuration.AddCustomProfiles();
             });
 
-            services.AddScoped<IMongoLoggerProvider, MongoLoggerProvider>();
             services.AddScoped<IPublisherPermission, PublisherPermission>();
         }
     }

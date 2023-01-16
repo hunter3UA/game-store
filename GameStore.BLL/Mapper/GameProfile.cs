@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using GameStore.BLL.DTO.Game;
 using GameStore.DAL.Entities.Games;
-using GameStore.DAL.Entities.Northwind;
 using System;
 
 namespace GameStore.BLL.Mapper
@@ -19,7 +18,7 @@ namespace GameStore.BLL.Mapper
                 .ForMember(m => m.PublishedAt, mapper => mapper.MapFrom(p => DateTime.Parse(p.PublishedAt)))
                 .ForMember(m => m.Key, mapper => mapper.MapFrom(g => g.NewGameKey));
             CreateMap<UpdateGameDTO, AddGameDTO>().ForMember(m => m.Key, mapper => mapper.MapFrom(m => m.NewGameKey));
-            CreateMap<Product, Game>().ReverseMap();
+
         }
     }
 }

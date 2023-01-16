@@ -7,11 +7,8 @@ using AutoMapper;
 using GameStore.BLL.DTO.Order;
 using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enums;
-using GameStore.BLL.Extensions;
-using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Abstract.Games;
-using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities.Games;
 using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
@@ -25,19 +22,15 @@ namespace GameStore.BLL.Services.Implementation.Orders
     public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindFactory _northwindDbContext;
         private readonly IMapper _mapper;
         private readonly ILogger<OrderService> _logger;
         private readonly IGameService _gameService;
-        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public OrderService(IGameService gameService, IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext, IMapper mapper, ILogger<OrderService> logger, IMongoLoggerProvider mongoLogger)
+        public OrderService(IGameService gameService, IUnitOfWork unitOfWork, IMapper mapper, ILogger<OrderService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-            _northwindDbContext = northwindDbContext;
-            _mongoLogger = mongoLogger;
             _gameService = gameService;
         }
 
@@ -108,8 +101,7 @@ namespace GameStore.BLL.Services.Implementation.Orders
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Order with id {canceledOrder.Id} has been canceled");
-            await _mongoLogger.LogInformation<Order>(ActionType.Update, oldVersion, canceledOrder.ToBsonDocument());
-
+       
             return true;
         }
 
@@ -132,8 +124,6 @@ namespace GameStore.BLL.Services.Implementation.Orders
             if (updateOrderDTO == null)
                 throw new ArgumentException();
 
-            Order oldOrder = await _unitOfWork.OrderRepository.GetAsync(o => o.Id == updateOrderDTO.Id);
-            var oldVersion = oldOrder.ToBsonDocument();
             Order mappedOrder = _mapper.Map<Order>(updateOrderDTO);
 
             if (updateOrderDTO.OrderDetails != null)
@@ -143,8 +133,7 @@ namespace GameStore.BLL.Services.Implementation.Orders
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Order with id :{updatedOrder.Id} has been updated");
-            await _mongoLogger.LogInformation<Order>(ActionType.Update, oldVersion, updatedOrder.ToBsonDocument());
-
+          
             return _mapper.Map<OrderDTO>(updatedOrder);
         }
 
@@ -174,7 +163,6 @@ namespace GameStore.BLL.Services.Implementation.Orders
             if (isDeletedOrderDetails)
             {
                 _logger.LogInformation($"Order details with id: {id} has been deleted");
-                await _mongoLogger.LogInformation<OrderDetails>(ActionType.Delete);
             }
             else
                 throw new ArgumentException("Order has not been deleted");
@@ -186,8 +174,7 @@ namespace GameStore.BLL.Services.Implementation.Orders
         {
 
             List<Order> ordersFromStore = await _unitOfWork.OrderRepository.GetRangeAsync(o=>o.OrderDate>=orderHistoryDTO.From && o.OrderDate<=orderHistoryDTO.To, o => o.OrderDetails);
-            List<DAL.Entities.Northwind.Order> ordersFromNorthwind = await _northwindDbContext.OrderRepository.GetRangeAsync(o => o.OrderDate >= orderHistoryDTO.From && o.OrderDate <= orderHistoryDTO.To);
-
+            
             foreach (var order in ordersFromStore)
             {
                 if (order.Status == OrderStatus.Opened || order.Status == OrderStatus.Canceled)
@@ -199,19 +186,6 @@ namespace GameStore.BLL.Services.Implementation.Orders
                 }
             }
 
-            if (ordersFromNorthwind != null)
-            {
-                foreach (var item in ordersFromNorthwind)
-                {
-                    var detailsByOrderId = await _northwindDbContext.OrderDetailsRepository.GetRangeAsync(od => od.OrderId == item.OrderID);
-
-                    var shipper = await _northwindDbContext.ShipperRepository.GetAsync(s => s.ShipperID == item.ShipVia);
-                    item.ShipperCompanyName = shipper.CompanyName;
-                    item.OrderDetails = detailsByOrderId;
-                }
-            }
-            var mappedOrders = _mapper.Map<List<Order>>(ordersFromNorthwind);
-            ordersFromStore.AddRange(mappedOrders);
             return ordersFromStore;
         }
 
@@ -243,13 +217,7 @@ namespace GameStore.BLL.Services.Implementation.Orders
                     gameToReserve.UnitsInStock -= item.Quantity;
                     item.Price = gameToReserve.Price;
 
-                    if (gameToReserve.TypeOfBase == TypeOfBase.GameStore)
-                        await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
-                    else if (gameToReserve.TypeOfBase == TypeOfBase.Northwind)
-                    {
-                        var reservedProduct = _mapper.Map<DAL.Entities.Northwind.Product>(gameToReserve);
-                           await _northwindDbContext.ProductRepository.UpdateAsync(reservedProduct);
-                    }
+                    await _unitOfWork.GameRepository.UpdateAsync(gameToReserve);
                      
                     _logger.LogInformation($"Game has been update{gameToReserve.Id}");
 
@@ -272,17 +240,10 @@ namespace GameStore.BLL.Services.Implementation.Orders
                 else
                 {
                     gameOfItem.UnitsInStock += item.Quantity;
-                    item.Price = null;
-                    if (gameOfItem.TypeOfBase == TypeOfBase.Northwind)
-                    {
-                        var productOfItem = _mapper.Map<DAL.Entities.Northwind.Product>(gameOfItem);
-                        await _northwindDbContext.ProductRepository.UpdateAsync(productOfItem);
-                    }
-                        
+                    item.Price = null;                      
                 }
 
                 _logger.LogInformation($"OrderDetails with Id :{gameOfItem.Id} has been deleted");
-                await _mongoLogger.LogInformation<OrderDetails>(ActionType.Delete);
             }
         }
 

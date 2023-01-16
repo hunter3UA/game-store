@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using GameStore.BLL.DTO.Shipper;
-using GameStore.DAL.Entities.Northwind;
 
 namespace GameStore.BLL.Mapper
 {
@@ -8,7 +6,7 @@ namespace GameStore.BLL.Mapper
     {
         public OtherProfile()
         {
-            CreateMap<Shipper, ShipperDTO>();
+            
         }
     }
 }

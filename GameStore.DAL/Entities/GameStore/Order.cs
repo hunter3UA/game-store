@@ -1,6 +1,4 @@
-﻿using GameStore.DAL.Attributes;
-using GameStore.DAL.Enums;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using GameStore.DAL.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,8 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.DAL.Entities.GameStore
 {
-    [MongoCollection("orders")]
-    [BsonIgnoreExtraElements]
+
     public class Order : BaseEntity
     {
         [Required]

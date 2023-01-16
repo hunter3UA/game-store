@@ -4,10 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Enums;
-using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities.Northwind;
 using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
@@ -20,16 +17,12 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PublisherService> _logger;
-        private readonly INorthwindFactory _northwindDbContext;
-        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public PublisherService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PublisherService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public PublisherService(IMapper mapper, IUnitOfWork unitOfWork, ILogger<PublisherService> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
-            _northwindDbContext = northwindDbContext;
-            _mongoLogger = mongoLogger;
         }
 
         public async Task<PublisherDTO> AddPublisherAsync(AddPublisherDTO addPublisherDTO)
@@ -40,7 +33,6 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Publisher with Id {addedPublisher.Id} has been added");
-            await _mongoLogger.LogInformation<Publisher>(ActionType.Create);
 
             return _mapper.Map<PublisherDTO>(addedPublisher);
         }
@@ -48,9 +40,6 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<List<PublisherDTO>> GetListOfPublishersAsync()
         {
             List<Publisher> publishers = await _unitOfWork.PublisherRepository.GetListAsync();
-            List<Supplier> suppliers = await _northwindDbContext.SupplierRepository.GetListAsync();
-            var mappedSuppliers = _mapper.Map<List<Publisher>>(suppliers);
-            publishers.AddRange(mappedSuppliers);
 
             return _mapper.Map<List<PublisherDTO>>(publishers);
         }
@@ -58,8 +47,6 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<PublisherDTO> GetPublisherAsync(string name)
         {
             Publisher searchedPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.CompanyName == name);
-            Supplier supplier = searchedPublisher == null ? await _northwindDbContext.SupplierRepository.GetAsync(p => p.CompanyName == name) : null;
-            searchedPublisher = searchedPublisher==null && supplier!=null ? _mapper.Map<Publisher>(supplier) : null;
 
             return searchedPublisher != null ? _mapper.Map<PublisherDTO>(searchedPublisher) : throw new KeyNotFoundException("Publisher not found");
         }
@@ -67,8 +54,7 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<PublisherDTO> UpdatePublisherAsync(UpdatePublisherDTO updatePublisherDTO)
         {
             Publisher mappedPublisher = _mapper.Map<Publisher>(updatePublisherDTO);
-            Publisher oldPublisher = await _unitOfWork.PublisherRepository.GetAsync(p => p.Id == updatePublisherDTO.Id);
-            var oldVersion = oldPublisher.ToBsonDocument();
+       
             Publisher updatedPublisher = await _unitOfWork.PublisherRepository.UpdateAsync(mappedPublisher);
 
             await _unitOfWork.SaveAsync();
@@ -76,7 +62,6 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedPublisher != null)
             {
                 _logger.LogInformation($"Publisher with Id:{updatedPublisher.Id} has been updated");
-                await _mongoLogger.LogInformation<Publisher>(ActionType.Update, oldVersion, updatedPublisher.ToBsonDocument());
             }
             else
                 throw new ArgumentException("Publisher can not be updated");
@@ -96,7 +81,6 @@ namespace GameStore.BLL.Services.Implementation
                 if (isDeletedPublisher)
                 {
                     _logger.LogInformation($"Publisher with Id: {id} has been deleted");
-                    await _mongoLogger.LogInformation<Publisher>(ActionType.Delete);
                 }
                 else
                     throw new ArgumentException("Publisher can not be deleted");

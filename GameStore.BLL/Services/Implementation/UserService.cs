@@ -2,12 +2,10 @@
 using GameStore.BLL.DTO.Auth;
 using GameStore.BLL.DTO.User;
 using GameStore.BLL.Models;
-using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
 using GameStore.Common.Models;
 using GameStore.Common.Services.Abstract;
 using GameStore.DAL.Entities.GameStore;
-using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -24,16 +22,14 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IPasswordService _passwordService;
         private readonly IAuthenticationService _authService;
         private readonly ILogger<UserService> _logger;
-        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService, IAuthenticationService authService,ILogger<UserService> logger,IMongoLoggerProvider mongoLogger)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService, IAuthenticationService authService,ILogger<UserService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _passwordService = passwordService;
             _authService = authService;
             _logger = logger;
-            _mongoLogger = mongoLogger;
         }
 
         public async Task<AuthRequestDTO> RegisterUserAsync(RegisterDTO registerDTO)
@@ -52,7 +48,6 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"User has been created with id:{addedUser.Id}");
-            await _mongoLogger.LogInformation<User>(Enums.ActionType.Create);
 
             var authRequest = new AuthRequestDTO { Email = newUser.Email, Password = registerDTO.Password };
          
@@ -85,7 +80,6 @@ namespace GameStore.BLL.Services.Implementation
                 throw new ArgumentException();
 
             User userById = await _unitOfWork.UserRepository.GetAsync(u => u.Id==updateUserDTO.Id);
-            var oldVersion = userById.ToBsonDocument();
 
             userById.Role = updateUserDTO.Role;
             userById.UserName = updateUserDTO.UserName;
@@ -95,8 +89,7 @@ namespace GameStore.BLL.Services.Implementation
 
             var newVersion = userById.ToBsonDocument();
             _logger.LogInformation($"User has been updated with id:{userById.Id}");
-            await _mongoLogger.LogInformation<User>(Enums.ActionType.Update, oldVersion, newVersion);
-           
+          
             return _mapper.Map<UserDTO>(userById);
         }
     }

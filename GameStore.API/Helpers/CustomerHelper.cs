@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Security.Claims;
 using GameStore.API.Extensions;
 using GameStore.BLL.Enums;
 using GameStore.BLL.Services.Abstract;

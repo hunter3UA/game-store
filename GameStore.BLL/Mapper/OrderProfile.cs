@@ -10,7 +10,6 @@ namespace GameStore.BLL.Mapper
         {
             CreateMap<Order, OrderDTO>();
             CreateMap<UpdateOrderDTO, Order>().ForMember(o => o.OrderDetails, mapper => mapper.Ignore());
-            CreateMap<DAL.Entities.Northwind.Order, Order>().ReverseMap();
         }
     }
 }

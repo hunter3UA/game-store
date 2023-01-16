@@ -1,5 +1,4 @@
 ﻿using GameStore.Common.Services.Abstract;
-using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Context.Configuration;
 using GameStore.DAL.Entities.Games;
 using GameStore.DAL.Entities.GameStore;
@@ -9,14 +8,11 @@ using GameStore.DAL.Entities.Publishers;
 using GameStore.DAL.Static;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace GameStore.DAL.Context
 {
     public class StoreDbContext : DbContext
     {
-        public INorthwindFactory _northwindFactory;
-
 
         public IPasswordService _passwordService;
 
@@ -49,9 +45,8 @@ namespace GameStore.DAL.Context
         public DbSet<PublisherTranslate> PublisherTranslates { get; set; }
 
 
-        public StoreDbContext(INorthwindFactory northwindFactory, IPasswordService passwordService)
+        public StoreDbContext(IPasswordService passwordService)
         {
-            _northwindFactory = northwindFactory;
             _passwordService = passwordService;
         }
 
@@ -66,7 +61,7 @@ namespace GameStore.DAL.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new GameConfiguration());
-            modelBuilder.ApplyConfiguration(new GenreConfiguration(_northwindFactory));
+            modelBuilder.ApplyConfiguration(new GenreConfiguration());
             modelBuilder.ApplyConfiguration(new PlatformTypeConfiguration());
             modelBuilder.ApplyConfiguration(new GenresInGamesConfiguration());
             modelBuilder.ApplyConfiguration(new PlatformsInGamesConfiguration());

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using GameStore.DAL.Attributes;
 using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
 using Microsoft.EntityFrameworkCore;

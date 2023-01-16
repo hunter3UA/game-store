@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract.Games;
-using GameStore.DAL.Context.Abstract;
 using GameStore.DAL.Entities.Games;
 using GameStore.DAL.Entities.Genres;
-using GameStore.DAL.Entities.Northwind;
 using GameStore.DAL.UoW.Abstract;
 
 namespace GameStore.BLL.Services.Implementation.Games
@@ -17,54 +15,15 @@ namespace GameStore.BLL.Services.Implementation.Games
     public class GameFilterService : IGameFilterService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly INorthwindFactory _northwindDbContext;
-
-        public GameFilterService(IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext)
+        
+        public GameFilterService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _northwindDbContext = northwindDbContext;
-        }
-
-        public async Task<List<Expression<Func<Product, bool>>>> GetFiltersForNorthwind(GameFilterDTO gameFilterDTO)
-        {
-            List<Expression<Func<Product, bool>>> filters = new List<Expression<Func<Product, bool>>>();
-         //   filters.AddRange(GetCommonFilters(gameFilterDTO));
-
-            if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
-                filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));
-
-            if (gameFilterDTO.MinPrice != null)
-                filters.Add(g => g.Price >= gameFilterDTO.MinPrice);
-
-            if (gameFilterDTO.MaxPrice != null)
-                filters.Add(g => g.Price <= gameFilterDTO.MaxPrice);
-
-            if (gameFilterDTO.Genres != null)
-            {
-                var categories = await _unitOfWork.GenreRepository.GetRangeAsync(c => gameFilterDTO.Genres.Contains(c.Id));
-                var categoryIds = categories.Where(c => c.CategoryId != null).Select(c => (int)c.CategoryId).ToList();
-                if (categories != null)
-                {
-                    filters.Add(c => categoryIds.Contains(c.CategoryID));
-                }
-            }
-
-            if (gameFilterDTO.Publishers != null)
-            {
-                var publishers = await _northwindDbContext.SupplierRepository.GetRangeAsync(s => gameFilterDTO.Publishers.Contains(s.CompanyName));
-                var publisherIds = publishers.Select(s => s.SupplierID).ToList();
-                if (publisherIds != null)
-                {
-                    filters.Add(p => publisherIds.Contains(p.SupplierID));
-                }
-            }
-            return filters;
         }
 
         public async Task<List<Expression<Func<Game, bool>>>> GetFiltersForGameStore(GameFilterDTO gameFilterDTO)
         {
             List<Expression<Func<Game, bool>>> filters = new List<Expression<Func<Game, bool>>>();
-            //  filters.AddRange(GetCommonFilters(gameFilterDTO));
 
             if (!string.IsNullOrEmpty(gameFilterDTO.Name) && gameFilterDTO.Name.Length >= 3)
                 filters.Add(g => g.Name.ToLower().Contains(gameFilterDTO.Name.ToLower()));

@@ -11,7 +11,6 @@ namespace GameStore.BLL.Mapper
             CreateMap<AddOrderDetailsDTO, OrderDetails>();
             CreateMap<OrderDetails, OrderDetailsDTO>();
             CreateMap<OrderDetailsDTO, OrderDetails>().ForMember(od => od.Game, mapper => mapper.Ignore());
-            CreateMap<DAL.Entities.Northwind.OrderDetails,DAL.Entities.GameStore.OrderDetails>().ReverseMap();
         }
     }
 }

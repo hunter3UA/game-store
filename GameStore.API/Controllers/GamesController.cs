@@ -7,7 +7,6 @@ using GameStore.API.Extensions;
 using GameStore.API.Permissions.Publisher;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
-using GameStore.BLL.Exceptions;
 using GameStore.BLL.Services.Abstract.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

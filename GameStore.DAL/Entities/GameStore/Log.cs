@@ -1,11 +1,10 @@
-﻿using GameStore.DAL.Attributes;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace GameStore.DAL.Entities.GameStore
 {
-    [MongoCollection("logs")]
+
     public class Log
     {
         public DateTime Date { get; set; }

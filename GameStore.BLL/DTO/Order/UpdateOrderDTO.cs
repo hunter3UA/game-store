@@ -1,7 +1,6 @@
 ﻿using GameStore.BLL.DTO.OrderDetails;
 using GameStore.DAL.Entities;
 using GameStore.DAL.Enums;
-using GameStore.DAL.Migrations;
 using System;
 using System.Collections.Generic;
 
