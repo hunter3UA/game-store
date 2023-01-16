@@ -9,6 +9,10 @@ namespace GameStore.DAL.Repositories.Abstract
     {
         Task<TEntity> AddAsync(TEntity entityToAdd);
 
+        Task AddRangeAsync(IEnumerable<TEntity> entities);
+
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression);
+
         Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
 
         Task<List<TEntity>> GetListAsync(params Expression<Func<TEntity, object>>[] includeProperties);
@@ -18,6 +22,8 @@ namespace GameStore.DAL.Repositories.Abstract
         Task<bool> RemoveAsync(Expression<Func<TEntity, bool>> predicate);
 
         Task<TEntity> UpdateAsync(TEntity entityToUpdate, params Expression<Func<TEntity, object>>[] includeProperties);
+
+        Task UpdateRangeAsync(IEnumerable<TEntity> entitiesToUpdate);
 
         Task<List<TEntity>> GetFilteredListAsync(List<Expression<Func<TEntity, bool>>> filters, params Expression<Func<TEntity, object>>[] includeProperties);
 

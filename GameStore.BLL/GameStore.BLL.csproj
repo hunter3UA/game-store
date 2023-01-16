@@ -1,11 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Logger\**" />
+    <EmbeddedResource Remove="Logger\**" />
+    <None Remove="Logger\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Services\Abstract\IPasswordService.cs" />
+    <Compile Remove="Services\Implementation\Orders\OrderUpdateService.cs" />
     <Compile Remove="Services\Implementation\PasswordService.cs" />
   </ItemGroup>
 

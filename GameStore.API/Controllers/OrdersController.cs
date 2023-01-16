@@ -4,7 +4,6 @@ using GameStore.API.Auth;
 using GameStore.API.Helpers;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Order;
-using GameStore.BLL.DTO.OrderDetails;
 using GameStore.BLL.Enum;
 using GameStore.BLL.Services.Abstract;
 using GameStore.BLL.Services.Implementation.PaymentServices;

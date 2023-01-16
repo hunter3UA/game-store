@@ -1,4 +1,6 @@
-﻿namespace GameStore.BLL.DTO.Genre
+﻿using System.Collections.Generic;
+
+namespace GameStore.BLL.DTO.Genre
 {
     public class UpdateGenreDTO
     {
@@ -6,8 +8,12 @@
 
         public string Name { get; set; }
 
+        public string Description { get; set; }
+
         public int? ParentGenreId { get; set; }
 
         public int CategoryId { get; set; }
+
+        public List<GenreTranslateDTO> Translations { get; set; }   
     }
 }

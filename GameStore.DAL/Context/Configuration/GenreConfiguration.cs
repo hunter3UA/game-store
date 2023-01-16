@@ -1,23 +1,12 @@
-﻿using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+﻿using GameStore.DAL.Entities.Genres;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace GameStore.DAL.Context.Configuration
 {
     public class GenreConfiguration : IEntityTypeConfiguration<Genre>
     {
-        private readonly INorthwindFactory _northwindDbContext;
-
-        public GenreConfiguration(INorthwindFactory northwindDbContext)
-        {
-            _northwindDbContext = northwindDbContext;
-        }
-
         public void Configure(EntityTypeBuilder<Genre> builder)
         {
             builder.HasQueryFilter(g => !g.IsDeleted);
@@ -40,14 +29,7 @@ namespace GameStore.DAL.Context.Configuration
                 new Genre { Id = 15, Name = "Puzzle & Skill" },
                 new Genre { Id = 16, Name = "Misc" }
             };
-
-            var categories = _northwindDbContext.CategoryRepository.GetListAsync().GetAwaiter().GetResult();
-            int id = 17;
-            for (int i = 0; i < categories.Count(); i++)
-            {
-                categories[i].Id = id++;
-            }
-            genres.AddRange(categories);
+          
             builder.HasData(genres);
         }
     }

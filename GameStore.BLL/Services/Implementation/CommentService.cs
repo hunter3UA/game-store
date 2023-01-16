@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Enums;
-using GameStore.BLL.Providers;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
@@ -19,14 +18,12 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<CommentService> _logger;
-        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public CommentService(IUnitOfWork unitOfWokr, ILogger<CommentService> logger, IMapper mapper, IMongoLoggerProvider mongoLogger)
+        public CommentService(IUnitOfWork unitOfWokr, ILogger<CommentService> logger, IMapper mapper)
         {
             _unitOfWork = unitOfWokr;
             _mapper = mapper;
             _logger = logger;
-            _mongoLogger = mongoLogger;
         }
 
         public async Task<CommentDTO> AddCommentAsync(string key, AddCommentDTO addCommentDTO)
@@ -38,7 +35,6 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"New comment has been added with Id {addedComment.GameId}");
-            await _mongoLogger.LogInformation<Comment>(ActionType.Create);
 
             return _mapper.Map<CommentDTO>(addedComment);
         }
@@ -66,7 +62,6 @@ namespace GameStore.BLL.Services.Implementation
             if (updatedComment != null)
             {
                 _logger.LogInformation($"Comment with Id {updatedComment.Id} has been updated");
-                await _mongoLogger.LogInformation<Comment>(ActionType.Update, oldVersion, updateCommentDTO.ToBsonDocument());
             }
             else
                 throw new ArgumentException("Comment can not be updated");
@@ -82,7 +77,6 @@ namespace GameStore.BLL.Services.Implementation
             if (isRemovedComment)
             {
                 _logger.LogInformation($"Comment with Id {id} has been deleted");
-                await _mongoLogger.LogInformation<Comment>(ActionType.Delete);
             }
             else
                 throw new ArgumentException("Comment can not deleted");

@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
 using GameStore.API.Auth;
+using GameStore.API.Permissions.Publisher;
 using GameStore.BLL.DTO.Publisher;
 using GameStore.BLL.Services.Abstract;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -12,10 +14,14 @@ namespace GameStore.API.Controllers
     public class PublishersController : ControllerBase
     {
         private readonly IPublisherService _publisherService;
+        private readonly IPublisherPermission _publisherPermission;
 
-        public PublishersController(IPublisherService publisherService)
+        public PublishersController(IPublisherService publisherService,
+            IPublisherPermission publisherPermission
+            )
         {
             _publisherService = publisherService;
+            _publisherPermission = publisherPermission;
         }
 
         [HttpPost]
@@ -47,9 +53,13 @@ namespace GameStore.API.Controllers
 
         [HttpPut]
         [Route("update")]
-        [Authorize(Roles = "Publisher")]
+        [Authorize(Roles = ApiRoles.PublisherRole)]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdatePublisherDTO updatePublisherDTO)
         {
+            bool canEdit = _publisherPermission.CanEditPublisher(HttpContext, updatePublisherDTO.OldCompanyName);
+            if (!canEdit)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
             var updatedPublisher = await _publisherService.UpdatePublisherAsync(updatePublisherDTO);
 
             return new JsonResult(updatedPublisher);

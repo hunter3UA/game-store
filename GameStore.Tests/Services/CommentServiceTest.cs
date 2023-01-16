@@ -8,6 +8,7 @@ using FluentAssertions;
 using GameStore.BLL.DTO.Comment;
 using GameStore.BLL.Services.Implementation;
 using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
 using Microsoft.EntityFrameworkCore;

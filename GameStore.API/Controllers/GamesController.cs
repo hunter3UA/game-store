@@ -1,11 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using GameStore.API.Auth;
+using GameStore.API.Extensions;
+using GameStore.API.Permissions.Publisher;
 using GameStore.API.Static;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract.Games;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.API.Controllers
@@ -15,10 +19,13 @@ namespace GameStore.API.Controllers
     public class GamesController : ControllerBase
     {
         private readonly IGameService _gameService;
+        private readonly IPublisherPermission _publisherPermission;
 
-        public GamesController(IGameService gameService)
+        public GamesController(IGameService gameService,IPublisherPermission publisherPermission = null
+            )
         {
             _gameService = gameService;
+            _publisherPermission = publisherPermission;
         }
 
         [HttpPost]
@@ -62,6 +69,10 @@ namespace GameStore.API.Controllers
         [Authorize(Roles = ApiRoles.PublisherRole)]
         public async Task<IActionResult> UpdateAsync([FromBody] UpdateGameDTO gameToUpdate)
         {
+            bool canEdit = _publisherPermission.CanEditPublisher(HttpContext, gameToUpdate.OldPublisherName);
+            if (!canEdit)
+                return StatusCode(StatusCodes.Status403Forbidden);
+
             var updatedGame = await _gameService.UpdateGameAsync(gameToUpdate);
 
             return new JsonResult(updatedGame);
@@ -69,7 +80,7 @@ namespace GameStore.API.Controllers
 
         [HttpDelete]
         [Route("remove/{key}")]
-        [Authorize(Roles =ApiRoles.ManagerRole)]
+        [Authorize(Roles = ApiRoles.ManagerRole)]
         public async Task<IActionResult> RemoveAsync([FromRoute] string key)
         {
             await _gameService.RemoveGameAsync(key);

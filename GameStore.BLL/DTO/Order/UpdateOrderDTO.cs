@@ -1,7 +1,6 @@
 ﻿using GameStore.BLL.DTO.OrderDetails;
 using GameStore.DAL.Entities;
 using GameStore.DAL.Enums;
-using GameStore.DAL.Migrations;
 using System;
 using System.Collections.Generic;
 
@@ -34,5 +33,7 @@ namespace GameStore.BLL.DTO.Order
         public List<OrderDetailsDTO> OrderDetails { get; set; }
 
         public OrderStatus Status { get; set; }
+
+        public OrderStatus OldStatus { get; set; }
     }
 }

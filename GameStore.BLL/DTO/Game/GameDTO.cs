@@ -43,5 +43,7 @@ namespace GameStore.BLL.DTO.Game
         public TypeOfBase TypeOfBase { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public List<GameTranslateDTO> Translations { get; set; }
     }
 }

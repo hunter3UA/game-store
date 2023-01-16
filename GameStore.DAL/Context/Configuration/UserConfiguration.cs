@@ -1,6 +1,6 @@
 ﻿using GameStore.Common.Models;
 using GameStore.Common.Services.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

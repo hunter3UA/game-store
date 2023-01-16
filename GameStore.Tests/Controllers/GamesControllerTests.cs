@@ -7,7 +7,7 @@ using GameStore.API.Controllers;
 using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Abstract.Games;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
 using GameStore.Tests.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

@@ -9,7 +9,7 @@ using GameStore.BLL.DTO.Common;
 using GameStore.BLL.DTO.Game;
 using GameStore.BLL.Services.Implementation.Games;
 using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Games;
 using GameStore.DAL.UoW.Abstract;
 using GameStore.Tests.Attributes;
 using Microsoft.EntityFrameworkCore;

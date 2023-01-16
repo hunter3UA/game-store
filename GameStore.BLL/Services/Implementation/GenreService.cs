@@ -4,13 +4,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GameStore.BLL.DTO.Genre;
 using GameStore.BLL.Enums;
-using GameStore.BLL.Providers;
+using GameStore.BLL.Extensions;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.Genres;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 
 namespace GameStore.BLL.Services.Implementation
 {
@@ -19,16 +17,12 @@ namespace GameStore.BLL.Services.Implementation
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<GenreService> _logger;
-        private readonly INorthwindFactory _northwindDbContext;
-        private readonly IMongoLoggerProvider _mongoLogger;
 
-        public GenreService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GenreService> logger, INorthwindFactory northwindDbContext, IMongoLoggerProvider mongoLogger)
+        public GenreService(IUnitOfWork unitOfWork, IMapper mapper, ILogger<GenreService> logger)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
-            _northwindDbContext = northwindDbContext;
-            _mongoLogger = mongoLogger;
         }
 
         public async Task<GenreDTO> AddGenreAsync(AddGenreDTO addGenreDTO)
@@ -39,21 +33,20 @@ namespace GameStore.BLL.Services.Implementation
             await _unitOfWork.SaveAsync();
 
             _logger.LogInformation($"Genre with Id {addedGenre.Id} has been added");
-            await _mongoLogger.LogInformation<Genre>(ActionType.Create);
 
             return _mapper.Map<GenreDTO>(addedGenre);
         }
 
         public async Task<GenreDTO> GetGenreAsync(int id)
         {
-            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre => genre.Id == id, g => g.SubGenres);
+            var searchedGenre = await _unitOfWork.GenreRepository.GetAsync(genre => genre.Id == id, g => g.SubGenres, g => g.Translations);
 
             return searchedGenre != null ? _mapper.Map<GenreDTO>(searchedGenre) : throw new KeyNotFoundException();
         }
 
         public async Task<List<GenreDTO>> GetListOfGenresAsync()
         {
-            List<Genre> genresFromStore = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres);
+            List<Genre> genresFromStore = await _unitOfWork.GenreRepository.GetListAsync(g => g.SubGenres, g => g.Translations);
 
             return _mapper.Map<List<GenreDTO>>(genresFromStore);
         }
@@ -74,7 +67,6 @@ namespace GameStore.BLL.Services.Implementation
             if (isDeletedGenre)
             {
                 _logger.LogInformation($"Genre with Id: {id} has been deleted");
-                await _mongoLogger.LogInformation<Genre>(ActionType.Delete);
             }
             else
                 throw new ArgumentException("Genre can not be deleted");
@@ -85,15 +77,13 @@ namespace GameStore.BLL.Services.Implementation
         public async Task<GenreDTO> UpdateGenreAsync(UpdateGenreDTO updateGenreDTO)
         {
             Genre mappedGenre = _mapper.Map<Genre>(updateGenreDTO);
-            Genre oldGenre = await _unitOfWork.GenreRepository.GetAsync(g => g.Id == updateGenreDTO.Id);
-            var oldVersion = oldGenre.ToBsonDocument();
             Genre updatedGenre = await _unitOfWork.GenreRepository.UpdateAsync(mappedGenre);
+
             await _unitOfWork.SaveAsync();
 
             if (updatedGenre != null)
             {
                 _logger.LogInformation($"Genre with id {updatedGenre.Id} has been updated");
-                await _mongoLogger.LogInformation<Genre>(ActionType.Update,oldVersion,updatedGenre.ToBsonDocument());
             }
             else
                 throw new ArgumentException("Genre can not be updated");

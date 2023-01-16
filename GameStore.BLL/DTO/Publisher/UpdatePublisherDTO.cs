@@ -1,8 +1,12 @@
-﻿namespace GameStore.BLL.DTO.Publisher
+﻿using System.Collections.Generic;
+
+namespace GameStore.BLL.DTO.Publisher
 {
     public class UpdatePublisherDTO
     {
         public int Id { get; set; }
+
+        public string OldCompanyName { get; set; }
 
         public string CompanyName { get; set; }
         
@@ -27,5 +31,7 @@
         public string Country { get; set; }
 
         public string Fax { get; set; }
+
+        public List<PublisherTranslateDTO> Translations { get; set; }
     }
 }

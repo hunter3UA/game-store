@@ -19,7 +19,7 @@ namespace GameStore.DAL.Migrations
                 .HasAnnotation("ProductVersion", "5.0.14")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.Comment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -58,7 +58,348 @@ namespace GameStore.DAL.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Game", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.GenresInGames", b =>
+                {
+                    b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GenreId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GenresInGames");
+
+                    b.HasData(
+                        new
+                        {
+                            GenreId = 1,
+                            GameId = 1
+                        },
+                        new
+                        {
+                            GenreId = 3,
+                            GameId = 2
+                        },
+                        new
+                        {
+                            GenreId = 5,
+                            GameId = 3
+                        },
+                        new
+                        {
+                            GenreId = 11,
+                            GameId = 4
+                        },
+                        new
+                        {
+                            GenreId = 3,
+                            GameId = 5
+                        },
+                        new
+                        {
+                            GenreId = 11,
+                            GameId = 6
+                        },
+                        new
+                        {
+                            GenreId = 6,
+                            GameId = 7
+                        },
+                        new
+                        {
+                            GenreId = 12,
+                            GameId = 8
+                        },
+                        new
+                        {
+                            GenreId = 14,
+                            GameId = 9
+                        },
+                        new
+                        {
+                            GenreId = 7,
+                            GameId = 10
+                        },
+                        new
+                        {
+                            GenreId = 8,
+                            GameId = 11
+                        },
+                        new
+                        {
+                            GenreId = 8,
+                            GameId = 12
+                        });
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Freight")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShipAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipCity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipCountry")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipPostalCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShipRegion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ShippedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ShipperCompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.OrderDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Discount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("GameKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("GameKey");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<short>("Quantity")
+                        .HasColumnType("smallint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.PlatformsInGames", b =>
+                {
+                    b.Property<int>("PlatformTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PlatformTypeId", "GameId");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("PlatformsInGames");
+
+                    b.HasData(
+                        new
+                        {
+                            PlatformTypeId = 1,
+                            GameId = 1
+                        },
+                        new
+                        {
+                            PlatformTypeId = 2,
+                            GameId = 1
+                        },
+                        new
+                        {
+                            PlatformTypeId = 2,
+                            GameId = 2
+                        },
+                        new
+                        {
+                            PlatformTypeId = 4,
+                            GameId = 3
+                        },
+                        new
+                        {
+                            PlatformTypeId = 3,
+                            GameId = 4
+                        },
+                        new
+                        {
+                            PlatformTypeId = 3,
+                            GameId = 5
+                        },
+                        new
+                        {
+                            PlatformTypeId = 3,
+                            GameId = 6
+                        },
+                        new
+                        {
+                            PlatformTypeId = 1,
+                            GameId = 7
+                        },
+                        new
+                        {
+                            PlatformTypeId = 4,
+                            GameId = 8
+                        },
+                        new
+                        {
+                            PlatformTypeId = 4,
+                            GameId = 9
+                        },
+                        new
+                        {
+                            PlatformTypeId = 2,
+                            GameId = 10
+                        },
+                        new
+                        {
+                            PlatformTypeId = 1,
+                            GameId = 11
+                        },
+                        new
+                        {
+                            PlatformTypeId = 2,
+                            GameId = 12
+                        });
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("PublisherName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "e92d443c-9b3f-4ae1-ab11-2ea146097be6",
+                            Email = "admin@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 13, 41, 229, 233, 217, 87, 137, 253, 236, 78, 133, 130, 220, 16, 105, 37, 220, 6, 159, 71, 155, 186, 65, 6, 113, 201, 181, 199, 61, 108, 232, 146, 69, 88, 145, 41, 13, 136, 178, 82, 147, 211, 100, 46, 226, 55, 184, 212, 132, 90, 208, 187, 153, 15, 102, 28, 122, 117, 249, 12, 30, 75, 188, 62 },
+                            PasswordSalt = new byte[] { 204, 204, 117, 139, 199, 168, 24, 204, 28, 21, 24, 170, 35, 114, 88, 209, 201, 7, 44, 185, 60, 40, 131, 107 },
+                            Role = "Admin",
+                            UserName = "admin"
+                        },
+                        new
+                        {
+                            Id = "c1c57e32-c76d-42f0-962f-cae6e8f01ede",
+                            Email = "user1@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 224, 228, 17, 123, 172, 231, 152, 16, 2, 76, 156, 216, 61, 91, 2, 135, 83, 152, 70, 65, 44, 73, 19, 128, 103, 175, 187, 157, 238, 129, 218, 120, 42, 153, 54, 59, 188, 34, 226, 167, 23, 13, 68, 94, 160, 89, 243, 109, 15, 106, 148, 202, 90, 96, 244, 75, 110, 58, 128, 17, 208, 246, 32, 178 },
+                            PasswordSalt = new byte[] { 208, 69, 255, 58, 194, 226, 36, 29, 129, 154, 210, 16, 2, 44, 122, 177, 219, 140, 98, 235, 55, 103, 33, 116 },
+                            Role = "User",
+                            UserName = "user1"
+                        },
+                        new
+                        {
+                            Id = "73324d3c-2c8c-4ed7-8788-1bb551cf53d8",
+                            Email = "manager1@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 218, 41, 214, 182, 249, 163, 73, 248, 49, 109, 114, 239, 85, 185, 73, 227, 161, 173, 198, 37, 28, 83, 27, 34, 154, 235, 129, 145, 175, 171, 45, 39, 185, 35, 44, 232, 40, 52, 159, 212, 81, 143, 165, 28, 198, 57, 15, 240, 254, 98, 136, 92, 118, 84, 20, 128, 241, 211, 72, 42, 110, 51, 221, 42 },
+                            PasswordSalt = new byte[] { 181, 99, 96, 218, 145, 239, 151, 46, 81, 103, 130, 64, 7, 72, 132, 120, 212, 188, 29, 201, 8, 252, 195, 66 },
+                            Role = "Manager",
+                            UserName = "manager1"
+                        },
+                        new
+                        {
+                            Id = "2e5f11f4-0e80-4b08-a8b1-3f92d5ef4a43",
+                            Email = "moderator@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 190, 132, 105, 221, 209, 75, 20, 167, 147, 232, 94, 190, 45, 86, 87, 52, 124, 59, 71, 190, 212, 131, 106, 155, 165, 197, 201, 16, 46, 39, 144, 149, 201, 180, 206, 61, 233, 92, 144, 190, 87, 206, 29, 119, 158, 1, 123, 15, 60, 185, 159, 67, 145, 135, 16, 148, 124, 123, 127, 201, 196, 183, 63, 15 },
+                            PasswordSalt = new byte[] { 142, 210, 194, 131, 229, 149, 221, 203, 41, 195, 54, 205, 25, 46, 242, 220, 119, 143, 20, 222, 145, 193, 199, 112 },
+                            Role = "Moderator",
+                            UserName = "moderator1"
+                        },
+                        new
+                        {
+                            Id = "b3a274f8-6ffe-42ad-a12d-d29b3f81bce8",
+                            Email = "publisher1@gmail.com",
+                            IsDeleted = false,
+                            PasswordHash = new byte[] { 34, 123, 55, 63, 122, 123, 106, 146, 71, 92, 178, 87, 243, 109, 142, 101, 52, 155, 108, 252, 102, 250, 191, 166, 85, 19, 98, 65, 216, 48, 5, 191, 55, 172, 127, 69, 184, 127, 191, 251, 51, 95, 233, 40, 49, 46, 181, 122, 45, 166, 24, 54, 68, 119, 191, 9, 35, 70, 169, 210, 35, 151, 13, 14 },
+                            PasswordSalt = new byte[] { 242, 27, 39, 235, 39, 65, 160, 192, 125, 236, 183, 179, 240, 115, 145, 254, 28, 105, 158, 219, 23, 212, 152, 174 },
+                            PublisherName = "DeepSilver",
+                            Role = "Publisher",
+                            UserName = "publisher1"
+                        });
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -123,7 +464,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 1,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(2533),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(1188),
                             Description = "New part of Stalker",
                             Discontinued = false,
                             IsDeleted = false,
@@ -131,7 +472,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Stalker2",
                             NumberOfViews = 0,
                             Price = 70m,
-                            PublishedAt = new DateTime(2022, 5, 5, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4272),
+                            PublishedAt = new DateTime(2022, 10, 8, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(2819),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)10,
@@ -140,7 +481,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 2,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4519),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3098),
                             Description = "Best part",
                             Discontinued = false,
                             IsDeleted = false,
@@ -148,7 +489,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Dying light",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 6, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4654),
+                            PublishedAt = new DateTime(2022, 11, 27, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3228),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             UnitsInStock = (short)0,
@@ -157,7 +498,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 3,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4664),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3240),
                             Description = "Action ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -165,7 +506,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Left 4 Dead",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2021, 7, 9, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4667),
+                            PublishedAt = new DateTime(2021, 12, 12, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3242),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)3,
@@ -174,7 +515,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 4,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4669),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3243),
                             Description = "Description of cmv",
                             Discontinued = false,
                             IsDeleted = false,
@@ -182,7 +523,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Call of Duty:MV",
                             NumberOfViews = 0,
                             Price = 30m,
-                            PublishedAt = new DateTime(2022, 8, 6, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4670),
+                            PublishedAt = new DateTime(2023, 1, 9, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3245),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -191,7 +532,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 5,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4673),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3246),
                             Description = "Description of civ",
                             Discontinued = false,
                             IsDeleted = false,
@@ -199,7 +540,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sid Meier`s Civilization VI",
                             NumberOfViews = 0,
                             Price = 60m,
-                            PublishedAt = new DateTime(2022, 7, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4674),
+                            PublishedAt = new DateTime(2022, 12, 17, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3247),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -208,7 +549,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 6,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4676),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3248),
                             Description = "Description of arma",
                             Discontinued = false,
                             IsDeleted = false,
@@ -216,7 +557,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Arma 3",
                             NumberOfViews = 0,
                             Price = 80m,
-                            PublishedAt = new DateTime(2022, 6, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4678),
+                            PublishedAt = new DateTime(2022, 11, 17, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3249),
                             PublisherName = "Bohemia Interactive",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -225,7 +566,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 7,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4680),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3250),
                             Description = "Description of nfs",
                             Discontinued = false,
                             IsDeleted = false,
@@ -233,7 +574,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Need for speed",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 6, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4681),
+                            PublishedAt = new DateTime(2022, 11, 27, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3252),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -242,7 +583,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 8,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4683),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3253),
                             Description = "Description of Sam",
                             Discontinued = false,
                             IsDeleted = false,
@@ -250,7 +591,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Serious Sam 4",
                             NumberOfViews = 0,
                             Price = 45m,
-                            PublishedAt = new DateTime(2022, 7, 29, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4685),
+                            PublishedAt = new DateTime(2023, 1, 1, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3254),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -259,7 +600,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 9,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4718),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3256),
                             Description = "Description of Sea",
                             Discontinued = false,
                             IsDeleted = false,
@@ -267,7 +608,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Sea of Thieves",
                             NumberOfViews = 0,
                             Price = 90m,
-                            PublishedAt = new DateTime(2022, 6, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4720),
+                            PublishedAt = new DateTime(2022, 11, 27, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3257),
                             PublisherName = "GSC",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -276,7 +617,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 10,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4722),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3258),
                             Description = "Description of Battlefield",
                             Discontinued = false,
                             IsDeleted = false,
@@ -284,7 +625,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Battlefield 4",
                             NumberOfViews = 0,
                             Price = 100m,
-                            PublishedAt = new DateTime(2022, 7, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4724),
+                            PublishedAt = new DateTime(2022, 12, 17, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3259),
                             PublisherName = "Firaxis",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -293,7 +634,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 11,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4725),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3260),
                             Description = "Description of Mass effect 1",
                             Discontinued = false,
                             IsDeleted = false,
@@ -301,7 +642,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Mass effect 1",
                             NumberOfViews = 0,
                             Price = 50m,
-                            PublishedAt = new DateTime(2022, 7, 24, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4727),
+                            PublishedAt = new DateTime(2022, 12, 27, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3261),
                             PublisherName = "DeepSiler",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -310,7 +651,7 @@ namespace GameStore.DAL.Migrations
                         new
                         {
                             Id = 12,
-                            AddedAt = new DateTime(2022, 8, 13, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4729),
+                            AddedAt = new DateTime(2023, 1, 16, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3262),
                             Description = "Description of Command and conqurer",
                             Discontinued = false,
                             IsDeleted = false,
@@ -318,7 +659,7 @@ namespace GameStore.DAL.Migrations
                             Name = "Command and conqurer",
                             NumberOfViews = 0,
                             Price = 150m,
-                            PublishedAt = new DateTime(2022, 6, 14, 13, 27, 5, 799, DateTimeKind.Utc).AddTicks(4730),
+                            PublishedAt = new DateTime(2022, 11, 17, 16, 21, 35, 89, DateTimeKind.Utc).AddTicks(3263),
                             PublisherName = "Activision",
                             ReorderLevel = 0,
                             UnitsInStock = (short)5,
@@ -326,7 +667,43 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.GameTranslate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublisherName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuantityPerUnit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameId");
+
+                    b.ToTable("GameTranslates");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.Genre", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -467,173 +844,36 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.GenresInGames", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.GenreTranslate", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("GenreId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GenreId", "GameId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("GenresInGames");
-
-                    b.HasData(
-                        new
-                        {
-                            GenreId = 1,
-                            GameId = 1
-                        },
-                        new
-                        {
-                            GenreId = 3,
-                            GameId = 2
-                        },
-                        new
-                        {
-                            GenreId = 5,
-                            GameId = 3
-                        },
-                        new
-                        {
-                            GenreId = 11,
-                            GameId = 4
-                        },
-                        new
-                        {
-                            GenreId = 3,
-                            GameId = 5
-                        },
-                        new
-                        {
-                            GenreId = 11,
-                            GameId = 6
-                        },
-                        new
-                        {
-                            GenreId = 6,
-                            GameId = 7
-                        },
-                        new
-                        {
-                            GenreId = 12,
-                            GameId = 8
-                        },
-                        new
-                        {
-                            GenreId = 14,
-                            GameId = 9
-                        },
-                        new
-                        {
-                            GenreId = 7,
-                            GameId = 10
-                        },
-                        new
-                        {
-                            GenreId = 8,
-                            GameId = 11
-                        },
-                        new
-                        {
-                            GenreId = 8,
-                            GameId = 12
-                        });
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Expiration")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("Freight")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ShipAddress")
+                    b.Property<string>("Language")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ShipCity")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShipCountry")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShipName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShipPostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShipRegion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ShippedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ShipperCompanyName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Orders");
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("GenreTranslates");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetails", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
-
-                    b.Property<string>("GameKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("GameKey");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<short>("Quantity")
-                        .HasColumnType("smallint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderDetails");
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.PlatformType", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -682,89 +922,33 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.PlatformsInGames", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformTypeTranslate", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PlatformTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("PlatformTypeId", "GameId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("GameId");
+                    b.HasIndex("PlatformTypeId");
 
-                    b.ToTable("PlatformsInGames");
-
-                    b.HasData(
-                        new
-                        {
-                            PlatformTypeId = 1,
-                            GameId = 1
-                        },
-                        new
-                        {
-                            PlatformTypeId = 2,
-                            GameId = 1
-                        },
-                        new
-                        {
-                            PlatformTypeId = 2,
-                            GameId = 2
-                        },
-                        new
-                        {
-                            PlatformTypeId = 4,
-                            GameId = 3
-                        },
-                        new
-                        {
-                            PlatformTypeId = 3,
-                            GameId = 4
-                        },
-                        new
-                        {
-                            PlatformTypeId = 3,
-                            GameId = 5
-                        },
-                        new
-                        {
-                            PlatformTypeId = 3,
-                            GameId = 6
-                        },
-                        new
-                        {
-                            PlatformTypeId = 1,
-                            GameId = 7
-                        },
-                        new
-                        {
-                            PlatformTypeId = 4,
-                            GameId = 8
-                        },
-                        new
-                        {
-                            PlatformTypeId = 4,
-                            GameId = 9
-                        },
-                        new
-                        {
-                            PlatformTypeId = 2,
-                            GameId = 10
-                        },
-                        new
-                        {
-                            PlatformTypeId = 1,
-                            GameId = 11
-                        },
-                        new
-                        {
-                            PlatformTypeId = 2,
-                            GameId = 12
-                        });
+                    b.ToTable("PlatformTypeTranslates");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Publisher", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.Publisher", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -865,130 +1049,80 @@ namespace GameStore.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.User", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.PublisherTranslate", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email")
-                        .IsRequired()
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContactTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HomePage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("PublisherName")
+                    b.Property<string>("Language")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("PublisherId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                    b.Property<string>("Region")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserName")
-                        .IsUnique();
+                    b.HasIndex("PublisherId");
 
-                    b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "dd9d8aa6-a443-43f6-b840-e09c9f64c185",
-                            Email = "admin@gmail.com",
-                            IsDeleted = false,
-                            PasswordHash = new byte[] { 125, 219, 75, 82, 52, 179, 6, 29, 204, 48, 110, 223, 40, 210, 224, 139, 133, 82, 189, 186, 208, 149, 20, 250, 198, 233, 167, 121, 251, 145, 222, 61, 36, 233, 75, 12, 77, 36, 32, 7, 210, 238, 85, 218, 37, 165, 222, 151, 92, 223, 202, 223, 162, 170, 37, 39, 222, 62, 119, 30, 162, 199, 227, 197 },
-                            PasswordSalt = new byte[] { 212, 62, 204, 165, 25, 114, 157, 187, 51, 81, 78, 180, 128, 214, 8, 5, 242, 98, 35, 5, 13, 76, 129, 96 },
-                            Role = "Admin",
-                            UserName = "admin"
-                        },
-                        new
-                        {
-                            Id = "5343b58b-a88e-4e6c-b191-8c3c3cf85c82",
-                            Email = "user1@gmail.com",
-                            IsDeleted = false,
-                            PasswordHash = new byte[] { 118, 90, 56, 77, 248, 56, 174, 239, 109, 0, 94, 2, 160, 68, 134, 229, 189, 61, 213, 164, 45, 126, 190, 176, 255, 249, 130, 129, 193, 118, 17, 247, 79, 231, 17, 74, 20, 165, 83, 4, 152, 62, 35, 4, 201, 1, 246, 174, 49, 91, 22, 197, 230, 192, 217, 249, 72, 255, 151, 254, 111, 141, 131, 39 },
-                            PasswordSalt = new byte[] { 29, 146, 241, 142, 24, 66, 78, 128, 17, 36, 21, 53, 98, 187, 199, 80, 220, 243, 125, 165, 99, 245, 33, 85 },
-                            Role = "User",
-                            UserName = "user1"
-                        },
-                        new
-                        {
-                            Id = "1437c530-183c-44ec-88aa-05481dfd38e1",
-                            Email = "manager1@gmail.com",
-                            IsDeleted = false,
-                            PasswordHash = new byte[] { 60, 67, 97, 10, 149, 208, 227, 226, 139, 102, 70, 61, 66, 127, 22, 152, 117, 125, 7, 60, 76, 121, 165, 45, 121, 219, 119, 106, 33, 198, 8, 254, 37, 25, 186, 45, 123, 112, 19, 168, 80, 194, 5, 13, 18, 219, 244, 40, 66, 141, 5, 87, 39, 207, 175, 206, 39, 255, 180, 49, 166, 60, 113, 97 },
-                            PasswordSalt = new byte[] { 105, 104, 181, 152, 47, 147, 178, 246, 236, 236, 80, 38, 225, 177, 189, 245, 103, 77, 41, 93, 70, 57, 40, 151 },
-                            Role = "Manager",
-                            UserName = "manager1"
-                        },
-                        new
-                        {
-                            Id = "b98f612b-cef3-4978-bed6-2930cff0d367",
-                            Email = "moderator@gmail.com",
-                            IsDeleted = false,
-                            PasswordHash = new byte[] { 46, 229, 35, 168, 165, 59, 234, 35, 91, 123, 171, 242, 240, 37, 22, 77, 161, 215, 232, 109, 240, 124, 236, 163, 181, 170, 214, 112, 234, 17, 184, 181, 48, 196, 61, 180, 15, 102, 92, 51, 148, 54, 123, 69, 105, 112, 230, 143, 204, 240, 67, 247, 138, 161, 173, 136, 158, 51, 138, 80, 220, 196, 22, 200 },
-                            PasswordSalt = new byte[] { 243, 187, 190, 159, 127, 76, 129, 171, 127, 94, 95, 53, 92, 112, 101, 10, 67, 75, 114, 151, 34, 132, 215, 249 },
-                            Role = "Moderator",
-                            UserName = "moderator1"
-                        },
-                        new
-                        {
-                            Id = "e0db10b0-d24c-44e6-86e6-686dcfd9eca2",
-                            Email = "publisher1@gmail.com",
-                            IsDeleted = false,
-                            PasswordHash = new byte[] { 114, 127, 53, 204, 32, 234, 113, 66, 135, 87, 56, 200, 119, 178, 242, 229, 217, 233, 162, 211, 106, 137, 130, 180, 64, 229, 255, 243, 198, 211, 54, 66, 36, 100, 125, 5, 19, 193, 160, 73, 238, 33, 3, 253, 182, 56, 134, 138, 55, 5, 240, 100, 222, 61, 151, 7, 138, 72, 149, 90, 202, 154, 234, 167 },
-                            PasswordSalt = new byte[] { 162, 3, 236, 244, 193, 113, 121, 43, 86, 83, 70, 232, 160, 205, 83, 200, 15, 143, 133, 136, 127, 241, 76, 17 },
-                            PublisherName = "DeepSilver",
-                            Role = "Publisher",
-                            UserName = "publisher1"
-                        });
+                    b.ToTable("PublisherTranslates");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.Comment", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
                         .WithMany("Comments")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStore.DAL.Entities.Comment", null)
+                    b.HasOne("GameStore.DAL.Entities.GameStore.Comment", null)
                         .WithMany("Answers")
                         .HasForeignKey("ParentCommentId");
 
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.GenresInGames", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Genre", null)
-                        .WithMany("SubGenres")
-                        .HasForeignKey("ParentGenreId");
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.GenresInGames", b =>
-                {
-                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStore.DAL.Entities.Genre", "Genre")
+                    b.HasOne("GameStore.DAL.Entities.Genres.Genre", "Genre")
                         .WithMany()
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -999,9 +1133,9 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("Genre");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.OrderDetails", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.OrderDetails", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Order", "Order")
+                    b.HasOne("GameStore.DAL.Entities.GameStore.Order", "Order")
                         .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1010,15 +1144,15 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("Order");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.PlatformsInGames", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.PlatformsInGames", b =>
                 {
-                    b.HasOne("GameStore.DAL.Entities.Game", "Game")
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameStore.DAL.Entities.PlatformType", "PlatformType")
+                    b.HasOne("GameStore.DAL.Entities.Platforms.PlatformType", "PlatformType")
                         .WithMany()
                         .HasForeignKey("PlatformTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1029,24 +1163,89 @@ namespace GameStore.DAL.Migrations
                     b.Navigation("PlatformType");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Comment", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.GameTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Games.Game", "Game")
+                        .WithMany("Translations")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.Genre", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Genres.Genre", null)
+                        .WithMany("SubGenres")
+                        .HasForeignKey("ParentGenreId");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.GenreTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Genres.Genre", "Genre")
+                        .WithMany("Translations")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformTypeTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Platforms.PlatformType", "PlatformType")
+                        .WithMany("Translations")
+                        .HasForeignKey("PlatformTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PlatformType");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.PublisherTranslate", b =>
+                {
+                    b.HasOne("GameStore.DAL.Entities.Publishers.Publisher", "Publisher")
+                        .WithMany("Translations")
+                        .HasForeignKey("PublisherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Publisher");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.Comment", b =>
                 {
                     b.Navigation("Answers");
                 });
 
-            modelBuilder.Entity("GameStore.DAL.Entities.Game", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.Genre", b =>
-                {
-                    b.Navigation("SubGenres");
-                });
-
-            modelBuilder.Entity("GameStore.DAL.Entities.Order", b =>
+            modelBuilder.Entity("GameStore.DAL.Entities.GameStore.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Games.Game", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Genres.Genre", b =>
+                {
+                    b.Navigation("SubGenres");
+
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Platforms.PlatformType", b =>
+                {
+                    b.Navigation("Translations");
+                });
+
+            modelBuilder.Entity("GameStore.DAL.Entities.Publishers.Publisher", b =>
+                {
+                    b.Navigation("Translations");
                 });
 #pragma warning restore 612, 618
         }

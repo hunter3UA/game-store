@@ -29,5 +29,7 @@ namespace GameStore.BLL.DTO.Game
         public int NumberOfViews { get; set; }
 
         public string QuantityPerUnit { get; set; }
+
+        public List<GameTranslateDTO> Translations { get; set; }
     }
 }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GameStore.BLL.Services.Abstract;
-using GameStore.DAL.Context.Abstract;
-using GameStore.DAL.Entities;
+using GameStore.DAL.Entities.GameStore;
 using GameStore.DAL.Enums;
 using GameStore.DAL.UoW.Abstract;
 
@@ -14,12 +12,11 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
     public class BankPayment : IPaymentStrategy
     {
         private IUnitOfWork _unitOfWork;
-        private INorthwindFactory _northwindDbContext;
 
-        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork, INorthwindFactory northwindDbContext)
+        public async Task<object> PayAsync(int orderId, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-            _northwindDbContext = northwindDbContext;
+  
             Order orderToPay = await Initialize(orderId);
             
             byte[] fileStream = await CreateInvoiceFileAsync(orderToPay);
@@ -39,9 +36,8 @@ namespace GameStore.BLL.Services.Implementation.PaymentServices
 
             foreach (var item in orderToPay.OrderDetails)
             {
-                item.Game = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
-                item.Game ??= await _northwindDbContext.ProductRepository.GetAsync(g => g.Key == item.GameKey);
-                if (item.Game == null)
+                var gameOfDetails = await _unitOfWork.GameRepository.GetAsync(g => g.Key == item.GameKey);
+                if (gameOfDetails == null)
                 {
                     orderToPay.Status = OrderStatus.Canceled;
                     await _unitOfWork.SaveAsync();

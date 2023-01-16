@@ -38,5 +38,7 @@ namespace GameStore.BLL.DTO.Publisher
         public List<GameDTO> Games { get; set; }
 
         public TypeOfBase TypeOfBase { get; set; }
+
+        public List<PublisherTranslateDTO> Translations { get; set; }
     }
 }
