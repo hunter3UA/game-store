@@ -17,6 +17,7 @@ using GameStore.DAL.Repositories.Implementation;
 using GameStore.DAL.UoW.Abstract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -67,6 +68,7 @@ namespace GameStore.API.Extensions
                 ClockSkew = TimeSpan.Zero,
             };
 
+            services.AddDbContext<StoreDbContext>(options => options.UseSqlServer(config.GetConnectionString("GameStoreDb")));
             services.AddSingleton(tokenValidationParameters);
             services.AddAuthentication(authOptions =>
             {

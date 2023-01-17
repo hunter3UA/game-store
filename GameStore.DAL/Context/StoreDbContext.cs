@@ -44,18 +44,9 @@ namespace GameStore.DAL.Context
 
         public DbSet<PublisherTranslate> PublisherTranslates { get; set; }
 
-
-        public StoreDbContext(IPasswordService passwordService)
+        public StoreDbContext(DbContextOptions options, IPasswordService passwordService):base(options)
         {
             _passwordService = passwordService;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            IConfiguration dbConfig = new ConfigurationBuilder()
-                .AddJsonFile(Constants.JsonConfigFile, false, true).Build();
-            optionsBuilder.UseSqlServer(
-                dbConfig.GetConnectionString(Constants.GameStoreDb));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

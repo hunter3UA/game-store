@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using GameStore.API.Extensions;
+using GameStore.DAL.Context;
 
 namespace GameStore.API
 {
@@ -15,7 +16,7 @@ namespace GameStore.API
 
         public Startup(IConfiguration config)
         {
-            _config = config;        
+            _config = config;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -29,7 +30,7 @@ namespace GameStore.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<ErrorHandlingMiddleware>();
-             
+
             app.UseCustomLogging();
 
             if (env.IsDevelopment())
@@ -40,16 +41,16 @@ namespace GameStore.API
                     options.SwaggerEndpoint(Constants.SwaggerUrl, Constants.SwaggerName);
                 });
             }
-
-            app.UseRouting();  
+            InitializingDb.InitializeDb(app);
+            app.UseRouting();
             app.UseCors("AllowOrigin");
             app.UseAuthentication();
-            app.UseAuthorization(); 
-                    
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-        }        
+        }
     }
 }
