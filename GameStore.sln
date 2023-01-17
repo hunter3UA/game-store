@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32510.428
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.API", "GameStore.API\GameStore.API.csproj", "{E3BE2FDF-C1B0-49BF-8EE0-1FF100FB22C3}"
 EndProject
@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.DAL", "GameStore.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.Tests", "GameStore.Tests\GameStore.Tests.csproj", "{BF320A53-A364-4AE3-B204-904293D8D2D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameStore.Common", "GameStore.Common\GameStore.Common.csproj", "{5173F5CE-81D0-4218-8BD0-432F8AA647F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameStore.Common", "GameStore.Common\GameStore.Common.csproj", "{5173F5CE-81D0-4218-8BD0-432F8AA647F4}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{AD7AEE95-0695-406B-8FAE-BCC245E0ABB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5173F5CE-81D0-4218-8BD0-432F8AA647F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5173F5CE-81D0-4218-8BD0-432F8AA647F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5173F5CE-81D0-4218-8BD0-432F8AA647F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD7AEE95-0695-406B-8FAE-BCC245E0ABB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD7AEE95-0695-406B-8FAE-BCC245E0ABB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD7AEE95-0695-406B-8FAE-BCC245E0ABB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD7AEE95-0695-406B-8FAE-BCC245E0ABB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
